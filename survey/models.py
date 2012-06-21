@@ -11,7 +11,7 @@ class Survey(models.Model):
     is_active = models.BooleanField(default=True)
 
 
-class Question(models.Models):
+class Question(models.Model):
     """
     A Question is associated with a Survey and its type can be: textbox, textarea, checkbox, radio, or dropdown.
     """
