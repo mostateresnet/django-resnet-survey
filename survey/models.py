@@ -1,5 +1,5 @@
 from django.db import models
-import datetime
+import datetime as dt
 
 
 class Survey(models.Model):
@@ -42,4 +42,4 @@ class Answer(models.Model):
     """
     choice = models.ForeignKey('Choice')
     text = models.CharField(max_length=1024)
-    datetime = models.DateTimeField(default=datetime.datetime.now)
+    datetime = models.DateTimeField(default=dt.datetime.now)
