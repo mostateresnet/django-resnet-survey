@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
+    <title>{% block title %}Survey{% endblock %}</title>
+    {% block css %}{% endblock %}
+    {% block javascript %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    {% block body %}
+      {% block content %}{% endblock %}
+    {% endblock %}
+  </body>
+</html>
