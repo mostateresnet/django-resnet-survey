@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.contrib.auth.models import User
-from survey.models import Survey, Question, Choice
+from survey.models import Survey, Question, Choice, Answer
 
 
 class QuestionTest(TestCase):
@@ -65,3 +65,9 @@ class SurveyViewTest(TestCase):
         postdata = {"q" + unicode(self.question.pk): "c" + unicode(self.choice.pk), "q" + unicode(self.question2.pk): "word up dawg"}
         response = self.client.post("/my-new-survey", postdata)
         self.assertEqual(response.status_code, 200)
+
+    def test_post_survey_empty_post_makes_no_answers(self):
+        response = self.client.post("/my-new-survey", {})
+        self.assertEqual(Answer.objects.all().count(), 0)
+        self.assertEqual(response.status_code, 200)
+
