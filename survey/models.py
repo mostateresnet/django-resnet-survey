@@ -10,6 +10,10 @@ class Survey(models.Model):
     slug = models.SlugField(max_length=1024, primary_key=True)
     is_active = models.BooleanField(default=True)
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('survey', (), {'slug': self.slug})
+
     def __unicode__(self):
         return self.title
 

@@ -4,7 +4,7 @@
 <h1>Welcome to our survey!</h1>
 <ul>
 {% for survey in surveys %}
-  <li>{{ survey }}</li>
+  <li><a href="{{ survey.get_absolute_url }}">{{ survey }}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}
