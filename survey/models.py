@@ -40,6 +40,9 @@ class Choice(models.Model):
     """
     question = models.ForeignKey('Question')
     message = models.CharField(max_length=1024)
+    
+    def __unicode__(self):
+        return self.message
 
 
 class Answer(models.Model):
