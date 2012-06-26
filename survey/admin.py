@@ -5,21 +5,25 @@ from survey.models import Survey, Question, Choice, Answer
 class QuestionInline(admin.TabularInline):
     model = Question
     extra = 0
-    
+
+
 class ChoiceInline(admin.TabularInline):
     model = Choice
     extra = 0
-    
+
+
 class SurveyAdmin(admin.ModelAdmin):
-    inlines=[
+    prepopulated_fields = {'slug': ('title',)}
+    inlines = [
         QuestionInline,
     ]
-    
+
+
 class QuestionAdmin(admin.ModelAdmin):
-    inlines=[
+    inlines = [
         ChoiceInline,
     ]
-    
+
 
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Question, QuestionAdmin)
