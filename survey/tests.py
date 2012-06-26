@@ -7,7 +7,16 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.contrib.auth.models import User
-from survey.models import Survey
+from survey.models import Survey, Question
+
+
+class QuestionTest(TestCase):
+    def setUp(self):
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.question = Question.objects.create(message="What do you like best?", survey=self.survey)
+
+    def test_unicode(self):
+        self.assertTrue(unicode(self.question))
 
 
 class IndexViewTest(TestCase):
