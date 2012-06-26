@@ -50,6 +50,13 @@ class SurveyViewTest(TestCase):
         self.question2 = Question.objects.create(message="Textbox question", survey=self.survey)
         self.choice2 = Choice.objects.create(question=self.question2, message="QuestionText")
 
+    def test_is_active_false_closes_survey(self):
+        self.survey.is_active = False
+        self.survey.save()
+        response = self.client.post("/my-new-survey")
+        self.assertIn(u'closed', unicode(response))
+        self.assertEqual(response.status_code, 403)
+
     def test_get_survey(self):
         response = self.client.get("/my-new-survey", follow=True)
         self.assertEqual(response.status_code, 200)

@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 from survey.models import Survey, Choice, Answer
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -21,6 +21,15 @@ class IndexView(ListView):
 
 
 class SurveyView(View):
+    def dispatch(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if survey.is_active:
+            # Survey is active; carry on as normal
+            return super(SurveyView, self).dispatch(request, slug)
+        else:
+            # Survey is closed; stop here and show an error message.
+            return HttpResponseForbidden(render_to_response('survey/survey_closed.html', context_instance=RequestContext(request)))
+
     def get(self, request, slug):
         return render_to_response('survey/survey.html', {'survey': Survey.objects.get(slug=slug)}, context_instance=RequestContext(request))
 
