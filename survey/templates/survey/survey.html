@@ -1,0 +1,41 @@
+{% extends "survey/base.html" %}
+
+{% block content %}
+<h1>{{ survey.title }}</h1>
+<form action='' method='POST'>
+{% csrf_token %}
+{% for question in survey.question_set.all %}
+    <h3>{{ question }}</h3>
+    
+    {% if question.type = 'TB' %}
+        <input type="text" name="q{{ question.pk }}" />
+    {% endif %}
+    
+    {% if question.type = 'TA' %}
+        <textarea rows="5" cols="25" name="q{{ question.pk }}" ></textarea>
+    {% endif %}
+    
+    {% if question.type = 'RA' %}
+        {% for choice in question.choice_set.all %}
+            <input type ="radio" name="q{{ question.pk }}" value="c{{ choice.pk }}"/>{{ choice }}<br />
+        {% endfor %}
+    {% endif %}
+    
+    {% if question.type = 'CH' %}
+        {% for choice in question.choice_set.all %}
+            <input type ="checkbox" name="q{{ question.pk }}" value="c{{ choice.pk }}" />{{ choice }}<br />
+        {% endfor %}
+    {% endif %}
+    
+    {% if question.type = 'DD' %}
+        <select name="q{{ question.pk }}">
+        {% for choice in question.choice_set.all %}
+            <option value="c{{ choice.pk }}" />{{ choice }}</option>
+        {% endfor %}
+        </select>
+    {% endif %}
+
+{% endfor %}
+<input type="submit" value="Cast"/>
+<form>
+{% endblock %}
