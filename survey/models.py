@@ -29,6 +29,9 @@ class Question(models.Model):
         ('DD', 'dropdown'),
     )
     type = models.CharField(max_length=2, choices=QUESTION_TYPES)
+    
+    def __unicode__(self):
+        return self.message
 
 
 class Choice(models.Model):
