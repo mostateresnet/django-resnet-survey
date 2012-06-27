@@ -56,4 +56,4 @@ class SurveyView(View):
                 chosen_choice_objects = question.choice_set.filter(pk__in=scrubbed_choice_pks)
                 # Submit the answers
                 question.answer_with_choices(chosen_choice_objects)
-        return HttpResponse('Thank you, your survey has been submitted.')
+        return render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
