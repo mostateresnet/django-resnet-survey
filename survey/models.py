@@ -1,5 +1,5 @@
 from django.db import models
-import datetime as dt
+from django.utils.timezone import now
 
 
 class Survey(models.Model):
@@ -63,7 +63,7 @@ class Answer(models.Model):
     """
     choice = models.ForeignKey('Choice')
     text = models.CharField(max_length=1024)
-    datetime = models.DateTimeField(default=dt.datetime.now)
+    datetime = models.DateTimeField(default=now)
 
     def __unicode__(self):
         return self.text
