@@ -4,6 +4,7 @@ from django.views.generic.list import ListView
 from survey.models import Survey
 from django.http import HttpResponseForbidden
 from django.views.generic import View
+from django.views.generic.detail import DetailView
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -57,3 +58,8 @@ class SurveyView(View):
                 # Submit the answers
                 question.answer_with_choices(chosen_choice_objects)
         return render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
+
+
+class SurveyResultsView(DetailView):
+    template_name = 'survey/results.html'
+    model = Survey

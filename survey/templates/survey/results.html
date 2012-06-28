@@ -1,0 +1,29 @@
+{% extends "survey/base.html" %}
+
+{% block content %}
+<h1>{{ survey.title }}</h1>
+{% for question in survey.question_set.all %}
+  <h3>{{ question }}</h3>
+  
+  {% if question.type == 'TB' or question.type == 'TA' %}
+    <ul>
+      {% for choice in question.choice_set.all %}
+        {% for answer in choice.answer_set.all %}
+          <li>{{ answer|linebreaksbr }}</li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+  
+  {% if question.type = 'RA' or question.type = 'CH' or question.type = 'DD' %}
+    <table>
+      {% for choice in question.choice_set.all %}
+        <tr>
+          <td>{{ choice }}</td>
+          <td>{{ choice.answer_set.count }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+{% endfor %}
+{% endblock %}

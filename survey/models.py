@@ -64,3 +64,6 @@ class Answer(models.Model):
     choice = models.ForeignKey('Choice')
     text = models.CharField(max_length=1024)
     datetime = models.DateTimeField(default=dt.datetime.now)
+
+    def __unicode__(self):
+        return self.text
