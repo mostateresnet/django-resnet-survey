@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=9" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css" />
-    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
-    <title>{% block title %}Survey{% endblock %}</title>
-    {% block css %}{% endblock %}
+    {% block css %}
+      <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/base.css" />
+      <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
+    {% endblock %}
     {% block javascript %}{% endblock %}
+    <title>{% block title %}Survey{% endblock %}</title>
     {% block extrahead %}{% endblock %}
   </head>
   <body>
