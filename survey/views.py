@@ -63,7 +63,3 @@ class SurveyView(View):
 class SurveyResultsView(DetailView):
     template_name = 'survey/results.html'
     model = Survey
-    
-class SurveyMobileView(DetailView):
-    template_name = 'survey/mobile.html'
-    model = Survey

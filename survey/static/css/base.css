@@ -1,40 +1,7 @@
-#page
-{
-    
+@media (min-width: 50em) {
+    #wrapper {
+        width: 50em;
+        margin: auto;
+    }
 }
 
-#wrapper
-{
-    width: 500px;
-    margin: 0 auto;
-    text-align: left; 
-    background-color: #f0f0f0;
-    padding-left:10px;
-    padding-right:10px;
-    padding-bottom:10px;
-    padding-top:10px;
-}
-
-body
-{
-    text-align:center;
-    background-color: #333;
-    font-family:Arial, Serif;
-}
-
-h1
-{
-    font-size: 32px;
-	font-weight: 800;
-    margin-top: 0px;
-}
-
-h3
-{
-    font-size: 16px;
-}
-
-input
-{
-    font-family:Arial, Serif;
-}
