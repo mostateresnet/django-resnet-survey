@@ -2,7 +2,8 @@
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.resnet.min.css" />
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" /> 
 {% endblock %}
 
 {% block javascript %}
@@ -13,7 +14,7 @@
 
 {% block extrahead %}
     {{ block.super }}
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 
 {% block content %}
@@ -68,4 +69,3 @@
     <form>
 </div>
 {% endblock %}
-
