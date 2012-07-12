@@ -7,6 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from survey.models import Survey, Question, Choice, Answer
 
 
@@ -36,7 +37,7 @@ class IndexViewTest(TestCase):
 
     def test_get_index(self):
         Survey.objects.create(title="My new survey", slug="my-new-survey")
-        response = self.client.get('', follow=True)
+        response = self.client.get(reverse('index'), follow=True)
         self.assertEqual(response.status_code, 200)
 
 
@@ -45,6 +46,8 @@ class SurveyViewTest(TestCase):
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.survey_url = self.survey.get_absolute_url()
+        self.survey_results_url = reverse('surveyresults', kwargs={'slug': self.survey.slug})
         self.questionRA = Question.objects.create(message="What time is it", survey=self.survey, type="RA")
         self.choiceRA = Choice.objects.create(question=self.questionRA, message="5 oclock")
         self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
@@ -53,27 +56,27 @@ class SurveyViewTest(TestCase):
     def test_is_active_false_closes_survey(self):
         self.survey.is_active = False
         self.survey.save()
-        response = self.client.post("/my-new-survey/")
+        response = self.client.post(self.survey_url)
         self.assertIn(u'closed', unicode(response))
         self.assertEqual(response.status_code, 403)
 
     def test_get_survey(self):
-        response = self.client.get("/my-new-survey/", follow=True)
+        response = self.client.get(self.survey_url, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_post_survey(self):
         postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
-        response = self.client.post("/my-new-survey/", postdata)
+        response = self.client.post(self.survey_url, postdata)
         self.assertEqual(response.status_code, 200)
 
     def test_survey_results(self):
         postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
-        response = self.client.post("/my-new-survey/", postdata)
-        response = self.client.get("/my-new-survey/results/")
+        response = self.client.post(self.survey_url, postdata)
+        response = self.client.get(self.survey_results_url)
         self.assertEqual(response.status_code, 200)
 
     def test_post_survey_empty_post_makes_no_answers(self):
-        response = self.client.post("/my-new-survey/", {})
+        response = self.client.post(self.survey_url, {})
         self.assertEqual(Answer.objects.all().count(), 0)
         self.assertEqual(response.status_code, 200)
 
@@ -81,19 +84,19 @@ class SurveyViewTest(TestCase):
         postdata = {
             u'q%s' % self.questionRA.pk: 'c328947293847',
         }
-        self.client.post("/my-new-survey/", postdata)
+        self.client.post(self.survey_url, postdata)
         self.assertEqual(Answer.objects.all().count(), 0)
 
     def test_post_survey_choice_for_wrong_question_ignores_it(self):
         postdata = {
             u'q%s' % self.questionRA.pk: 'c%s' % self.choiceTB.pk,  # choiceTB belongs to questionTB, not question 1!
         }
-        self.client.post("/my-new-survey/", postdata)
+        self.client.post(self.survey_url, postdata)
         self.assertEqual(Answer.objects.all().count(), 0)
 
     def test_post_survey_text_answer_for_multichoice_ignores_it(self):
         postdata = {
             u'q%s' % self.questionRA.pk: 'I love pizza.',  # questionRA has radio buttons!
         }
-        self.client.post("/my-new-survey/", postdata)
+        self.client.post(self.survey_url, postdata)
         self.assertEqual(Answer.objects.all().count(), 0)
