@@ -35,8 +35,9 @@ class Question(models.Model):
     type = models.CharField(max_length=2, choices=QUESTION_TYPES)
 
     def answer_with_text(self, text):
-        choice = self.choice_set.all()[0]
-        Answer.objects.create(choice=choice, text=text)
+        if text:
+            choice = self.choice_set.all()[0]
+            Answer.objects.create(choice=choice, text=text)
 
     def answer_with_choices(self, choices):
         for choice in choices:

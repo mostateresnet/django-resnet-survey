@@ -1,12 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
-from survey.models import Survey
-from django.http import HttpResponseForbidden
+from survey.models import Survey, Question, Choice
+from django.http import HttpResponse, HttpResponseForbidden
 from django.views.generic import View
 from django.views.generic.detail import DetailView
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.template.defaultfilters import slugify
+import json
 
 
 class IndexView(ListView):
@@ -22,20 +24,19 @@ class IndexView(ListView):
 
 
 class SurveyView(View):
-    def dispatch(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
-        if survey.is_active:
-            # Survey is active; carry on as normal
-            return super(SurveyView, self).dispatch(request, slug)
-        else:
-            # Survey is closed; stop here and show an error message.
-            return HttpResponseForbidden(render_to_response('survey/survey_closed.html', context_instance=RequestContext(request)))
+    def inactive_survey_response(self, request):
+        return HttpResponseForbidden(render_to_response('survey/survey_closed.html', context_instance=RequestContext(request)))
 
     def get(self, request, slug):
+        survey = get_object_or_404(Survey, slug=slug)
+        if not survey.is_active:
+            return self.inactive_survey_response(request)
         return render_to_response('survey/survey.html', {'survey': Survey.objects.get(slug=slug)}, context_instance=RequestContext(request))
 
     def post(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
+        survey = get_object_or_404(Survey, slug=slug)
+        if not survey.is_active:
+            return self.inactive_survey_response(request)
         for question in survey.question_set.all():
             # Found in <input name= for this question
             form_input_name = u'q%s' % question.pk
@@ -63,3 +64,22 @@ class SurveyView(View):
 class SurveyResultsView(DetailView):
     template_name = 'survey/results.html'
     model = Survey
+
+
+class SurveyNewView(View):
+    def get(self, request):
+        return render_to_response('survey/survey_new.html', context_instance=RequestContext(request))
+
+    def post(self, request):
+        data = json.loads(request.POST.get('r'))
+        slug = slugify(data.get('title', ''))
+        survey = Survey.objects.create(slug=slug, title=data.get('title', ''))
+        questions = data.get('questions', [])
+        survey.save()
+        for question_data in questions:
+            question = Question.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''))
+            for choice_message in question_data.get('choices', []):
+                Choice.objects.create(question=question, message=choice_message)
+            if 'choices' not in question_data:
+                Choice.objects.create(question=question, message='choice')
+        return HttpResponse('created')

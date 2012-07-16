@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from survey.models import Survey, Question, Choice, Answer
 
 
+# pylint: disable=R0902
 class QuestionTest(TestCase):
     def setUp(self):
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
@@ -56,6 +57,13 @@ class SurveyViewTest(TestCase):
     def test_is_active_false_closes_survey(self):
         self.survey.is_active = False
         self.survey.save()
+        response = self.client.get(self.survey_url)
+        self.assertIn(u'closed', unicode(response))
+        self.assertEqual(response.status_code, 403)
+
+    def test_is_active_false_closes_survey_post(self):
+        self.survey.is_active = False
+        self.survey.save()
         response = self.client.post(self.survey_url)
         self.assertIn(u'closed', unicode(response))
         self.assertEqual(response.status_code, 403)
@@ -80,6 +88,14 @@ class SurveyViewTest(TestCase):
         self.assertEqual(Answer.objects.all().count(), 0)
         self.assertEqual(response.status_code, 200)
 
+    def test_post_survey_empty_value_makes_no_answers(self):
+        postdata = {
+            u'q%s' % self.questionTB.pk: '',  # Empty value in the textbox
+        }
+        response = self.client.post(self.survey_url, postdata)
+        self.assertEqual(Answer.objects.all().count(), 0)
+        self.assertEqual(response.status_code, 200)
+
     def test_post_survey_bad_choice_ignores_it(self):
         postdata = {
             u'q%s' % self.questionRA.pk: 'c328947293847',
@@ -100,3 +116,34 @@ class SurveyViewTest(TestCase):
         }
         self.client.post(self.survey_url, postdata)
         self.assertEqual(Answer.objects.all().count(), 0)
+
+    def test_new_survey_adds_survey(self):
+        # Needs maor casperjs!
+        self.client.get(reverse('newsurvey'))
+        data = """
+            {
+                "title": "Getting to know you",
+                "questions": [{
+                    "type": "CH",
+                    "message": "check",
+                    "choices": ["mark", "please", "on the baby"]
+                }, {
+                    "type": "RA",
+                    "message": "radio",
+                    "choices": ["FM", "AM"]
+                }, {
+                    "type": "DD",
+                    "message": "drop",
+                    "choices": ["stop", "roll"]
+                }, {
+                    "type": "TB",
+                    "message": "cardboard"
+                }, {
+                    "type": "TA",
+                    "message": "area"
+                }]
+            }
+        """
+        postdata = {'r': data}
+        self.client.post(reverse('newsurvey'), postdata)
+        self.assertEqual(Survey.objects.get(slug='getting-to-know-you').title, "Getting to know you")
