@@ -1,8 +1,9 @@
 {% extends "survey/base.html" %}
+{% load static from staticfiles %}
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.mobile.resnet.min.css" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/jquery.mobile.resnet.min.css" %}" />
     <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" /> 
 {% endblock %}
 

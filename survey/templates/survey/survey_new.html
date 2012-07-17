@@ -1,4 +1,5 @@
 {% extends "survey/base.html" %}
+{% load static from staticfiles %}
 
 {% block css %}
     {{ block.super }}
@@ -10,8 +11,8 @@
       var SURVEY_INDEX = "{% url index %}";
     </script>
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-    <script src="{{ STATIC_URL }}js/survey_new.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}admin/js/urlify.js" type="text/javascript"></script>
+    <script src="{% static "js/survey_new.js" %}" type="text/javascript"></script>
+    <script src="{% static "admin/js/urlify.js" %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block content %}
