@@ -24,7 +24,7 @@ body
     border-color:#5E0009;
 }
 
-#title
+.title
 {
     font-size: 110%;
     margin-left: auto;
@@ -32,12 +32,12 @@ body
     text-align: center;
 }
 
-#title label
+.title label
 {
     font-weight: bold;
 }
 
-#title input
+.title input
 {
     min-width: 400px;
 }
