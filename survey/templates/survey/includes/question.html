@@ -1,0 +1,34 @@
+{% load static %}
+{% block question %}
+<div class="question">
+  <div class="message">
+    <label>{% block message_label %}Message:{% endblock %}</label>
+    <input type="hidden" name="question-type" value="{% block question_type %}{% endblock %}" />
+    <input type="text" name="question-message" />
+    <button type="button" class="remove-question">
+      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
+    </button>
+  </div>
+  {% block question_choices %}
+  <div class="choice">
+    <label for="asdf">Choice: </label>
+    <input type="text" name="choice-message" />
+    <button type="button" class="remove-choice">
+      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
+    </button>
+    <br />
+  </div>
+  <div class="choice">
+    <label for="asdf">Choice: </label>
+    <input type="text" name="choice-message" />
+    <button type="button" class="remove-choice">
+      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
+    </button>
+    <br />
+  </div>
+  <button type="button" class="new-choice">
+    <div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Choice</span></div>
+  </button>
+  {% endblock %}
+</div>
+{% endblock %}

@@ -19,7 +19,7 @@ body
     margin-right: 5px;
     margin-left: 5px;
     margin-bottom: 10px;
-    border-style:solid;
+    border-style:solid; 
     border-width: 1px;
     border-color:#5E0009;
 }
@@ -42,9 +42,9 @@ body
     min-width: 400px;
 }
 
-.message
+.choice
 {
-    
+    margin-left: 1em;
 }
 
 .question input
