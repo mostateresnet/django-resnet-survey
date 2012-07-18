@@ -71,7 +71,7 @@ function newChoice(e){
     $('<div>').addClass('choice').css('margin-left', '1em').append(
         $('<label>').html('Choice: ').attr('for', 'asdf').after(
         $('<input>').attr('type', 'text').attr('name', 'choice-message').after(
-        $('<button>').attr('type', 'button').html('Remove').click(removeChoice))).after(
+        $('<button>').attr('type', 'button').html('<div class="img-button-text"><img src="'+ STATIC_URL + 'img/remove.png" alt="" height="15" /></div>').click(removeChoice))).after(
         $('<br>')
     ));
     $button.parent().find('.new-choice').before($choice);
@@ -81,12 +81,14 @@ function newMultiQuestionHandler(questionType){
     return function(){
         var $question =
         $('<div>').addClass('question').append(
-            $('<label>').html('Message: ').attr('for', 'asdf').after(
-            $('<input>').attr('type', 'hidden').attr('name', 'question-type').val(questionType).after(
-            $('<input>').attr('type', 'text').attr('name', 'question-message').after(
-            $('<button>').attr('type', 'button').html('Remove').click(removeQuestion))).after(
-            $('<button>').attr('type', 'button').addClass('new-choice').html('New choice').click(newChoice)
-        )));
+            $('<div>').addClass('message').append(
+                $('<label>').html('Message: ').attr('for', 'asdf').after(
+                $('<input>').attr('type', 'hidden').attr('name', 'question-type').val(questionType).after(
+                $('<input>').attr('type', 'text').attr('name', 'question-message').after(
+                $('<button>').attr('type', 'button').html('<div class="img-button-text"><img src="'+ STATIC_URL + 'img/remove.png" alt="" height="15" /></div>').click(removeQuestion))))).after(
+            $('<button>').attr('type', 'button').addClass('new-choice').html('<div class="img-button-text"><img src="'+ STATIC_URL + 'img/add.png" alt="" height="12" /> <span>Choice</span></div>').click(newChoice)
+        ));
+        
         $('#new-buttons').before($question);
         // Start with two blank choices
         $question.find('.new-choice').click();
@@ -98,11 +100,12 @@ function newQuestionHandler(questionType){
     return function(){
         var $question =
         $('<div>').addClass('question').append(
-            $('<label>').html('Message: ').attr('for', 'asdf').after(
-            $('<input>').attr('type', 'hidden').attr('name', 'question-type').val(questionType).after(
-            $('<input>').attr('type', 'text').attr('name', 'question-message').after(
-            $('<button>').attr('type', 'button').html('Remove').click(removeQuestion)
-        ))));
+            $('<div>').addClass('message').append(
+                $('<label>').html('Message: ').attr('for', 'asdf').after(
+                $('<input>').attr('type', 'hidden').attr('name', 'question-type').val(questionType).after(
+                $('<input>').attr('type', 'text').attr('name', 'question-message').after(
+                $('<button>').attr('type', 'button').html('<div class="img-button-text"><img src="'+ STATIC_URL + 'img/remove.png" alt="" height="15" /></div>').click(removeQuestion)
+        )))));
         $('#new-buttons').before($question);
     };
 }

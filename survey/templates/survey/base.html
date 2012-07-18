@@ -8,6 +8,9 @@
       <link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}" />
       <link rel="shortcut icon" href="{% static "img/favicon.ico" %}" />
     {% endblock %}
+        <script type="text/javascript">
+            STATIC_URL="{{ STATIC_URL }}";
+        </script>
     {% block javascript %}{% endblock %}
     <title>{% block title %}Survey{% endblock %}</title>
     {% block extrahead %}{% endblock %}

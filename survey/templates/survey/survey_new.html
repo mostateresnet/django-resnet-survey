@@ -3,6 +3,7 @@
 
 {% block css %}
     {{ block.super }}
+    <link rel="stylesheet" href="{% static "css/newsurvey.css" %}"/>
 {% endblock %}
 
 {% block javascript %}
@@ -17,15 +18,19 @@
 
 {% block content %}
 <form>
-  <label for="title">Title:</label>
-  <input type="text" name="title" id="title"/>
-  <div id="new-buttons">
-    <button id="new-text-area" type="button" >Text Area</button>
-    <button id="new-text-box" type="button" >Text Box</button>
-    <button id="new-check-boxes" type="button" >Check Boxes</button>
-    <button id="new-radio-buttons" type="button" >Radio Buttons</button>
-    <button id="new-drop-down-list" type="button" >Drop-down List</button>
-    <button id="submit" type="button">Submit</button>
+  <div id="title">
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title"/>
   </div>
+  <div id="new-buttons">
+    <button id="new-text-area" type="button" ><div class="img-button-text"><img src="{% static "img/add.png" %}" alt="" height="12" /> <span>Text Area</span></div></button>
+    <button id="new-text-box" type="button" ><div class="img-button-text"><img src="{% static "img/add.png" %}" alt="" height="12" /> <span>Text Box</span></div></button>
+    <button id="new-check-boxes" type="button" ><div class="img-button-text"><img src="{% static "img/add.png" %}" alt="" height="12" /> <span>Check Boxes</span></div></button>
+    <button id="new-radio-buttons" type="button" ><div class="img-button-text"><img src="{% static "img/add.png" %}" alt="" height="12" /> <span>Radio Buttons</span></div></button>
+    <button id="new-drop-down-list" type="button" ><div class="img-button-text"><img src="{% static "img/add.png" %}" alt="" height="12" /> <span>Drop-Down List</span></div></button>
+  </div>
+  <div id="submit">
+    <button id="submit" type="button">Submit</button>
+  </div>  
 </form>
 {% endblock %}
