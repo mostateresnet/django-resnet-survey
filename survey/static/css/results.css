@@ -1,0 +1,36 @@
+table
+{
+    margin-left: 25px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 5px;
+}
+
+td
+{
+    padding: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border: 1px solid black;
+}
+
+h3
+{
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+h1
+{
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+ul
+{
+    margin-top: 0px;
+    margin-bottom: 5px;
+    list-style-type: square;
+}

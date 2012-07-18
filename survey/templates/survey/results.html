@@ -1,4 +1,11 @@
 {% extends "survey/base.html" %}
+{% load static from staticfiles %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "css/newsurvey.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/results.css" %}"/>
+{% endblock %}
 
 {% block content %}
 <h1>{{ survey.title }}</h1>
