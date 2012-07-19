@@ -1,5 +1,5 @@
 from django.contrib import admin
-from survey.models import Survey, Question, Choice, Answer
+from survey.models import Survey, Question, Choice, Answer, Ballot
 
 
 class QuestionInline(admin.TabularInline):
@@ -25,7 +25,15 @@ class QuestionAdmin(admin.ModelAdmin):
     ]
 
 
+class BallotAdmin(admin.ModelAdmin):
+    list_display = [
+        'ip',
+        'datetime',
+    ]
+
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Ballot, BallotAdmin)
 admin.site.register(Choice)
 admin.site.register(Answer)
