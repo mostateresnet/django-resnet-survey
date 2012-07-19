@@ -34,14 +34,14 @@ class Question(models.Model):
     )
     type = models.CharField(max_length=2, choices=QUESTION_TYPES)
 
-    def answer_with_text(self, text):
+    def answer_with_text(self, text, ballot):
         if text:
             choice = self.choice_set.all()[0]
-            Answer.objects.create(choice=choice, text=text)
+            Answer.objects.create(choice=choice, text=text, ballot=ballot)
 
-    def answer_with_choices(self, choices):
+    def answer_with_choices(self, choices, ballot):
         for choice in choices:
-            Answer.objects.create(choice=choice, text=unicode(choice.pk))
+            Answer.objects.create(choice=choice, text=unicode(choice.pk), ballot=ballot)
 
     def __unicode__(self):
         return self.message

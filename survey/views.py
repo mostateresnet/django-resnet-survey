@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
-from survey.models import Survey, Question, Choice
+from survey.models import Survey, Question, Choice, Ballot
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views.generic import View
 from django.views.generic.detail import DetailView
@@ -37,6 +37,7 @@ class SurveyView(View):
         survey = get_object_or_404(Survey, slug=slug)
         if not survey.is_active:
             return self.inactive_survey_response(request)
+        ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'])
         for question in survey.question_set.all():
             # Found in <input name= for this question
             form_input_name = u'q%s' % question.pk
@@ -48,7 +49,7 @@ class SurveyView(View):
                 # Don't have to worry about choices for text inputs
                 form_input_value = request.POST.get(form_input_name)
                 # Submit the answer
-                question.answer_with_text(form_input_value)
+                question.answer_with_text(form_input_value, ballot)
             else:
                 # Decide which choices were answered for multi-choice inputs
                 form_input_values = request.POST.getlist(form_input_name)
@@ -57,7 +58,7 @@ class SurveyView(View):
                 # Find all the choice objects being voted on
                 chosen_choice_objects = question.choice_set.filter(pk__in=scrubbed_choice_pks)
                 # Submit the answers
-                question.answer_with_choices(chosen_choice_objects)
+                question.answer_with_choices(chosen_choice_objects, ballot)
         return render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
 
 
