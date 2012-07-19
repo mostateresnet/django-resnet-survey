@@ -64,7 +64,6 @@ class Answer(models.Model):
     """
     choice = models.ForeignKey('Choice')
     text = models.CharField(max_length=1024)
-    datetime = models.DateTimeField(default=now)
     ballot = models.ForeignKey('Ballot', null=True)
 
     def __unicode__(self):
@@ -76,3 +75,4 @@ class Ballot(models.Model):
     Holds a set of Answers so they may be grouped.
     """
     ip = models.GenericIPAddressField(default='127.0.0.1')
+    datetime = models.DateTimeField(default=now)
