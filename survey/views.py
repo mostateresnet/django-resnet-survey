@@ -37,7 +37,7 @@ class SurveyView(View):
         survey = get_object_or_404(Survey, slug=slug)
         if not survey.is_active:
             return self.inactive_survey_response(request)
-        ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'])
+        ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'], survey=survey)
         for question in survey.question_set.all():
             # Found in <input name= for this question
             form_input_name = u'q%s' % question.pk

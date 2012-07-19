@@ -76,3 +76,4 @@ class Ballot(models.Model):
     """
     ip = models.GenericIPAddressField(default='127.0.0.1')
     datetime = models.DateTimeField(default=now)
+    survey = models.ForeignKey('Survey', null=True)
