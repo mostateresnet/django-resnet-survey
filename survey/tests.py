@@ -5,6 +5,8 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
+from datetime import timedelta
+from django.utils.timezone import now
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -53,16 +55,44 @@ class SurveyViewTest(TestCase):
         self.choiceRA = Choice.objects.create(question=self.questionRA, message="5 oclock")
         self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
         self.choiceTB = Choice.objects.create(question=self.questionTB, message="QuestionText")
+        self.now = now()
+        self.one_hour = timedelta(hours=1)
+
+    def test_date_range_makes_survey_active(self):
+        self.survey.start_date = self.now - self.one_hour
+        self.survey.end_date = self.now + self.one_hour
+        self.survey.save()
+        self.assertTrue(self.survey.is_active)
+
+    def test_date_range_makes_survey_inactive(self):
+        self.survey.start_date = self.now - 2 * self.one_hour
+        self.survey.end_date = self.now - self.one_hour
+        self.survey.save()
+        self.assertFalse(self.survey.is_active)
+
+    def test_date_range_with_no_end_date_makes_survey_active(self):
+        self.survey.start_date = self.now - self.one_hour
+        self.survey.end_date = None
+        self.survey.save()
+        self.assertTrue(self.survey.is_active)
+
+    def test_date_range_with_no_end_date_makes_survey_inactive(self):
+        self.survey.start_date = self.now + self.one_hour
+        self.survey.end_date = None
+        self.survey.save()
+        self.assertFalse(self.survey.is_active)
 
     def test_is_active_false_closes_survey(self):
-        self.survey.is_active = False
+        self.survey.start_date = self.now - 2 * self.one_hour
+        self.survey.end_date = self.now - self.one_hour
         self.survey.save()
         response = self.client.get(self.survey_url)
         self.assertIn(u'closed', unicode(response))
         self.assertEqual(response.status_code, 403)
 
     def test_is_active_false_closes_survey_post(self):
-        self.survey.is_active = False
+        self.survey.start_date = self.now - 2 * self.one_hour
+        self.survey.end_date = self.now - self.one_hour
         self.survey.save()
         response = self.client.post(self.survey_url)
         self.assertIn(u'closed', unicode(response))

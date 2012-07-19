@@ -8,11 +8,17 @@ class Survey(models.Model):
     """
     title = models.CharField(max_length=1024)
     slug = models.SlugField(max_length=1024, primary_key=True)
-    is_active = models.BooleanField(default=True)
+    start_date = models.DateTimeField(default=now)
+    end_date = models.DateTimeField(null=True, blank=True)
 
     @models.permalink
     def get_absolute_url(self):
         return ('survey', (), {'slug': self.slug})
+
+    @property
+    def is_active(self):
+        end_date = self.end_date
+        return self.start_date <= now() and (not end_date or now() <= end_date)
 
     def __unicode__(self):
         return self.title
