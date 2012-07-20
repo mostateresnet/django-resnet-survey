@@ -1,0 +1,28 @@
+{% extends "survey/base.html" %}
+
+{% block content %}
+<h1>Ballots for {{ survey.title }}</h1>
+Ballot {{ ballots.number }} of {{ ballots.paginator.num_pages }}
+
+<div id="navbuttons">
+{% if ballots.has_previous %}
+    <a href="?page={{ ballots.previous_page_number }}">Previous</a>
+{% endif %}
+{% if ballots.has_next %}
+    <a href="?page={{ ballots.next_page_number }}">Next</a>
+{% endif %}
+</div>
+<br />
+
+{% for ballot in ballots %}
+    {% for answer in ballot.answer_set.all %}
+        {{ answer.choice.question }} :
+        {% if answer.choice.question.type == "TA" or answer.choice.question.type == "TB" %}
+            {{ answer }}
+        {% else %}
+            {{ answer.choice }}
+        {% endif %} <br />
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}

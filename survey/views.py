@@ -8,6 +8,7 @@ from django.views.generic.detail import DetailView
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 
 
@@ -65,6 +66,22 @@ class SurveyView(View):
 class SurveyResultsView(DetailView):
     template_name = 'survey/results.html'
     model = Survey
+
+
+class BallotResultsView(DetailView):
+    def get(self, request, slug):
+        survey = get_object_or_404(Survey, slug=slug)
+        ballot_list = survey.ballot_set.all()
+        paginator = Paginator(ballot_list, 1)
+        
+        page = request.GET.get('page')
+        try:
+            ballots = paginator.page(page)
+        except PageNotAnInteger:
+            ballots = paginator.page(1)
+        except EmptyPage:
+            ballots = paginator.page(paginator.num_pages)
+        return render_to_response('survey/ballots.html', {"ballots": ballots, "survey":survey})
 
 
 class SurveyNewView(View):
