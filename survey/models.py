@@ -83,3 +83,21 @@ class Ballot(models.Model):
     ip = models.GenericIPAddressField(default='127.0.0.1')
     datetime = models.DateTimeField(default=now)
     survey = models.ForeignKey('Survey', null=True)
+
+    def question_list(self):
+        """
+        Returns a list of question tuples and their associated choices and ballot answers (if any)
+        """
+        question_list = []
+        for question in self.survey.question_set.all():
+            choice_list = []
+            for choice in question.choice_set.all():
+                try:
+                    answer = choice.answer_set.get(ballot=self)
+                except Answer.DoesNotExist:
+                    answer = None
+                choice_list.append((choice, answer))
+            question_tuple = (question, choice_list)
+            question_list.append(question_tuple)
+        return question_list
+            
