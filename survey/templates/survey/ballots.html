@@ -1,7 +1,23 @@
 {% extends "survey/base.html" %}
+{% load static from staticfiles %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "css/jquery.mobile.resnet.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" /> 
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+{% endblock %}
 
 {% block content %}
-<h1>Ballots for {{ survey.title }}</h1>
+<div id="wrapper">
+<div data-role="header" class="ui-header ui-bar-a" role="banner">
+    <h1 class="ui-title" role="heading" aria-level="1">Ballots for {{ survey.title }}</h1>
+</div>
 Ballot {{ ballots.number }} of {{ ballots.paginator.num_pages }}
 
 <div id="navbuttons">
@@ -13,16 +29,66 @@ Ballot {{ ballots.number }} of {{ ballots.paginator.num_pages }}
 {% endif %}
 </div>
 <br />
+<form>
 
 {% for ballot in ballots %}
     {% for answer in ballot.answer_set.all %}
-        {{ answer.choice.question }} :
-        {% if answer.choice.question.type == "TA" or answer.choice.question.type == "TB" %}
-            {{ answer }}
-        {% else %}
-            {{ answer.choice }}
+        
+        {% if answer.choice.question.type == "TA" %}
+            <label for="q{{ answer.choice.question.pk }}">{{ answer.choice.question }}</label>
+            <textarea id="q{{ answer.choice.question.pk }}" name="q{{ answer.choice.question.pk }}" >{{ answer }}</textarea>
+        {% endif %}
+        
+        {% if answer.choice.question.type == "TB" %}
+            <label for="q{{ answer.choice.question.pk }}">{{ answer.choice.question }}</label>
+            <input type="text" name="q{{ answer.choice.question.pk }}" id="q{{ answer.choice.question.pk }}" value="{{ answer }}"/>
+        {% endif %}
+        
+        {% if answer.choice.question.type == "RA" %}
+            <div data-role="controlgroup">
+            <fieldset data-role="controlgroup">
+                <legend>{{ answer.choice.question }}</legend>
+            {% for choice in answer.choice.question.choice_set.all %}
+                <input type ="radio" id="c{{ choice.pk }}" name="q{{ answer.choice.question.pk }}" value="c{{ choice.pk }}"
+                {% if choice.pk == answer.choice.pk %}
+                    checked = "checked"
+                {% endif %}                
+                />
+                <label for="c{{ choice.pk }}">{{ choice }}</label>
+            {% endfor %}
+            </fieldset>
+            </div>
+        {% endif %} 
+        
+        {% if answer.choice.question.type == "CH" %}
+            <div data-role="controlgroup">
+                <legend>{{ answer.choice.question }}</legend>
+                    {% comment %} {% for choice in answer.choice.question.choice_set.all %}{% endcomment %}
+                        <input type ="checkbox" id="c{{ answer.choice.pk }}" value="c{{ answer.choice.pk }}"
+                            checked = "checked"    
+                        />
+                        <label for="c{{ answer.choice.pk }}">{{ answer.choice }}</label>
+                    {% comment %}{% endfor %}{% endcomment %}
+            </div>
+        {% endif %}  
+        
+        {% if answer.choice.question.type == "DD" %}
+            <label for="c{{ choice.pk }}" class="select">{{ answer.choice.question }}</label>
+            <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
+            {% for choice in answer.choice.question.choice_set.all %}
+                <option value="c{{ choice.pk }}" 
+                {% if choice.pk == answer.choice.pk %}
+                    selected = "selected"
+                {% endif %}
+                />{{ choice }}</option>
+            {% endfor %}
+            </select>
         {% endif %} <br />
     {% endfor %}
 {% endfor %}
+<br />
+<br />
+<div id="wrapper">
+</form>
 
 {% endblock %}
