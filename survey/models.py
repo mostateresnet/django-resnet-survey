@@ -10,6 +10,7 @@ class Survey(models.Model):
     slug = models.SlugField(max_length=1024, primary_key=True)
     start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
+    description = models.CharField(max_length=1024, null=False, blank=True)
 
     @models.permalink
     def get_absolute_url(self):
