@@ -1,2 +1,5 @@
 Django
 South
+# Django-Autofixture Docs:
+# https://github.com/gregmuellegger/django-autofixture
+django-autofixture
