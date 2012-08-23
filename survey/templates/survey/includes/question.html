@@ -1,6 +1,7 @@
 {% load static %}
 {% block question %}
 <div class="question">
+  <h2 class='question-type-name'>{% block question_type_name %}{% endblock %}</h2>
   <div class="message">
     <label>{% block message_label %}Message:{% endblock %}</label>
     <input type="hidden" name="question-type" value="{% block question_type %}{% endblock %}" />
