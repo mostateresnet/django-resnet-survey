@@ -101,4 +101,3 @@ class Ballot(models.Model):
             question_tuple = (question, choice_list)
             question_list.append(question_tuple)
         return question_list
-            

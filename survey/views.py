@@ -73,7 +73,7 @@ class BallotResultsView(DetailView):
         survey = get_object_or_404(Survey, slug=slug)
         ballot_list = survey.ballot_set.all()
         paginator = Paginator(ballot_list, 1)
-        
+
         page = request.GET.get('page')
         try:
             ballots = paginator.page(page)
@@ -81,7 +81,7 @@ class BallotResultsView(DetailView):
             ballots = paginator.page(1)
         except EmptyPage:
             ballots = paginator.page(paginator.num_pages)
-        return render_to_response('survey/ballots.html', {"ballots": ballots, "survey":survey})
+        return render_to_response('survey/ballots.html', {"ballots": ballots, "survey": survey})
 
 
 class SurveyNewView(View):

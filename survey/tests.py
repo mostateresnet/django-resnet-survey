@@ -43,6 +43,7 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse('index'), follow=True)
         self.assertEqual(response.status_code, 200)
 
+
 class BallotResultsViewTest(TestCase):
     def setUp(self):
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
@@ -51,17 +52,18 @@ class BallotResultsViewTest(TestCase):
         self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
         self.choiceTB = Choice.objects.create(question=self.questionTB, message="QuestionText")
         self.ballot = Ballot.objects.create(survey=self.survey)
+
     def test_view(self):
-        response = self.client.get(reverse('ballot', kwargs={'slug':self.survey.slug}), follow=True)
+        response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug}), follow=True)
         self.assertEqual(response.status_code, 200)
-        
+
     def test_empty_page(self):
-        response = self.client.get(reverse('ballot', kwargs={'slug':self.survey.slug,}), {'page':0}, follow=True)
+        response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug, }), {'page': 0}, follow=True)
         self.assertEqual(response.status_code, 200)
+
 
 class SurveyViewTest(TestCase):
     def setUp(self):
-    
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
