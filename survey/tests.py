@@ -10,7 +10,7 @@ from django.utils.timezone import now
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from survey.models import Survey, Question, Choice, Answer
+from survey.models import Survey, Question, Choice, Answer, Ballot
 
 
 # pylint: disable=R0902
@@ -43,9 +43,25 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse('index'), follow=True)
         self.assertEqual(response.status_code, 200)
 
+class BallotResultsViewTest(TestCase):
+    def setUp(self):
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.questionRA = Question.objects.create(message="What time is it", survey=self.survey, type="RA")
+        self.choiceRA = Choice.objects.create(question=self.questionRA, message="5 oclock")
+        self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
+        self.choiceTB = Choice.objects.create(question=self.questionTB, message="QuestionText")
+        self.ballot = Ballot.objects.create(survey=self.survey)
+    def test_view(self):
+        response = self.client.get(reverse('ballot', kwargs={'slug':self.survey.slug}), follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_empty_page(self):
+        response = self.client.get(reverse('ballot', kwargs={'slug':self.survey.slug,}), {'page':0}, follow=True)
+        self.assertEqual(response.status_code, 200)
 
 class SurveyViewTest(TestCase):
     def setUp(self):
+    
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
