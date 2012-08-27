@@ -8,7 +8,7 @@ class Survey(models.Model):
     """
     title = models.CharField(max_length=1024)
     slug = models.SlugField(max_length=1024, primary_key=True)
-    start_date = models.DateTimeField(default=now)
+    start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=1024, null=False, blank=True)
 
@@ -19,7 +19,9 @@ class Survey(models.Model):
     @property
     def is_active(self):
         end_date = self.end_date
-        return self.start_date <= now() and (not end_date or now() <= end_date)
+        if self.start_date:
+            return self.start_date <= now() and (not end_date or now() <= end_date)
+        return False
 
     def __unicode__(self):
         return self.title

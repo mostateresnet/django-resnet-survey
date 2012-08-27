@@ -1,23 +1,26 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
 from django.views.generic.list import ListView
 from survey.models import Survey, Question, Choice, Ballot
 from django.http import HttpResponse, HttpResponseForbidden
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 import json
 
 
-class IndexView(ListView):
-    context_object_name = 'surveys'
+class IndexView(TemplateView):
     template_name = 'survey/index.html'
-
-    def get_queryset(self):
-        return Survey.objects.all()
+    def get_context_data(self, **kwargs):
+        return {
+            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
+            'unpublished_surveys': Survey.objects.filter(start_date__isnull=True),
+        }
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):

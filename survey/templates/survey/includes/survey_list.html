@@ -1,0 +1,12 @@
+<ul>
+    {% for survey in surveys %}
+      <li>
+        <a href="{{ survey.get_absolute_url }}">{{ survey }}</a>
+        {% if unpublished %}
+        | <a href='#'>Edit</a>
+        | <a href='#'>Publish</a>        
+        {% endif %}
+        
+      </li>
+    {% endfor %}
+</ul>
