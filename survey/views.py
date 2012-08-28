@@ -3,7 +3,8 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.generic.list import ListView
 from survey.models import Survey, Question, Choice, Ballot
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.views.generic import View, TemplateView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render_to_response, get_object_or_404
@@ -104,3 +105,10 @@ class SurveyNewView(View):
             if 'choices' not in question_data:
                 Choice.objects.create(question=question, message='choice')
         return HttpResponse('created')
+
+
+def publishSurvey(request, slug):
+    survey = Survey.objects.get(slug=slug)
+    if request.user.is_staff:
+        survey.publish()
+    return HttpResponseRedirect(reverse('index'))

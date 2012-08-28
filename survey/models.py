@@ -22,6 +22,10 @@ class Survey(models.Model):
         if self.start_date:
             return self.start_date <= now() and (not end_date or now() <= end_date)
         return False
+    
+    def publish(self):
+        self.start_date = now()
+        self.save()
 
     def __unicode__(self):
         return self.title

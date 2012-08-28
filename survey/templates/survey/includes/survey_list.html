@@ -3,8 +3,8 @@
       <li>
         <a href="{{ survey.get_absolute_url }}">{{ survey }}</a>
         {% if unpublished %}
-        | <a href='#'>Edit</a>
-        | <a href='#'>Publish</a>        
+        | <a href='{% url editsurvey survey.slug %}'>Edit</a>
+        | <a href='{% url publishsurvey survey.slug %}'>Publish</a>        
         {% endif %}
         
       </li>
