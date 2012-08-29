@@ -67,6 +67,29 @@ class SurveyView(View):
         return render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
 
 
+class SurveyEditView(DetailView):
+    model = Survey
+    template_name = 'survey/survey_edit.html'
+
+    def post(self, request, slug):
+        survey = self.get_object()
+#        Question.objects.filter( pk__in=request.POST.get('data') )
+        data = json.loads(request.POST.get('r'))
+        questions = data.get('questions', [])
+        # delete existing questions
+        # due to cascading deletes, this will also delete choices
+        survey.question_set.all().delete()
+        # edit the title if it has changed
+        title = data.get('title', '')
+        if survey.title != title:
+            survey.delete()
+            survey = Survey.objects.create(slug=slugify(title), title=title)
+        Question.add_questions(questions, survey)
+        return HttpResponse('created')
+        
+        
+        
+
 class SurveyResultsView(DetailView):
     template_name = 'survey/results.html'
     model = Survey
@@ -98,12 +121,7 @@ class SurveyNewView(View):
         survey = Survey.objects.create(slug=slug, title=data.get('title', ''))
         questions = data.get('questions', [])
         survey.save()
-        for question_data in questions:
-            question = Question.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''))
-            for choice_message in question_data.get('choices', []):
-                Choice.objects.create(question=question, message=choice_message)
-            if 'choices' not in question_data:
-                Choice.objects.create(question=question, message='choice')
+        Question.add_questions(questions, survey)
         return HttpResponse('created')
 
 

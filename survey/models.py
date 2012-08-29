@@ -55,6 +55,18 @@ class Question(models.Model):
     def answer_with_choices(self, choices, ballot):
         for choice in choices:
             Answer.objects.create(choice=choice, text=unicode(choice.pk), ballot=ballot)
+    
+    @classmethod
+    def add_questions(cls, questions, survey):
+        """
+            Accepts a list of dictionaries containing question data.
+        """
+        for question_data in questions:
+            question = Question.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''))
+            for choice_message in question_data.get('choices', []):
+                Choice.objects.create(question=question, message=choice_message)
+            if 'choices' not in question_data:
+                Choice.objects.create(question=question, message='choice')
 
     def __unicode__(self):
         return self.message
