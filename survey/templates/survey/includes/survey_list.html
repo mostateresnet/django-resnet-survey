@@ -2,6 +2,7 @@
     {% for survey in surveys %}
       <li>
         <a href="{{ survey.get_absolute_url }}">{{ survey }}</a>
+        <a href="{% url qrcode survey.slug %}">Download QR Code</a>
         {% if unpublished %}
         | <a href='{% url editsurvey survey.slug %}'>Edit</a>
         | <a href='{% url publishsurvey survey.slug %}'>Publish</a>        

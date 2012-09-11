@@ -1,5 +1,9 @@
+import qrcode
+
 from django.db import models
 from django.utils.timezone import now
+from django.http import HttpResponse
+from survey import settings
 
 
 class Survey(models.Model):
@@ -29,6 +33,15 @@ class Survey(models.Model):
 
     def __unicode__(self):
         return self.title
+    
+    def get_qr_code(self):
+        """
+            returns an image response
+        """
+        img = qrcode.make(settings.HOST_URL + self.get_absolute_url())
+        response = HttpResponse(mimetype='image/png')
+        img.save(response, 'PNG')
+        return response
 
 
 class Question(models.Model):

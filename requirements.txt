@@ -5,7 +5,9 @@ South
 django-autofixture
 qrcode
 # PIL is required for the qrcode generator
-# for some reason, with a virtualenv, saving an image is not supported
-# FIX: go here and easy_install the version of PIL related to your version of Python
+# if for some reason you don't have the required C libraries
+# use easy_install instead
+# go here and easy_install the version of PIL related to your version of Python
 # http://www.pythonware.com/products/pil/
+# be sure to follow these instructions in this exact order
 pil

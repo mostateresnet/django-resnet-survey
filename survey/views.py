@@ -124,9 +124,14 @@ class SurveyNewView(View):
         Question.add_questions(questions, survey)
         return HttpResponse('created')
 
+class SurveyPublishView(View):
+    def get(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if request.user.is_staff:
+            survey.publish()
+        return HttpResponseRedirect(reverse('index'))
 
-def publishSurvey(request, slug):
-    survey = Survey.objects.get(slug=slug)
-    if request.user.is_staff:
-        survey.publish()
-    return HttpResponseRedirect(reverse('index'))
+class SurveyQRCodeView(View):
+    def get(self, request, slug):
+        survey = get_object_or_404(Survey, slug=slug)
+        return survey.get_qr_code()
