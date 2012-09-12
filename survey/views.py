@@ -34,7 +34,7 @@ class SurveyView(View):
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
-        if not survey.is_active:
+        if not survey.is_active and not request.user.is_staff:
             return self.inactive_survey_response(request)
         return render_to_response('survey/survey.html', {'survey': Survey.objects.get(slug=slug)}, context_instance=RequestContext(request))
 
