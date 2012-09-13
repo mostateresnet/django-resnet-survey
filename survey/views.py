@@ -19,6 +19,7 @@ import json
 
 class IndexView(TemplateView):
     template_name = 'survey/index.html'
+
     def get_context_data(self, **kwargs):
         return {
             'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
@@ -32,7 +33,11 @@ class IndexView(TemplateView):
 
 class SurveyView(View):
     def inactive_survey_response(self, request, duplicate=False):
-        return HttpResponseForbidden(render_to_response('survey/survey_closed.html', context_instance=RequestContext(request, {'duplicate':duplicate})))
+        return HttpResponseForbidden(
+            render_to_response('survey/survey_closed.html',
+                               context_instance=RequestContext(request, {'duplicate': duplicate})
+                               )
+        )
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
@@ -97,9 +102,7 @@ class SurveyEditView(DetailView):
             survey = Survey.objects.create(slug=slugify(title), title=title)
         Question.add_questions(questions, survey)
         return HttpResponse('created')
-        
-        
-        
+
 
 class SurveyResultsView(DetailView):
     template_name = 'survey/results.html'
@@ -135,12 +138,14 @@ class SurveyNewView(View):
         Question.add_questions(questions, survey)
         return HttpResponse('created')
 
+
 class SurveyPublishView(View):
     def get(self, request, slug):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
             survey.publish()
         return HttpResponseRedirect(reverse('index'))
+
 
 class SurveyQRCodeView(View):
     def get(self, request, slug):

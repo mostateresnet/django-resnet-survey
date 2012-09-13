@@ -9,7 +9,8 @@ except:
 
 from survey import settings
 
-class Command(RunserverCommand):    
+
+class Command(RunserverCommand):
     def run(self, *args, **options):
         if self.addr == '127.0.0.1':
             settings.HOST_NAME = 'localhost'
@@ -19,6 +20,5 @@ class Command(RunserverCommand):
         if settings.PORT == '80':
             settings.HOST_URL = '{hostname}'.format(hostname=settings.HOST_NAME)
         else:
-            settings.HOST_URL = '{hostname}:{port}'.format(hostname=settings.HOST_NAME, port=settings.PORT) 
+            settings.HOST_URL = '{hostname}:{port}'.format(hostname=settings.HOST_NAME, port=settings.PORT)
         super(Command, self).run(*args, **options)
-        

@@ -26,7 +26,7 @@ class Survey(models.Model):
         if self.start_date:
             return self.start_date <= now() and (not end_date or now() <= end_date)
         return False
-    
+
     def publish(self, dt=None):
         if dt is None:
             dt = now()
@@ -35,7 +35,7 @@ class Survey(models.Model):
 
     def __unicode__(self):
         return self.title
-    
+
     def get_qr_code(self):
         """
             returns an image response
@@ -44,7 +44,7 @@ class Survey(models.Model):
         response = HttpResponse(mimetype='image/png')
         img.save(response, 'PNG')
         return response
-    
+
     @property
     def cookie(self):
         """
@@ -77,7 +77,7 @@ class Question(models.Model):
     def answer_with_choices(self, choices, ballot):
         for choice in choices:
             Answer.objects.create(choice=choice, text=unicode(choice.pk), ballot=ballot)
-    
+
     @classmethod
     def add_questions(cls, questions, survey):
         """

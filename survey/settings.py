@@ -6,5 +6,6 @@ HOST_NAME = getattr(settings, "HOST_NAME", '127.0.0.1')
 PORT = getattr(settings, "PORT", '8000')
 HOST_URL = getattr(settings, "HOST_URL", '127.0.0.1:8000')
 # tells when the cookie to prevent ballot stuffing will expire
-# default is 24 weeks (6 months)
-COOKIE_EXPIRATION = getattr(settings, "COOKIE_EXPIRATION", 4*6)
+# setting is in weeks
+# defaults to 24 weeks (6 months)
+COOKIE_EXPIRATION = getattr(settings, "COOKIE_EXPIRATION", 4 * 6)

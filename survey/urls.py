@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from survey.views import IndexView, SurveyView, SurveyResultsView, SurveyNewView, SurveyEditView, BallotResultsView, SurveyPublishView, SurveyQRCodeView
+from survey.views import *
 
 # pylint: disable-msg=C0103,E1120
 urlpatterns = patterns(
