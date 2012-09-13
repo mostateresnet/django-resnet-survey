@@ -1,5 +1,9 @@
 {% extends "survey/base.html" %}
 
 {% block content %}
-  <strong>Sorry, this survey is closed.</strong>
+  {% if duplicate %}
+    </strong>You've already submitted a vote for this survey.</strong>
+  {% else %}
+    <strong>Sorry, this survey is closed.</strong>
+  {% endif %}
 {% endblock %}

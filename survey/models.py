@@ -44,6 +44,13 @@ class Survey(models.Model):
         response = HttpResponse(mimetype='image/png')
         img.save(response, 'PNG')
         return response
+    
+    @property
+    def cookie(self):
+        """
+            returns a cookie friendly name
+        """
+        return str(self.slug.replace('-', '') + 'ballotcookie')
 
 
 class Question(models.Model):
