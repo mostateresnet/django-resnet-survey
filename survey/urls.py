@@ -12,4 +12,5 @@ urlpatterns = patterns(
     url(r'^(?P<slug>[-_\w]+)/results/$', SurveyResultsView.as_view(), name='surveyresults'),
     url(r'^(?P<slug>[-_\w]+)/ballots/$', BallotResultsView.as_view(), name='ballot'),
     url(r'^(?P<slug>[-_\w]+)/qrcode/$', SurveyQRCodeView.as_view(), name='qrcode'),
+    url(r'^(?P<slug>[-_\w]+)/dashboard/$', SurveyDashboardView.as_view(), name='surveydashboard'),
 )

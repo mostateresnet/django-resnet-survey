@@ -13,13 +13,17 @@ from django.template.defaultfilters import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from datetime import timedelta
+from datetime import datetime
 from survey import settings
 import json
 
+
 class LoginRequiredMixin(object):
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
 
 class IndexView(TemplateView, LoginRequiredMixin):
     template_name = 'survey/index.html'
@@ -27,13 +31,23 @@ class IndexView(TemplateView, LoginRequiredMixin):
     def get_context_data(self, **kwargs):
         return {
             'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
-            'unpublished_surveys': Survey.objects.filter(start_date__isnull=True),
+            'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
         }
 
 
 class SurveyDashboardView(DetailView, LoginRequiredMixin):
     model = Survey
     template_name = 'survey/survey_dashboard.html'
+
+    def post(self, request, slug):
+        survey = self.get_object()
+        survey.start_date = datetime.strptime(request.POST.get('future_date', ''),
+                                                       '%m/%d/%Y %I:%M %p')
+        survey.save()
+        return render_to_response('survey/survey_dashboard.html',
+                                  {'survey': Survey.objects.get(slug=slug)},
+                                  context_instance=RequestContext(request)
+                                  )
 
 
 class SurveyView(View):

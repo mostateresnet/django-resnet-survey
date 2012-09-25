@@ -4,15 +4,14 @@
 {% block title %}{{ survey.title }}{% endblock %}
 
 {% block css %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.mobile.resnet.min.css' %}" />
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" /> 
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.mobile.resnet.min.css' %}" />
 {% endblock %}
 
 {% block javascript %}
-    {{ block.super }}
-    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+{{ block.super }}
+  <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
 {% endblock %}
 
 {% block extrahead %}
