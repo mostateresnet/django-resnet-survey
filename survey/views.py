@@ -13,7 +13,6 @@ from django.template.defaultfilters import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from datetime import timedelta
-from datetime import datetime
 from survey import settings
 import json
 
@@ -32,6 +31,7 @@ class IndexView(TemplateView, LoginRequiredMixin):
         return {
             'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
             'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
+            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now())
         }
 
 
@@ -41,9 +41,10 @@ class SurveyDashboardView(DetailView, LoginRequiredMixin):
 
     def post(self, request, slug):
         survey = self.get_object()
-        survey.start_date = datetime.strptime(request.POST.get('future_date', ''),
-                                                       '%m/%d/%Y %I:%M %p')
-        survey.save()
+        if 'future_publish_date' in request.POST:
+            survey.set_future_date('start_date', request.POST.get('future_publish_date', ''))
+        elif 'future_close_date' in request.POST:
+            survey.set_future_date('end_date', request.POST.get('future_close_date', ''))
         return render_to_response('survey/survey_dashboard.html',
                                   {'survey': Survey.objects.get(slug=slug)},
                                   context_instance=RequestContext(request)
@@ -163,6 +164,14 @@ class SurveyPublishView(View, LoginRequiredMixin):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
             survey.publish()
+        return HttpResponseRedirect(reverse('index'))
+
+
+class SurveyCloseView(View, LoginRequiredMixin):
+    def get(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if request.user.is_staff:
+            survey.close()
         return HttpResponseRedirect(reverse('index'))
 
 

@@ -21,30 +21,47 @@
         {{ survey.title }}
         <ul class='buttons'>
               <li><a href='{% url index %}'>Home</a></li>
-            {% if not survey.is_active %}
+            {% if not survey.is_active and not survey.closed %}
               <li><a href='{% url editsurvey survey.slug %}'>Edit</a></li>
               <li><a href='{% url publishsurvey survey.slug %}'>Publish</a></li>
-            {% else %}
-              <li><a href='#'>Close</a></li>
+            {% elif not survey.closed %}
+              <li><a href='{% url closesurvey survey.slug %}'>Close</a></li>
             {% endif %}
         </ul>
     </h1>
 </div>
 
 <div>
-    {% if survey.start_date and not survey.is_active %}
+    {% if survey.start_date and not survey.is_active and not survey.closed %}
       <h2>Future Publish Date</h2>
       Will be published on {{ survey.start_date }}
-    {% elif not survey.is_active %}
+    {% elif not survey.is_active and not survey.closed %}
         <h2>Set Future Publish Date</h2>
         <form method='post' action=''>
           {% csrf_token %}
-            Future Date: <input type='text' name='future_date' />
+            Future Date: <input type='text' name='future_publish_date' />
             <input type='submit' name='save_future_date' value='Save Future Date' />
         </form>
     {% else %}
-    <h2>Publish Date</h2>
-    {{ survey.start_date }}
+      <h2>Publish Date</h2>
+      {{ survey.start_date }}
+    {% endif %}
+</div>
+
+<div>
+  {% if survey.end_date and not survey.is_active and not survey.closed %}
+      <h2>Future Close Date</h2>
+      Will be published on {{ survey.end_date }}
+    {% elif not survey.is_active and not survey.closed %}
+        <h2>Set Future Close Date</h2>
+        <form method='post' action=''>
+          {% csrf_token %}
+            Future Date: <input type='text' name='future_close_date' />
+            <input type='submit' name='save_end_date' value='Save Close Date' />
+        </form>
+    {% else %}
+      <h2>Close Date</h2>
+      {{ survey.end_date }}
     {% endif %}
 </div>
 
