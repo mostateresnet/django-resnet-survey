@@ -5,24 +5,33 @@
     }
 }
 
-.survey-title h1 ul{
+#survey-title ul{
     float:right;
 }
-h1 .buttons{
+
+.button-header ul{
+  display:inline-block;
+}
+
+.hidden-form{
+  display:none;
+}
+
+.buttons{
     margin: 0;
     padding: 0;
     list-style-type: none;
     text-align: center;
 }
-h1 .buttons li{
+.buttons li{
     display: inline;
 }
-h1 .buttons li a{
+.buttons li a{
     display: inline-block;
     background:#EEE;
     width:120px;
     text-decoration:none;
 }
-h1 .buttons li a:hover{
+.buttons li a:hover{
     background:#BBB;
 }

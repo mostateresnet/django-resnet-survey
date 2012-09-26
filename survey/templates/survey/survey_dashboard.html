@@ -16,7 +16,7 @@
 
 {% block content %}
 
-<div class='survey-title'>
+<div id='survey-title'>
     <h1>
         {{ survey.title }}
         <ul class='buttons'>
@@ -31,38 +31,48 @@
     </h1>
 </div>
 
-<div>
+<div class='future-wrapper'>
     {% if survey.start_date and not survey.is_active and not survey.closed %}
-      <h2>Future Publish Date</h2>
-      Will be published on {{ survey.start_date }}
+      <h2 class='button-header'>Future Publish Date <ul class='buttons'><li><a class='edit-handler' href='#'>Edit</a></li></ul></h2>
+      <p>Will be published on {{ survey.start_date }}</p>
     {% elif not survey.is_active and not survey.closed %}
-        <h2>Set Future Publish Date</h2>
-        <form method='post' action=''>
-          {% csrf_token %}
-            Future Date: <input type='text' name='future_publish_date' />
-            <input type='submit' name='save_future_date' value='Save Future Date' />
-        </form>
+      <h2>Set Future Publish Date</h2>
+      <form method='post' action=''>
+        {% csrf_token %}
+          Future Date: <input type='text' name='future_publish_date' />
+          <input type='submit' name='save_publish_date' value='Save Publish Date' />
+      </form>
     {% else %}
       <h2>Publish Date</h2>
       {{ survey.start_date }}
     {% endif %}
+    <form method='post' action='' class='hidden-form'>
+      {% csrf_token %}
+      Future Date: <input type='text' name='future_publish_date' />
+      <input type='submit' name='save_publish_date' value='Save Publish Date' />
+    </form>
 </div>
 
-<div>
+<div class='future-wrapper'>
   {% if survey.end_date and not survey.is_active and not survey.closed %}
-      <h2>Future Close Date</h2>
-      Will be published on {{ survey.end_date }}
+      <h2 class='button-header'>Future Close Date <ul class='buttons'><li><a class='edit-handler' href='#'>Edit</a></li></ul></h2>
+      <p>Will be published on {{ survey.end_date }}</p>
     {% elif not survey.is_active and not survey.closed %}
-        <h2>Set Future Close Date</h2>
-        <form method='post' action=''>
-          {% csrf_token %}
-            Future Date: <input type='text' name='future_close_date' />
-            <input type='submit' name='save_end_date' value='Save Close Date' />
-        </form>
+      <h2>Set Future Close Date</h2>
+      <form method='post' action=''>
+        {% csrf_token %}
+          Future Date: <input type='text' name='future_close_date' />
+          <input type='submit' name='save_end_date' value='Save Close Date' />
+      </form>
     {% else %}
       <h2>Close Date</h2>
       {{ survey.end_date }}
     {% endif %}
+    <form method='post' action='' class='hidden-form'>
+      {% csrf_token %}
+      Future Date: <input type='text' name='future_close_date' />
+      <input type='submit' name='save_close_date' value='Save Close Date' />
+    </form>
 </div>
 
 <div>

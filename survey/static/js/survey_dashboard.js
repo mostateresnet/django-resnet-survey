@@ -6,4 +6,14 @@ $(document).ready(function(){
     ampm: true,
     minDate: new Date()
   });
+  
+  $('.edit-handler').click(function(e){
+    e.preventDefault();
+    $this = $(this);
+    var divParent = $this.parents('.future-wrapper');
+    divParent.find('p').toggle();
+    divParent.find('.hidden-form').toggle();
+    text = $this.text() == 'Edit' ? 'Cancel' : 'Edit';
+    $this.text(text);
+  });
 });
