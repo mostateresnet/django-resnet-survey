@@ -58,6 +58,7 @@ class Survey(models.Model):
         """
         img = qrcode.make(settings.HOST_URL + self.get_absolute_url())
         response = HttpResponse(mimetype='image/png')
+        response['Content-Disposition'] = 'attachment; filename=%s.png' % self.slug
         img.save(response, 'PNG')
         return response
 
