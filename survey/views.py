@@ -17,14 +17,7 @@ from survey import settings
 import json
 
 
-class LoginRequiredMixin(object):
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
-
-
-class IndexView(TemplateView, LoginRequiredMixin):
+class IndexView(TemplateView):
     template_name = 'survey/index.html'
 
     def get_context_data(self, **kwargs):
@@ -35,7 +28,7 @@ class IndexView(TemplateView, LoginRequiredMixin):
         }
 
 
-class SurveyDashboardView(DetailView, LoginRequiredMixin):
+class SurveyDashboardView(DetailView):
     model = Survey
     template_name = 'survey/survey_dashboard.html'
 
@@ -61,6 +54,7 @@ class SurveyView(View):
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
+        print request.user
         # if the survey is not active
         # and the user is not staff
         # or the viewer has not already submitted a ballot for this survey via cookie check
@@ -103,7 +97,7 @@ class SurveyView(View):
         return self.inactive_survey_response(request)
 
 
-class SurveyEditView(DetailView, LoginRequiredMixin):
+class SurveyEditView(DetailView):
     model = Survey
     template_name = 'survey/survey_edit.html'
 
@@ -124,7 +118,7 @@ class SurveyEditView(DetailView, LoginRequiredMixin):
         return HttpResponse('created')
 
 
-class SurveyResultsView(DetailView, LoginRequiredMixin):
+class SurveyResultsView(DetailView):
     template_name = 'survey/results.html'
     model = Survey
 
@@ -145,7 +139,7 @@ class BallotResultsView(DetailView):
         return render_to_response('survey/ballots.html', {"ballots": ballots, "survey": survey})
 
 
-class SurveyNewView(View, LoginRequiredMixin):
+class SurveyNewView(View):
     def get(self, request):
         return render_to_response('survey/survey_new.html', context_instance=RequestContext(request))
 
@@ -159,7 +153,7 @@ class SurveyNewView(View, LoginRequiredMixin):
         return HttpResponse('created')
 
 
-class SurveyPublishView(View, LoginRequiredMixin):
+class SurveyPublishView(View):
     def get(self, request, slug):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
@@ -167,7 +161,7 @@ class SurveyPublishView(View, LoginRequiredMixin):
         return HttpResponseRedirect(reverse('index'))
 
 
-class SurveyCloseView(View, LoginRequiredMixin):
+class SurveyCloseView(View):
     def get(self, request, slug):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
@@ -175,7 +169,7 @@ class SurveyCloseView(View, LoginRequiredMixin):
         return HttpResponseRedirect(reverse('index'))
 
 
-class SurveyQRCodeView(View, LoginRequiredMixin):
+class SurveyQRCodeView(View):
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
         return survey.get_qr_code()
