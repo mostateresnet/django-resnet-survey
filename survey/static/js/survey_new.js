@@ -87,7 +87,6 @@ var newDropDownList = newQuestionHandler('DD');
 
 $.ready = function(){
     $('#submit').click(function(e){
-        var url = SURVEY_INDEX + URLify($('#title').val())+'/';
         var data = {title: $('#title').val(), questions: []};
         $('.question').each(function(index, el){
             var $el = $(el);
@@ -107,8 +106,8 @@ $.ready = function(){
             'url': window.location,
             'type': 'POST',
             'data': {'r': JSON.stringify(data)},
-            'success':function(){
-                window.location=url;
+            'success':function(data, textStatus, jqXHR){
+                window.location = data['url'];
             }
         });
     });

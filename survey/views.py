@@ -1,8 +1,5 @@
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.utils.timezone import now
-from django.views.generic.list import ListView
-from survey.models import Survey, Question, Choice, Ballot
+from survey.models import Survey, Question, Ballot
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.generic import View, TemplateView
@@ -55,7 +52,6 @@ class SurveyView(View):
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
-        print request.user
         # if the survey is not active
         # and the user is not staff
         # or the viewer has not already submitted a ballot for this survey via cookie check
@@ -70,7 +66,7 @@ class SurveyView(View):
         if not request.COOKIES.get(survey.cookie, None) and survey.is_active:
             response = render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
             # the cookie doesn't exist yet, it will be added to the response here
-            response.set_cookie(cookie_name, value='True', max_age=timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
+            response.set_cookie(survey.cookie, value='True', max_age=timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
             ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'], survey=survey)
             for question in survey.question_set.all():
                 # Found in <input name= for this question
@@ -104,16 +100,16 @@ class SurveyEditView(DetailView):
 
     def post(self, request, slug):
         survey = self.get_object()
-#        Question.objects.filter( pk__in=request.POST.get('data') )
         data = json.loads(request.POST.get('r'))
         questions = data.get('questions', [])
         # delete existing questions
         # due to cascading deletes, this will also delete choices
         survey.question_set.all().delete()
         # edit the title if it has changed
-        title = data.get('title', '')
+        survey.title = data.get('title')
+        survey.save()
         Question.add_questions(questions, survey)
-        return HttpResponse('created')
+        return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
 
 
 class SurveyResultsView(DetailView):
@@ -148,7 +144,7 @@ class SurveyNewView(View):
         questions = data.get('questions', [])
         survey.save()
         Question.add_questions(questions, survey)
-        return HttpResponse('created')
+        return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
 
 
 class SurveyPublishView(View):
