@@ -1,5 +1,8 @@
-{% extends 'survey/base.html' %}
+{% extends 'survey/survey.html' %}
+{% load static from staticfiles %}
 
 {% block content %}
-  <strong>Thank you, your response has been submitted.</strong>
+  <div data-role="content">
+    <img src="{% static 'img/thankyou.png' %}" id="thanks" />
+  </div>
 {% endblock %}
