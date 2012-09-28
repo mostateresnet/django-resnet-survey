@@ -15,6 +15,7 @@ from django.db.models import Q
 from datetime import timedelta
 from survey import settings
 import json
+import qrcode
 
 
 class IndexView(TemplateView):
@@ -111,9 +112,6 @@ class SurveyEditView(DetailView):
         survey.question_set.all().delete()
         # edit the title if it has changed
         title = data.get('title', '')
-        if survey.title != title:
-            survey.delete()
-            survey = Survey.objects.create(slug=slugify(title), title=title)
         Question.add_questions(questions, survey)
         return HttpResponse('created')
 
@@ -172,4 +170,8 @@ class SurveyCloseView(View):
 class SurveyQRCodeView(View):
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
-        return survey.get_qr_code()
+        img = qrcode.make(settings.HOST_URL + survey.get_absolute_url())
+        response = HttpResponse(mimetype='image/png')
+        response['Content-Disposition'] = 'attachment; filename=%s.png' % survey.slug
+        img.save(response, 'PNG')
+        return response

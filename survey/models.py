@@ -52,16 +52,6 @@ class Survey(models.Model):
     def __unicode__(self):
         return self.title
 
-    def get_qr_code(self):
-        """
-            returns an image response
-        """
-        img = qrcode.make(settings.HOST_URL + self.get_absolute_url())
-        response = HttpResponse(mimetype='image/png')
-        response['Content-Disposition'] = 'attachment; filename=%s.png' % self.slug
-        img.save(response, 'PNG')
-        return response
-
     @property
     def cookie(self):
         """
