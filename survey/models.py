@@ -1,10 +1,6 @@
-import qrcode
-
 from django.db import models
 from django.utils.timezone import now
-from django.http import HttpResponse
 from datetime import datetime
-from survey import settings
 
 
 class Survey(models.Model):
@@ -27,25 +23,25 @@ class Survey(models.Model):
         if self.start_date:
             return self.start_date <= now() and (not end_date or now() <= end_date)
         return False
-    
+
     @property
     def closed(self):
         return self.end_date <= now()
-    
+
     def publish(self, dt=None):
         if dt is None:
             dt = now()
         self.start_date = dt
         self.save()
-        
+
     def close(self, dt=None):
         if dt is None:
             dt = now()
         self.end_date = dt
         self.save()
-        
+
     def set_future_date(self, field, dtStr):
-        dt = datetime.strptime(dtStr,'%m/%d/%Y %I:%M %p')
+        dt = datetime.strptime(dtStr, '%m/%d/%Y %I:%M %p')
         setattr(self, field, dt)
         self.save()
 

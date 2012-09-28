@@ -117,10 +117,12 @@ class SurveyViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_get_survey(self):
+        self.survey.publish()
         response = self.client.get(self.survey_url, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_post_survey(self):
+        self.survey.publish()
         postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
         response = self.client.post(self.survey_url, postdata)
         self.assertEqual(response.status_code, 200)
@@ -132,11 +134,13 @@ class SurveyViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post_survey_empty_post_makes_no_answers(self):
+        self.survey.publish()
         response = self.client.post(self.survey_url, {})
         self.assertEqual(Answer.objects.all().count(), 0)
         self.assertEqual(response.status_code, 200)
 
     def test_post_survey_empty_value_makes_no_answers(self):
+        self.survey.publish()
         postdata = {
             u'q%s' % self.questionTB.pk: '',  # Empty value in the textbox
         }
@@ -195,3 +199,19 @@ class SurveyViewTest(TestCase):
         postdata = {'r': data}
         self.client.post(reverse('newsurvey'), postdata)
         self.assertEqual(Survey.objects.get(slug='getting-to-know-you').title, "Getting to know you")
+
+    def test_survey_publish_publishes_survey(self):
+        self.user.is_staff = True
+        self.user.save()
+        self.client.login(username='admin', password='asdf')
+        self.client.get(reverse('publishsurvey', args=[self.survey.slug]))
+        self.survey = Survey.objects.get(pk=self.survey.pk)
+        self.assertTrue(self.survey.is_active)
+
+    def test_survey_close_closes_survey(self):
+        self.user.is_staff = True
+        self.user.save()
+        self.client.login(username='admin', password='asdf')
+        self.client.get(reverse('closesurvey', args=[self.survey.slug]))
+        self.survey = Survey.objects.get(pk=self.survey.pk)
+        self.assertFalse(self.survey.is_active)
