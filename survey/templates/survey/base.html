@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=9" />
     {% block css %}
-      <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}" />
       <link rel="shortcut icon" href='{% static "img/favicon.ico" %}' />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui-1.8.23.custom.css' %}" />
     {% endblock %}
         <script type="text/javascript">
@@ -21,9 +21,10 @@
   </head>
   <body>
     <div id="wrapper"/>
-        {% block body %}
-          {% block content %}{% endblock %}
-        {% endblock %}
+      {% block body %}
+        {% block content %}{% endblock %}
+      {% endblock %}
+      {% block footer %}{% endblock %}
     </div>
   </body>
 </html>
