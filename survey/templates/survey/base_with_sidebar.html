@@ -1,0 +1,34 @@
+{% extends "survey/base.html" %}
+{% load static from staticfiles %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/ul-tree.css' %}" type="text/css" media="screen, projection" />
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type='text/javascript' src="{% static 'js/ul-tree.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+<div id='header'>Survey Dashboard</div>
+
+<div id='sidebar'>
+  {% block sidebar %}
+    <h2>Surveys</h2>
+    <a href='{% url newsurvey %}'>Create a new Survey</a>
+    {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" %}
+    {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" %}
+    {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title="Closed Surveys" %}
+  {% endblock %}
+</div>
+
+<div id='content'>
+  {% block header %}{% endblock %}
+  {% block content %}{% endblock %}
+</div>
+
+<div class='clear'></div>
+
+{% endblock %}

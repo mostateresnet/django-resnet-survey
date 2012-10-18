@@ -1,4 +1,4 @@
-{% extends "survey/index_survey.html" %}
+{% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
 
 {% block css %}
@@ -6,7 +6,7 @@
     <link rel="stylesheet" href='{% static "css/results.css" %}'/>
 {% endblock %}
 
-{% block main_content %}
+{% block content %}
 
   {% for question in survey.question_set.all %}
     <h3>{{ question }}</h3>

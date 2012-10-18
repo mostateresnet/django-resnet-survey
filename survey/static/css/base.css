@@ -52,7 +52,6 @@ img#thanks {
   font-size:33pt;
   padding-top: 15px;
   text-align:center;
-  font-family:'Comic Sans MS';
 }
 #sidebar{
   float:left;
@@ -65,7 +64,7 @@ img#thanks {
 }
 #sidebar li{
 }
-#maincontent{
+#content{
   float:left;
   width:66%;
   background:lightgrey;
