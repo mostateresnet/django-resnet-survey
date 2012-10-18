@@ -4,7 +4,6 @@
         margin: auto;
     }
 }
-
 #survey-title ul{
     float:right;
 }
@@ -12,20 +11,21 @@
   margin-left:auto;
   margin-right:auto;
 }
-
+.clear{
+  clear:both;
+}
 .button-header ul{
   display:inline-block;
 }
-
 .hidden-form{
   display:none;
 }
-
 .buttons{
     margin: 0;
     padding: 0;
     list-style-type: none;
     text-align: center;
+    border-bottom:1px solid #999;
 }
 .buttons li{
     display: inline;
@@ -37,11 +37,37 @@
     height:30px;
     margin-top: 2px;
     text-decoration:none;
-    font-size: 0.7em;
+    font-size: 18pt;
 }
 .buttons li a:hover{
     background:#BBB;
 }
 img#thanks {
     width: 100%;
+}
+#header{
+  background:#ABC;
+  width:100%;
+  height:65px;
+  font-size:33pt;
+  padding-top: 15px;
+  text-align:center;
+  font-family:'Comic Sans MS';
+}
+#sidebar{
+  float:left;
+  width:28%;
+  background:#AAA;
+  padding:1%;
+}
+#sidebar ul{
+  list-style-type:none;
+}
+#sidebar li{
+}
+#maincontent{
+  float:left;
+  width:66%;
+  background:lightgrey;
+  padding:2%;
 }

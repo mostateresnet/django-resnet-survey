@@ -15,15 +15,19 @@ import json
 import qrcode
 
 
+def survey_list_processor(request=None): 
+    return {
+    'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
+    'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
+    'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('end_date')[:10]
+    }
+
+
 class IndexView(TemplateView):
     template_name = 'survey/index.html'
 
-    def get_context_data(self, **kwargs):
-        return {
-            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
-            'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
-            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now())
-        }
+    def get_context_data(self, *args, **kwargs):
+        return survey_list_processor()
 
 
 class SurveyDashboardView(DetailView):
@@ -36,10 +40,12 @@ class SurveyDashboardView(DetailView):
             survey.set_future_date('start_date', request.POST.get('future_publish_date', ''))
         elif 'future_close_date' in request.POST:
             survey.set_future_date('end_date', request.POST.get('future_close_date', ''))
-        return render_to_response('survey/survey_dashboard.html',
-                                  {'survey': Survey.objects.get(slug=slug)},
-                                  context_instance=RequestContext(request)
-                                  )
+        return self.get(request, slug)
+                                  
+    def get_context_data(self, *args, **kwargs):
+        context = super(SurveyDashboardView, self).get_context_data(*args, **kwargs)
+        context.update(survey_list_processor())
+        return context
 
 
 class SurveyView(View):
@@ -94,7 +100,7 @@ class SurveyView(View):
         return self.inactive_survey_response(request)
 
 
-class SurveyEditView(DetailView):
+class SurveyEditView(SurveyDashboardView):
     model = Survey
     template_name = 'survey/survey_edit.html'
 
@@ -112,7 +118,7 @@ class SurveyEditView(DetailView):
         return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
 
 
-class SurveyResultsView(DetailView):
+class SurveyResultsView(SurveyDashboardView):
     template_name = 'survey/results.html'
     model = Survey
 

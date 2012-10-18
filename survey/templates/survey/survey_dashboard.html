@@ -1,10 +1,9 @@
-{% extends "survey/base.html" %}
+{% extends "survey/index_survey.html" %}
 {% load static from staticfiles %}
 
 {% block css %}
 {{ block.super }}
 <link type='text/css' rel='stylesheet' href='{% static "css/jquery-ui-timepicker-addon.css" %}' />
-<link type='text/css' rel='stylesheet' href='{% static "css/results.css" %}' />
 {% endblock %}
 
 {% block javascript %}
@@ -14,23 +13,16 @@
 <script type='text/javascript' src='{% static "js/survey_dashboard.js" %}'></script>
 {% endblock %}
 
-{% block content %}
+{% block main_content %}
 
-<div id='survey-title'>
-    <h1>
-        {{ survey.title }}
-        <ul class='buttons'>
-              <li><a href='{% url index %}'>Home</a></li>
-              <li><a href='{% url survey survey.slug %}'>View</a>
-            {% if not survey.is_active and not survey.closed %}
-              <li><a href='{% url editsurvey survey.slug %}'>Edit</a></li>
-              <li><a href='{% url publishsurvey survey.slug %}'>Publish</a></li>
-            {% elif not survey.closed %}
-              <li><a href='{% url closesurvey survey.slug %}'>Close</a></li>
-            {% endif %}
-        </ul>
-    </h1>
-</div>
+<ul class='buttons'>
+      <li><a href='{% url survey survey.slug %}'>View</a>
+    {% if not survey.is_active and not survey.closed %}
+      <li><a href='{% url publishsurvey survey.slug %}'>Publish</a></li>
+    {% elif not survey.closed %}
+      <li><a href='{% url closesurvey survey.slug %}'>Close</a></li>
+    {% endif %}
+  </ul>
 
 <div class='future-wrapper'>
     {% if survey.start_date and not survey.is_active and not survey.closed %}
@@ -74,38 +66,6 @@
       Future Date: <input type='text' name='future_close_date' />
       <input type='submit' name='save_close_date' value='Save Close Date' />
     </form>
-</div>
-
-<div>
-    <h2>Results</h2>
-    {% for question in survey.question_set.all %}
-      <h3>{{ question }} - {{ question.get_type_display.title }}</h3>
-      
-      {% if question.type == 'TB' or question.type == 'TA' %}
-        <ul>
-          {% for choice in question.choice_set.all %}
-            {% for answer in choice.answer_set.all %}
-              <li>{{ answer|linebreaksbr }}</li>
-            {% endfor %}
-          {% empty %}
-            <li>No Results</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-      
-      {% if question.type = 'RA' or question.type = 'CH' or question.type = 'DD' %}
-        <table>
-          {% for choice in question.choice_set.all %}
-            <tr>
-              <td>{{ choice }}</td>
-              <td>{{ choice.answer_set.count }}</td>
-            </tr>
-           {% empty %}
-            <tr><td>No Results</td></tr>
-          {% endfor %}
-        </table>
-      {% endif %}
-    {% endfor %}
 </div>
 
 <a href="{% url qrcode survey.slug %}">Download QR Code</a>

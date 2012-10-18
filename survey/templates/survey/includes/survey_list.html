@@ -1,11 +1,14 @@
-<ul>
-    {% for survey in surveys %}
-      <li>
-        <a href="{% url surveydashboard survey.slug %}">{{ survey }}</a>
-        {% if unpublished %}
-        | <a href='{% url publishsurvey survey.slug %}'>Publish</a>
-        {% endif %}
-        
-      </li>
-    {% endfor %}
-</ul>
+<div class="ul-tree">
+  <ul>
+    <li>
+      <span class="collapsed expandable strong">{{ title }}</span>
+      <ul>
+        {% for survey in surveys %}
+          <li>
+            <a href="{% url surveydashboard survey.slug %}">{{ survey }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+  </ul>
+</div>

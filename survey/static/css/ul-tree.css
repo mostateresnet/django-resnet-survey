@@ -1,0 +1,65 @@
+.ul-tree > ul {
+    padding-left: 0em !important;
+    margin-right: 0;
+}
+
+.ul-tree ul {
+    padding-left: 18px;
+}
+
+.ul-tree .expandable {
+    font-size: 10pt;
+    padding-left: 18px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.ul-tree > ul > li > a {
+    padding-left: 18px;
+    font-size: 10pt;
+}
+
+.ul-tree .expandable:hover {
+    color: #555;
+}
+
+.ul-tree .collapsed {
+    background-image: url("/static/img/expand.png");
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.ul-tree .expanded {
+    background-image: url("/static/img/collapse.png");
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.ul-tree .collapsed + ul {
+    display: none;
+}
+
+.ul-tree .expanded + ul {
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+
+.ul-tree.with-borders ul ul {
+    padding-left: 9px;
+    margin-left: 8px;
+}
+
+.ul-tree.with-borders .expanded + ul {
+    border-left: 1px dotted silver;
+    border-bottom: 1px dotted silver;
+}
+    
+.ul-tree li, .ul-tree ul {
+    list-style-type: none;
+}
+
+.ul-tree a, .ul-tree span {
+    display: block;
+}

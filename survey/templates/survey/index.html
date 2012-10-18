@@ -1,14 +1,32 @@
 {% extends "survey/base.html" %}
+{% load static from staticfiles %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/ul-tree.css' %}" type="text/css" media="screen, projection" />
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type='text/javascript' src="{% static 'js/ul-tree.js' %}"></script>
+{% endblock %}
 
 {% block content %}
-<a href='{% url newsurvey %}'>Create a new Survey</a>
-<h2>Unpublished Surveys</h2>
-{% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys unpublished='true' %}
+<div id='header'>Survey Dashboard</div>
 
-<h2>Published Surveys</h2>
-{% include 'survey/includes/survey_list.html' with surveys=published_surveys %}
+<div id='sidebar'>
+  <h2>Surveys</h2>
+  <a href='{% url newsurvey %}'>Create a new Survey</a>
+  {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" %}
+  {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" %}
+  {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title="Closed Surveys" %}
+</div>
 
-<h2>Closed Surveys</h2>
-{% include 'survey/includes/survey_list.html' with surveys=closed_surveys %}
+<div id='maincontent'>
+ {% block survey_header %}{% endblock %}
+ {% block main_content %}{% endblock %}
+</div>
+
+<div class='clear'></div>
 
 {% endblock %}
