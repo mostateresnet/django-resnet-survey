@@ -138,10 +138,9 @@ class BallotResultsView(DetailView):
         return render_to_response('survey/ballots.html', {"ballots": ballots, "survey": survey})
 
 
-class SurveyNewView(View):
-    def get(self, request):
-        return render_to_response('survey/survey_new.html', context_instance=RequestContext(request))
-
+class SurveyNewView(TemplateView):
+    template_name = 'survey/survey_new.html'
+    
     def post(self, request):
         data = json.loads(request.POST.get('r'))
         slug = slugify(data.get('title', ''))
@@ -150,6 +149,11 @@ class SurveyNewView(View):
         survey.save()
         Question.add_questions(questions, survey)
         return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SurveyNewView, self).get_context_data(*args, **kwargs)
+        context.update(survey_list_processor())
+        return context
 
 
 class SurveyPublishView(View):
