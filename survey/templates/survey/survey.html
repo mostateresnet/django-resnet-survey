@@ -60,9 +60,10 @@
         {% if question.type == 'DD' %}
             <label for="c{{ choice.pk }}" class="select">{{ question }}</label>
             <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
-            {% for choice in question.choice_set.all %}
+              <option>Select one</option>
+              {% for choice in question.choice_set.all %}
                 <option value="c{{ choice.pk }}">{{ choice }}</option>
-            {% endfor %}
+              {% endfor %}
             </select>
         {% endif %}
       {% endfor %}

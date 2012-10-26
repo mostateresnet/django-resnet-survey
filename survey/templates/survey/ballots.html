@@ -50,6 +50,7 @@
       {% if question.type == 'DD' %}
         <label for="c{{ choice.pk }}" class="select">{{ question }}</label>
         <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
+          <option>Select one</option>
           {% for choice, answer in choices %}
             <option value="c{{ choice.pk }}" {% if answer %}selected="selected"{% endif %}>{{ choice }}</option>
           {% endfor %}
