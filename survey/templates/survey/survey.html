@@ -65,9 +65,11 @@
             {% endfor %}
             </select>
         {% endif %}
-
       {% endfor %}
-      <input type="submit" value="Submit"/>
+      
+      {% if survey.is_active %}
+        <input type="submit" value="Submit"/>
+      {% endif %}
     </form>
 </div>
 {% endblock %}

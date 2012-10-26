@@ -60,8 +60,7 @@ class SurveyView(View):
         survey = get_object_or_404(Survey, slug=slug)
         # if the survey is not active
         # and the user is not staff
-        # or the viewer has not already submitted a ballot for this survey via cookie check
-        if not survey.is_active and not request.user.is_staff or request.COOKIES.get(survey.cookie, None):
+        if not survey.is_active and not request.user.is_staff:
             return self.inactive_survey_response(request, bool(request.COOKIES.get(survey.cookie, None)))
         return render_to_response('survey/survey.html', {'survey': Survey.objects.get(slug=slug)}, context_instance=RequestContext(request))
 
