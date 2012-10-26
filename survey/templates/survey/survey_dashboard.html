@@ -25,7 +25,7 @@
     {% endif %}
     <li><a href='{% url surveyresults survey.slug %}'>Results</a></li>
     <li><a href='{% url surveyresults survey.slug %}'>Reports</a></li>
-    <li><a href='{% url surveyedit survey.slug %}'>Ballots</a></li>
+    <li><a href='{% url ballot survey.slug %}'>Ballots</a></li>
   </ul>
 {% endblock %}
 
