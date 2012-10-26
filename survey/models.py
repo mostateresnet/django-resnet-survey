@@ -56,12 +56,23 @@ class Survey(models.Model):
         return str(self.slug.replace('-', '') + 'ballotcookie')
 
 
+class QuestionGroup(models.Model):
+    """
+    A QuestionGroup is a way to keep track of Questions associated with each other (mostly just used for Likert scales).
+    """
+    message = models.CharField(max_length=1024, blank=True)
+
+    def __unicode__(self):
+        return self.message
+
+
 class Question(models.Model):
     """
     A Question is associated with a Survey and its type can be: textbox, textarea, checkbox, radio, or dropdown.
     """
     survey = models.ForeignKey('Survey')
     message = models.CharField(max_length=1024)
+    group = models.ForeignKey('QuestionGroup', null=True, blank=True)
 
     QUESTION_TYPES = (
         ('TB', 'textbox'),
@@ -84,10 +95,10 @@ class Question(models.Model):
     @classmethod
     def add_questions(cls, questions, survey):
         """
-            Accepts a list of dictionaries containing question data.
+        Accepts a list of dictionaries containing question data.
         """
         for question_data in questions:
-            question = Question.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''))
+            question = cls.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''))
             for choice_message in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice_message)
             if 'choices' not in question_data:
