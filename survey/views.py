@@ -38,8 +38,10 @@ class SurveyDashboardView(DetailView):
         survey = self.get_object()
         if 'future_publish_date' in request.POST:
             survey.set_future_date('start_date', request.POST.get('future_publish_date', ''))
+            self.template_name = 'survey/ajax/future_publish.html'
         elif 'future_close_date' in request.POST:
             survey.set_future_date('end_date', request.POST.get('future_close_date', ''))
+            self.template_name = 'survey/ajax/future_close.html'
         return self.get(request, slug)
                                   
     def get_context_data(self, *args, **kwargs):
