@@ -4,7 +4,7 @@
 	<div class="question">
 	  <h2 class='question-type-name'>{{ question.get_type_display|title }}</h2>
 	  <div class="message">
-	    <label>{% block message_label %}Message:{% endblock %}</label>
+	    <label>{% block message_label %}Question:{% endblock %}</label>
 	    <input type="hidden" name="question-type" value="{{ question.type }}" />
 	    <input type="text" name="question-message" value='{{ question.message }}' />
 	    <button type="button" class="remove-question">

@@ -106,10 +106,7 @@ class Question(models.Model):
                 Choice.objects.create(question=question, message='choice')
 
     def __unicode__(self):
-        required_str = ""
-        if self.required:
-            required_str = "*"
-        return required_str + self.message
+        return self.message
 
 
 class Choice(models.Model):
