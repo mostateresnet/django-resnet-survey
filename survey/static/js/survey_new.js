@@ -93,6 +93,7 @@ $.ready = function(){
             var questionData = {};
             questionData.type = $el.find('input[name="question-type"]').val();
             questionData.message = $el.find('input[name="question-message"]').val();
+            questionData.required = $el.find('input[name="question-required"]').is(":checked");
             var choices = [];
             $el.find('input[name="choice-message"]').each(function(choiceIndex, choiceEl){
                 choices.push($(choiceEl).val());

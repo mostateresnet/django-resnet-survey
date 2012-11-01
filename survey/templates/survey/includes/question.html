@@ -2,6 +2,8 @@
 {% block question %}
 <div class="question">
   <h2 class='question-type-name'>{% block question_type_name %}{% endblock %}</h2>
+  <input type="checkbox" name="question-required" id="question-required"/>
+  <label for="question-required">Required</label>
   <div class="message">
     <label>{% block message_label %}Message:{% endblock %}</label>
     <input type="hidden" name="question-type" value="{% block question_type %}{% endblock %}" />

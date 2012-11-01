@@ -12,6 +12,7 @@
 {% block javascript %}
 {{ block.super }}
   <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+  <script src="{% static 'js/survey.js' %}"></script>
 {% endblock %}
 
 {% block extrahead %}
@@ -26,7 +27,8 @@
 <div data-role="content">
     <form action='{% url survey slug=survey.slug %}' method='POST'>
       {% csrf_token %}
-      {% for question in survey.question_set.all %}        
+      {% for question in survey.question_set.all %}  
+      <div class="{{ question.required|yesno:'required,' }} question_type_{{ question.type }}">
         {% if question.type == 'TB' %}
             <label for="q{{ question.pk }}">{{ question }}</label>
             <input type="text" name="q{{ question.pk }}" id="q{{ question.pk }}" value="" />
@@ -34,7 +36,7 @@
         
         {% if question.type == 'TA' %}
             <label for="q{{ question.pk }}">{{ question }}</label>
-            <textarea id="q{{ question.pk }}" name="q{{ question.pk }}"></textarea>
+            <textarea id="q{{ question.pk }}" name="q{{ question.pk }}" ></textarea>
         {% endif %}
         
         {% if question.type == 'RA' %}
@@ -60,14 +62,15 @@
         {% if question.type == 'DD' %}
             <label for="c{{ choice.pk }}" class="select">{{ question }}</label>
             <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
-              <option>Select one</option>
+              <option value="_BAD_">Select one</option>
               {% for choice in question.choice_set.all %}
                 <option value="c{{ choice.pk }}">{{ choice }}</option>
               {% endfor %}
             </select>
         {% endif %}
+      </div>      
       {% endfor %}
-      
+       
       {% if survey.is_active %}
         <input type="submit" value="Submit"/>
       {% endif %}

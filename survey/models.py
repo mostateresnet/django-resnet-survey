@@ -73,6 +73,7 @@ class Question(models.Model):
     survey = models.ForeignKey('Survey')
     message = models.CharField(max_length=1024)
     group = models.ForeignKey('QuestionGroup', null=True, blank=True)
+    required = models.BooleanField(default=False)
 
     QUESTION_TYPES = (
         ('TB', 'textbox'),
@@ -98,14 +99,17 @@ class Question(models.Model):
         Accepts a list of dictionaries containing question data.
         """
         for question_data in questions:
-            question = cls.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''))
+            question = cls.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''), required=question_data.get('required'))
             for choice_message in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice_message)
             if 'choices' not in question_data:
                 Choice.objects.create(question=question, message='choice')
 
     def __unicode__(self):
-        return self.message
+        required_str = ""
+        if self.required:
+            required_str = "*"
+        return required_str + self.message
 
 
 class Choice(models.Model):
