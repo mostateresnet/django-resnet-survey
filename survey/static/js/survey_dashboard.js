@@ -18,3 +18,15 @@ function update_future_date(e){
     $this.parents('.future-wrapper').html(data);
   });
 }
+
+function verify_survey_close(e)
+{
+  var x = confirm('This will permanently close this survey, are you sure?')
+  if( !x ){
+  e.preventDefault(); 
+  }
+}
+
+$.ready = function(){
+  $('#close_survey').click(verify_survey_close);
+};

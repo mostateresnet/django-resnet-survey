@@ -40,7 +40,7 @@
     {% if not survey.is_active and not survey.closed %}
       <li><a href='{% url publishsurvey survey.slug %}'>Publish</a></li>
     {% elif not survey.closed %}
-      <li><a href='{% url closesurvey survey.slug %}'>Close</a></li>
+      <li><a id='close_survey' href='{% url closesurvey survey.slug %}'>Close</a></li>
     {% endif %}
   </ul>
 
