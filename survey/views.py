@@ -13,9 +13,11 @@ from datetime import timedelta
 from survey import settings
 import json
 import qrcode
+import xlwt
+import datetime
 
 
-def survey_list_processor(request=None): 
+def survey_list_processor(request=None):
     return {
     'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
     'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
@@ -43,7 +45,7 @@ class SurveyDashboardView(DetailView):
             survey.set_future_date('end_date', request.POST.get('future_close_date', ''))
             self.template_name = 'survey/ajax/future_close.html'
         return self.get(request, slug)
-                                  
+
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyDashboardView, self).get_context_data(*args, **kwargs)
         context.update(survey_list_processor())
@@ -142,7 +144,7 @@ class BallotResultsView(DetailView):
 
 class SurveyNewView(TemplateView):
     template_name = 'survey/survey_new.html'
-    
+
     def post(self, request):
         data = json.loads(request.POST.get('r'))
         slug = slugify(data.get('title', ''))
@@ -181,4 +183,46 @@ class SurveyQRCodeView(View):
         response = HttpResponse(mimetype='image/png')
         response['Content-Disposition'] = 'attachment; filename=%s.png' % survey.slug
         img.save(response, 'PNG')
+        return response
+
+class SurveyExportView(View):
+    def get(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if not request.user.is_staff:
+            return HttpResponseForbidden()
+
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('A Test Sheet')
+
+        question_font = xlwt.Font()
+        question_font.bold = True
+        question_style = xlwt.XFStyle()
+        question_style.font = question_font
+        ws.col(0).width = 256*50
+
+        ws.write(0, 0, "Question", question_style)
+        ws.write(0, 1, "Tally", question_style)
+
+        counter = 2
+        for question in survey.question_set.all():
+            ws.write(counter, 0, str(question), question_style)
+            if question.type == 'TB' or question.type == 'TA':
+                for choice in question.choice_set.all():
+                    for answer in choice.answer_set.all():
+                        counter += 1
+                        ws.write(counter, 0, str(answer))
+            elif question.type == 'RA' or question.type == 'CH' or question.type == 'DD':
+                for choice in question.choice_set.all():
+                    counter += 1
+                    ws.write(counter, 0, str(choice))
+                    ws.write(counter, 1, choice.answer_set.count())
+            counter += 2
+
+        report_title="Test Report"
+        date = datetime.datetime.now().strftime("%m-%d-%Y")
+        response = HttpResponse(mimetype='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=Report_%s_%s.xls' % ('_'.join(report_title.split()), date)
+
+        wb.save(response)
+
         return response
