@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.timezone import now
+from django.utils.timezone import now, utc
 from datetime import datetime
 
 
@@ -46,7 +46,9 @@ class Survey(models.Model):
         self.save()
 
     def set_future_date(self, field, dtStr):
-        dt = datetime.strptime(dtStr, '%m/%d/%Y %I:%M %p')
+        dt = datetime.strptime(dtStr, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+
+        # Thu, 08 Nov 2012 22:03:00 GMT
         setattr(self, field, dt)
         self.save()
 

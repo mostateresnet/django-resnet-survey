@@ -13,7 +13,11 @@ function update_future_date(e){
   var $this = $(this);
   var future_date = $this.siblings('.future_date');
   var formData = {}
-  formData[ future_date.attr('name') ] = future_date.val();
+  
+  formData[ future_date.attr('name') ] = new Date(future_date.val()).toUTCString();
+
+//  alert("Boop:" + new Date(future_date.val()).toUTCString());
+
   $.post(FUTURE_URL, formData, function(data){
     $this.parents('.future-wrapper').html(data);
   });

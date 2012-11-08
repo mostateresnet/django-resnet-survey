@@ -54,11 +54,10 @@ class SurveyDashboardView(DetailView):
 
 class SurveyView(View):
     def inactive_survey_response(self, request, duplicate=False):
-        return HttpResponseForbidden(
-            render_to_response('survey/survey_closed.html',
-                               context_instance=RequestContext(request, {'duplicate': duplicate})
-                               )
-        )
+        return render_to_response('survey/survey_closed.html',
+                               context_instance=RequestContext(request, {'duplicate': duplicate}))
+
+
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
@@ -104,7 +103,7 @@ class SurveyView(View):
                     question.answer_with_choices(chosen_choice_objects, ballot)
             return response
         # if either are false return a forbidden response
-        return self.inactive_survey_response(request)
+        return self.inactive_survey_response(request, survey.is_active)
 
 
 class SurveyEditView(SurveyDashboardView):
