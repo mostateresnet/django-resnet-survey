@@ -71,11 +71,15 @@ class SurveyView(View):
     def post(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
         # prevent ballot stuffing by checking for the cookie
+        # if survey.use_cookies is true
         # and also check to see if the survey is active
-        if not request.COOKIES.get(survey.cookie, None) and survey.is_active:
+        if (not request.COOKIES.get(survey.cookie, None) or not survey.use_cookies) and survey.is_active:
             response = render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
             # the cookie doesn't exist yet, it will be added to the response here
-            response.set_cookie(survey.cookie, value='True', max_age=timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
+            # but only if survey.use_cookies is true
+            if (survey.use_cookies):
+                response.set_cookie(survey.cookie, value='True', max_age=timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
+
             ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'], survey=survey)
             for question in survey.question_set.all():
                 # Found in <input name= for this question
@@ -116,6 +120,8 @@ class SurveyEditView(SurveyDashboardView):
         survey.question_set.all().delete()
         # edit the title if it has changed
         survey.title = data.get('title')
+        #survey.use_cookies = data.get('use_cookies')
+
         survey.save()
         Question.add_questions(questions, survey)
         return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
@@ -167,6 +173,12 @@ class SurveyPublishView(View):
             survey.publish()
         return HttpResponseRedirect(reverse('index'))
 
+class SurveyTrackView(View):
+    def get(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if request.user.is_staff:
+            survey.track(not survey.use_cookies)
+        return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
 
 class SurveyCloseView(View):
     def get(self, request, slug):

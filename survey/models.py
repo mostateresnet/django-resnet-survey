@@ -12,6 +12,7 @@ class Survey(models.Model):
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=1024, null=False, blank=True)
+    use_cookies = models.BooleanField(default=True)
 
     @models.permalink
     def get_absolute_url(self):
@@ -27,6 +28,10 @@ class Survey(models.Model):
     @property
     def closed(self):
         return self.end_date <= now()
+
+    def track(self, on=True):
+        self.use_cookies = on
+        self.save()
 
     def publish(self, dt=None):
         if dt is None:

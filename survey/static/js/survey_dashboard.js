@@ -27,6 +27,7 @@ function verify_survey_close(e)
   }
 }
 
-$.ready = function(){
+$.ready = function()
+{
   $('#close_survey').click(verify_survey_close);
 };
