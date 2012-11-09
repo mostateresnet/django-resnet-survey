@@ -48,6 +48,11 @@
 {% include 'survey/ajax/future_publish.html' %}
 {% include 'survey/ajax/future_close.html' %}
 
+
+
+<div class = 'toggle-label'>Allow Survey Station: <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:"No,Yes" }}</a></div>
+
+
 <a href="{% url qrcode survey.slug %}">Download QR Code</a>
 
 {% endblock %}

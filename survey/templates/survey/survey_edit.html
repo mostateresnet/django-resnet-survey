@@ -1,6 +1,21 @@
 {% extends "survey/survey_new.html" %}
 {% load static from staticfiles %}
 
+{% block header %}
+  <div id='survey-title'>
+    <h2>{{ survey.title }}</h2>
+  </div>
+
+  <ul class='buttons'>
+    <li><a href='{% url surveydashboard survey.slug %}'>General</a></li>
+    {% if not survey.is_active and not survey.closed %}
+      <li><a href='{% url surveyedit survey.slug %}'>Edit</a></li>
+    {% endif %}
+    <li><a href='{% url surveyresults survey.slug %}'>Results</a></li>
+    <li><a href='{% url surveyresults survey.slug %}'>Reports</a></li>
+    <li><a href='{% url ballot survey.slug %}'>Ballots</a></li>
+  </ul>
+{% endblock %}
 {% block content %}
 
   <form>

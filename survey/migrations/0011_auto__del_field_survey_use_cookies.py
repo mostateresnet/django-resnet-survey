@@ -8,15 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Question.order_number'
-        db.add_column('survey_question', 'order_number',
-                      self.gf('django.db.models.fields.PositiveIntegerField')(default=0),
-                      keep_default=False)
+        # Deleting field 'Survey.use_cookies'
+        db.delete_column('survey_survey', 'use_cookies')
 
 
     def backwards(self, orm):
-        # Deleting field 'Question.order_number'
-        db.delete_column('survey_question', 'order_number')
+        # Adding field 'Survey.use_cookies'
+        db.add_column('survey_survey', 'use_cookies',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
 
 
     models = {
@@ -45,7 +45,6 @@ class Migration(SchemaMigration):
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['survey.QuestionGroup']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'message': ('django.db.models.fields.CharField', [], {'max_length': '1024'}),
-            'order_number': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'required': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'survey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['survey.Survey']"}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '2'})

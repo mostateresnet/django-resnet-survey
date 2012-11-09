@@ -34,11 +34,28 @@
     display: inline-block;
     background:#EEE;
     width:80px;
-    height:30px;
+C
     margin-top: 2px;
     text-decoration:none;
     font-size: 18pt;
 }
+
+.toggle-label{
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.toggle-button{
+    display: inline-block;
+    background:#EEE;
+    width:80px;
+    height:24px;
+    margin-top: 2px;
+    text-align: center;
+    text-decoration:none;
+    font-size: 16pt;
+}
+
 .buttons li a:hover{
     background:#BBB;
 }

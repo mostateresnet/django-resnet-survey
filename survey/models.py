@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.timezone import now
+from django.utils.timezone import now, utc
 from datetime import datetime
 
 
@@ -12,6 +12,7 @@ class Survey(models.Model):
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=1024, null=False, blank=True)
+    use_cookies = models.BooleanField(default=True)
 
     @models.permalink
     def get_absolute_url(self):
@@ -28,6 +29,10 @@ class Survey(models.Model):
     def closed(self):
         return self.end_date <= now()
 
+    def track(self, on=True):
+        self.use_cookies = on
+        self.save()
+
     def publish(self, dt=None):
         if dt is None:
             dt = now()
@@ -41,7 +46,9 @@ class Survey(models.Model):
         self.save()
 
     def set_future_date(self, field, dtStr):
-        dt = datetime.strptime(dtStr, '%m/%d/%Y %I:%M %p')
+        dt = datetime.strptime(dtStr, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+
+        # Thu, 08 Nov 2012 22:03:00 GMT
         setattr(self, field, dt)
         self.save()
 
