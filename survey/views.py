@@ -9,6 +9,7 @@ from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.db import transaction
 from datetime import timedelta
 from survey import settings
 import json
@@ -226,3 +227,24 @@ class SurveyExportView(View):
         wb.save(response)
 
         return response
+        
+class SurveyReorderView(View):
+    def get(self, request, slug):
+        #get the survey from the database
+        survey = Survey.objects.get(slug=slug)
+            
+        #send the user to the reorder page
+        return render_to_response('survey/reorder.html', {'survey': survey}, context_instance=RequestContext(request))
+        
+    def post(self, request, slug):
+        #get POST data
+        orderDict = request.POST     
+        #update questions with new order_number
+        with transaction.commit_on_success():
+            for pk, order in orderDict.iteritems():
+                pk = pk[3:]
+                Question.objects.filter(pk = pk).update(order_number = order[0])  
+        #return success
+        return HttpResponse(json.dumps({'status': 'success'}), mimetype='application/json')
+    
+

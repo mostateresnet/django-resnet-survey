@@ -74,6 +74,7 @@ class Question(models.Model):
     message = models.CharField(max_length=1024)
     group = models.ForeignKey('QuestionGroup', null=True, blank=True)
     required = models.BooleanField(default=False)
+    order_number = models.PositiveIntegerField(default=0)
 
     QUESTION_TYPES = (
         ('TB', 'textbox'),
@@ -83,6 +84,9 @@ class Question(models.Model):
         ('DD', 'dropdown'),
     )
     type = models.CharField(max_length=2, choices=QUESTION_TYPES)
+    
+    class Meta:
+        ordering = ['order_number']
 
     def answer_with_text(self, text, ballot):
         if text:
@@ -98,8 +102,10 @@ class Question(models.Model):
         """
         Accepts a list of dictionaries containing question data.
         """
+        counter = 1
         for question_data in questions:
-            question = cls.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''), required=question_data.get('required'))
+            question = cls.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
+            counter += 1
             for choice_message in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice_message)
             if 'choices' not in question_data:

@@ -4,6 +4,7 @@
 {% block css %}
 {{ block.super }}
 <link type='text/css' rel='stylesheet' href='{% static "css/jquery-ui-timepicker-addon.css" %}' />
+<link rel="stylesheet" type="text/css" href="{% static 'css/reorder.css' %}" />
 {% endblock %}
 
 {% block javascript %}
@@ -15,13 +16,14 @@
 <script type='text/javascript'>
   var FUTURE_URL = '{% url surveydashboard survey.slug %}';
 </script>
+  <script type='text/javascript' src='{% static "js/reorder.js" %}'></script>
 {% endblock %}
 
 {% block header %}
   <div id='survey-title'>
     <h2>{{ survey.title }}</h2>
   </div>
-
+  
   <ul class='buttons'>
     <li><a href='{% url surveydashboard survey.slug %}'>General</a></li>
     {% if not survey.is_active and not survey.closed %}
@@ -36,18 +38,14 @@
 
 {% block content %}
 
-<ul class='buttons'>
-      <li><a href='{% url survey survey.slug %}'>View</a>
-    {% if not survey.is_active and not survey.closed %}
-      <li><a href='{% url publishsurvey survey.slug %}'>Publish</a></li>
-    {% elif not survey.closed %}
-      <li><a id='close_survey' href='{% url closesurvey survey.slug %}'>Close</a></li>
-    {% endif %}
-  </ul>
-
-{% include 'survey/ajax/future_publish.html' %}
-{% include 'survey/ajax/future_close.html' %}
-
-<a href="{% url qrcode survey.slug %}">Download QR Code</a>
+<h1>Reorder - {{ survey.title }}</h1>            
+    <form action="" method="post" id="order">
+        {% csrf_token %}
+        <ul id="sortable" class="reorder">
+            {% for question in survey.question_set.all %}
+                <li class="ui-state-default" name="questions" id="pk_{{ question.pk }}"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>{{ question.message }}</li>
+            {% endfor %}
+        </ul>
+    </form>
 
 {% endblock %}
