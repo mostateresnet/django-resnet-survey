@@ -50,6 +50,7 @@ class SurveyDashboardView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyDashboardView, self).get_context_data(*args, **kwargs)
         context.update(survey_list_processor())
+        context["current_tab"] = self.template_name
         return context
 
 
@@ -239,13 +240,8 @@ class SurveyExportView(View):
 
         return response
         
-class SurveyReorderView(View):
-    def get(self, request, slug):
-        #get the survey from the database
-        survey = Survey.objects.get(slug=slug)
-            
-        #send the user to the reorder page
-        return render_to_response('survey/reorder.html', {'survey': survey}, context_instance=RequestContext(request))
+class SurveyReorderView(SurveyDashboardView):
+    template_name = 'survey/reorder.html'
         
     def post(self, request, slug):
         #get POST data

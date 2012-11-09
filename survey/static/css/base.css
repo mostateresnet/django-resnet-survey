@@ -34,7 +34,6 @@
     display: inline-block;
     background:#EEE;
     width:80px;
-C
     margin-top: 2px;
     text-decoration:none;
     font-size: 18pt;
@@ -87,3 +86,13 @@ img#thanks {
   background:lightgrey;
   padding:2%;
 }
+
+#currentTab{
+    background-color: #BBB;
+}
+
+#currentTab:hover{
+    background-color: #EEE;
+}
+
+
