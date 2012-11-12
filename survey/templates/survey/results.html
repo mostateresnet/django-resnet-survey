@@ -7,29 +7,47 @@
 {% endblock %}
 
 {% block content %}
+<script type="text/javascript">
+jQuery(document).ready(function(){
+  $('.accordion .head').click(function() {
+      $(this).siblings("ul").toggle('slow');
+      return false;
+  }).siblings("ul").hide();
+});
+</script>
+
   <a href='{% url exportresults survey.slug %}'>Export Report to Excel</a>
-  {% for question in survey.question_set.all %}
-    <h3>{{ question }}</h3>
-    
-    {% if question.type == 'TB' or question.type == 'TA' %}
-      <ul>
-        {% for choice in question.choice_set.all %}
-          {% for answer in choice.answer_set.all %}
-            <li>{{ answer|linebreaksbr }}</li>
-          {% endfor %}
-        {% endfor %}
-      </ul>
-    {% endif %}
-    
-    {% if question.type = 'RA' or question.type = 'CH' or question.type = 'DD' %}
-      <table>
-        {% for choice in question.choice_set.all %}
+  {% regroup choices by question as question_list %}
+    {% for question in question_list %}      
+      {% if question.grouper.type == 'TB' or question.grouper.type == 'TA' %}
+        <div class = "accordion">
+        <label class = "head field_title_accordion">{{ question.grouper }}</label>
+        <ul>
+      {% else %}             
+        <label class = "field_title">{{ question.grouper }}</label>
+        <table border="1">
+      {% endif %}
+
+      {% for choice in question.list %}
+        {% if choice.question.type == 'TB' or choice.question.type == 'TA' %}
+          <li>{{ choice.message }}</li>
+        {% else %}             
           <tr>
-            <td>{{ choice }}</td>
-            <td>{{ choice.answer_set.count }}</td>
+            <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>
+              <a href="{% url surveyresults survey.slug choice.pk %}">{{ choice.message }}:</a>
+            </td>
+            <td>{% firstof choice.num_answers '0' %}</td>
           </tr>
-        {% endfor %}
-      </table>
-    {% endif %}
-  {% endfor %}
+        {% endif %}
+      {% endfor %}
+
+      {% if question.grouper.type == 'TB' or question.grouper.type == 'TA' %}
+        </ul>
+        </div>
+      {% else %}             
+        </table>
+      {% endif %}
+    {% endfor %}
+  <label class = "foot_note">Note: Click on a question field to filter results.</label>
+
 {% endblock %}
