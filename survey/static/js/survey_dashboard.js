@@ -3,7 +3,7 @@ function edit_future_date_handler(e){
   $this = $(this);
   var divParent = $this.parents('.future-wrapper');
   divParent.find('p').toggle();
-  divParent.find('.hidden-form').toggle();
+  divParent.find('.hidden').toggle();
   text = $this.text() == 'Edit' ? 'Cancel' : 'Edit';
   $this.text(text);
 }
