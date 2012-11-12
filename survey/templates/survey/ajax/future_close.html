@@ -6,16 +6,16 @@
       <h2>Set Close Date</h2>
       <form method='post' action=''>
         {% csrf_token %}
-          Future Date: <input class='future_date' type='text' name='future_close_date' />
+          <input class='future_date' type='text' name='future_close_date' />
           <input class='save_future_close_date' type='submit' name='save_end_date' value='Save Close Date' />
       </form>
     {% else %}
       <h2>Close Date</h2>
       {{ survey.end_date }}
     {% endif %}
-    <form method='post' action='' class='hidden-form'>
+    <form method='post' action='' class='hidden'>
       {% csrf_token %}
-      Future Date: <input class='future_date' type='text' name='future_close_date' />
+      <input class='future_date' type='text' name='future_close_date' />
       <input class='save_future_close_date' type='submit' name='save_close_date' value='Save Close Date' />
     </form>
 </div>

@@ -66,3 +66,4 @@ $.ready = function()
         div.find('.error').html('An error has occurred and the survey has not been cloned.\nPlease try again.');
       });
   });
+}

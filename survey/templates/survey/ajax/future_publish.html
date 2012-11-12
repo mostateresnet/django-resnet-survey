@@ -6,16 +6,16 @@
       <h2>Set Future Publish Date</h2>
       <form method='post' action=''>
         {% csrf_token %}
-          Future Date: <input class='future_date' type='text' name='future_publish_date' />
+          <input class='future_date' type='text' name='future_publish_date' />
           <input class='save_future_publish_date' type='submit' name='save_publish_date' value='Save Publish Date' />
       </form>
     {% else %}
       <h2>Publish Date</h2>
       {{ survey.start_date }}
     {% endif %}
-    <form method='post' action='' class='hidden-form'>
+    <form method='post' action='' class='hidden'>
       {% csrf_token %}
-      Future Date: <input class='future_date' type='text' name='future_publish_date' />
+      <input class='future_date' type='text' name='future_publish_date' />
       <input class='save_future_publish_date' type='submit' name='save_publish_date' value='Save Publish Date' />
     </form>
 </div>
