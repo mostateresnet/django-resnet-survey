@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^(?P<slug>[-_\w]+)/publish/$', login_required(SurveyPublishView.as_view()), name='publishsurvey'),
     url(r'^(?P<slug>[-_\w]+)/close/$', login_required(SurveyCloseView.as_view()), name='closesurvey'),
     url(r'^(?P<slug>[-_\w]+)/track/$', login_required(SurveyTrackView.as_view()), name='surveytrack'),
+    url(r'^(?P<slug>[-_\w]+)/clone/$', login_required(SurveyCloneView.as_view()), name='clonesurvey'),
     url(r'^(?P<slug>[-_\w]+)/results/$', login_required(SurveyResultsView.as_view()), name='surveyresults'),
     url(r'^(?P<slug>[-_\w]+)/export/$', login_required(SurveyExportView.as_view()), name='exportresults'),
     url(r'^(?P<slug>[-_\w]+)/ballots/$', BallotResultsView.as_view(), name='ballot'),

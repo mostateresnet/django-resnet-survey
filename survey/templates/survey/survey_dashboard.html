@@ -65,4 +65,12 @@
 
 <a href="{% url qrcode survey.slug %}">Download QR Code</a>
 
+<div class='hidden' id='clone-form'>
+  <table>
+    <tr><td></td><td class='error'></td></tr>
+    <tr><td>New Title:</td><td><input type='text' name='clone' data-url="{% url clonesurvey survey.slug %}" /></td></tr>
+    <tr><td></td><td><input type='submit' name='submit-clone' value='Clone' /></td></tr>
+  </table>
+</div>
+
 {% endblock %}

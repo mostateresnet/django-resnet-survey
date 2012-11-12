@@ -17,8 +17,14 @@
 .button-header ul{
   display:inline-block;
 }
-.hidden-form{
+.hidden{
   display:none;
+}
+.left{
+  float:left;
+}
+.right{
+  float:right;
 }
 .buttons{
     margin: 0;

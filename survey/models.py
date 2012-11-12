@@ -25,6 +25,22 @@ class Survey(models.Model):
             return self.start_date <= now() and (not end_date or now() <= end_date)
         return False
 
+    def clone(self, other):
+        # copy the questions
+        for question in self.question_set.all():
+            question_set = question.choice_set.all()
+            new_question = question
+            new_question.id = None
+            new_question.survey = other
+            new_question.save()
+            # copy the choices 
+            for choice in question_set:
+                new_choice = choice
+                new_choice.id = None
+                new_choice.question = new_question
+                new_choice.save()
+                
+    
     @property
     def closed(self):
         return self.end_date <= now()

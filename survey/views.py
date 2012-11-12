@@ -188,6 +188,27 @@ class SurveyCloseView(View):
             survey.close()
         return HttpResponseRedirect(reverse('index'))
 
+class SurveyCloneView(View):
+    # Ajax View
+    def post(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if request.user.is_staff:
+            if request.method == 'POST' and 'title' in request.POST:
+                title = request.POST.get('title', '')
+                try:
+                    new_survey = Survey.objects.create(title=title, slug=slugify(title))
+                    # survey successfully created
+                    survey.clone( new_survey )
+                except IntegrityError:
+                    return HttpResponse(json.dumps({
+                            'status': 'IntegrityError',
+                            'error': 'A survey with that title already exists.'
+                        }), mimetype='application/json')
+                return HttpResponse(json.dumps({
+                        'status': 'success',
+                        'url': reverse('surveydashboard', args=(new_survey.slug,))
+                       }), mimetype='application/json')
+        return HttpResponse(json.dumps({'status': 'Auth Error', 'error': 'You are not authorized to do that.'}), mimetype='application/json')
 
 class SurveyQRCodeView(View):
     def get(self, request, slug):
