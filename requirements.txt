@@ -10,4 +10,5 @@ qrcode
 # go here and easy_install the version of PIL related to your version of Python
 # http://www.pythonware.com/products/pil/
 # be sure to follow these instructions in this exact order
-pil
+# pil
+xlwt
