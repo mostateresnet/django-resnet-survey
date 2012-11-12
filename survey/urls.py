@@ -15,6 +15,7 @@ urlpatterns = patterns(
     url(r'^(?P<slug>[-_\w]+)/clone/$', login_required(SurveyCloneView.as_view()), name='clonesurvey'),
     url(r'^(?P<slug>[-_\w]+)/results/$', login_required(SurveyResultsView.as_view()), name='surveyresults'),
     url(r'^(?P<slug>[-_\w]+)/export/$', login_required(SurveyExportView.as_view()), name='exportresults'),
+    url(r'^(?P<slug>[-_\w]+)/(?P<choice_id>\d+)/results/$', login_required(SurveyResultsView.as_view()), name='surveyresults'),
     url(r'^(?P<slug>[-_\w]+)/ballots/$', BallotResultsView.as_view(), name='ballot'),
     url(r'^(?P<slug>[-_\w]+)/qrcode/$', SurveyQRCodeView.as_view(), name='qrcode'),
     url(r'^(?P<slug>[-_\w]+)/dashboard/$', login_required(SurveyDashboardView.as_view()), name='surveydashboard'),

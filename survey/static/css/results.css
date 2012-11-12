@@ -34,3 +34,32 @@ ul
     margin-bottom: 5px;
     list-style-type: square;
 }
+
+.field_sorted_by
+{
+    font-weight: bold;
+}
+
+.field_title
+{
+    display: block;
+    font-weight: bold;
+}
+
+.field_title_accordion
+{
+    font-weight: bold;
+    cursor:pointer;
+}
+
+.field_title_accordion:hover
+{
+    text-decoration: underline;
+}
+
+.foot_note
+{
+    margin-top: 30;
+    display: block;
+    font-style:italic
+}

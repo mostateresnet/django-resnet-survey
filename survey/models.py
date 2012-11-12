@@ -113,12 +113,12 @@ class Question(models.Model):
 
     def answer_with_text(self, text, ballot):
         if text:
-            choice = self.choice_set.all()[0]
-            Answer.objects.create(choice=choice, text=text, ballot=ballot)
+            choice = Choice.objects.create(question=self, message=text)
+            Answer.objects.create(choice=choice, ballot=ballot)
 
     def answer_with_choices(self, choices, ballot):
         for choice in choices:
-            Answer.objects.create(choice=choice, text=unicode(choice.pk), ballot=ballot)
+            Answer.objects.create(choice=choice, ballot=ballot)
 
     @classmethod
     def add_questions(cls, questions, survey):
@@ -131,8 +131,6 @@ class Question(models.Model):
             counter += 1
             for choice_message in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice_message)
-            if 'choices' not in question_data:
-                Choice.objects.create(question=question, message='choice')
 
     def __unicode__(self):
         return self.message
@@ -154,11 +152,10 @@ class Answer(models.Model):
     Answer contains the choice that the user has picked as their answer.
     """
     choice = models.ForeignKey('Choice')
-    text = models.CharField(max_length=1024)
     ballot = models.ForeignKey('Ballot', null=True)
 
     def __unicode__(self):
-        return self.text
+        return self.choice.message
 
 
 class Ballot(models.Model):

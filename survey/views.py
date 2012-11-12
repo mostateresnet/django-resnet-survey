@@ -1,5 +1,5 @@
 from django.utils.timezone import now
-from survey.models import Survey, Question, Ballot
+from survey.models import Survey, Question, Ballot, Answer, Choice
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.generic import View, TemplateView
@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.db import transaction
 from datetime import timedelta
 from survey import settings
@@ -16,7 +16,7 @@ import json
 import qrcode
 import xlwt
 import datetime
-
+from xlwt import Workbook, Formula, easyxf
 
 def survey_list_processor(request=None):
     return {
@@ -132,6 +132,39 @@ class SurveyResultsView(SurveyDashboardView):
     template_name = 'survey/results.html'
     model = Survey
 
+    # order_number (question has an order arg)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SurveyResultsView, self).get_context_data(*args, **kwargs)
+        survey = self.object
+        if 'choice_id' in self.kwargs:
+            d = Answer.objects.filter(choice=self.kwargs['choice_id']).values_list('ballot', flat = True)
+            b = Ballot.objects.filter(pk__in=d)
+            q = Answer.objects.filter(ballot__in=b).values_list('choice', flat = True)
+            # count_choices choices that have answers
+            count_choices = Choice.objects.filter(pk__in = q).select_related('question').order_by('question__order_number').annotate(num_answers=Count('answer'))
+            # zero_choices choices that do not have answers
+            zero_choices = Choice.objects.filter(question__in=survey.question_set.all()) \
+                .exclude(Q(question__type='TA')|Q(question__type='TB')|Q(pk__in=count_choices)) \
+                .select_related('question')
+
+            combined_choices = []
+
+            for item in zero_choices:
+                item.num_answers = 0
+                combined_choices.append(item)
+
+            combined_choices.extend(count_choices)
+            combined_choices = sorted(combined_choices, key=lambda ch: (ch.question.order_number, ch.pk))
+
+            choices = combined_choices
+        else:
+            choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))
+
+        query = {'choices': choices, 'choice_id': int(self.kwargs.get('choice_id', -1)) }
+        context.update(query)
+        return context
+
 
 class BallotResultsView(DetailView):
     def get(self, request, slug):
@@ -226,25 +259,37 @@ class SurveyExportView(View):
             return HttpResponseForbidden()
 
         wb = xlwt.Workbook()
-        ws = wb.add_sheet('A Test Sheet')
+        ws = wb.add_sheet('Survey Results')
+        ws_text = wb.add_sheet('TextResults')
 
         question_font = xlwt.Font()
         question_font.bold = True
         question_style = xlwt.XFStyle()
         question_style.font = question_font
         ws.col(0).width = 256*50
+        ws_text.col(0).width = 256*75
 
         ws.write(0, 0, "Question", question_style)
         ws.write(0, 1, "Tally", question_style)
 
+        ws_text.write(0, 0, "Question", question_style)
+
+        text_question_style = easyxf("align: wrap on")
+
         counter = 2
+        counter_text = 0
         for question in survey.question_set.all():
             ws.write(counter, 0, str(question), question_style)
             if question.type == 'TB' or question.type == 'TA':
+                counter_text += 2
+                ws_text.write(counter_text, 0, str(question), question_style)
+                counter += 1
+                ws.write(counter, 0, xlwt.Formula("HYPERLINK(\"#TextResults!A" + str(counter_text+1) + "\", \"Click to see text results\")"))
                 for choice in question.choice_set.all():
                     for answer in choice.answer_set.all():
-                        counter += 1
-                        ws.write(counter, 0, str(answer))
+                        counter_text += 1
+                        ws_text.row(counter_text).height = 256*3
+                        ws_text.write(counter_text, 0, str(answer), text_question_style)
             elif question.type == 'RA' or question.type == 'CH' or question.type == 'DD':
                 for choice in question.choice_set.all():
                     counter += 1
@@ -260,19 +305,19 @@ class SurveyExportView(View):
         wb.save(response)
 
         return response
-        
+
 class SurveyReorderView(SurveyDashboardView):
     template_name = 'survey/reorder.html'
-        
+
     def post(self, request, slug):
         #get POST data
-        orderDict = request.POST     
+        orderDict = request.POST
         #update questions with new order_number
         with transaction.commit_on_success():
             for pk, order in orderDict.iteritems():
                 pk = pk[3:]
-                Question.objects.filter(pk = pk).update(order_number = order[0])  
+                Question.objects.filter(pk = pk).update(order_number = order[0])
         #return success
         return HttpResponse(json.dumps({'status': 'success'}), mimetype='application/json')
-    
+
 
