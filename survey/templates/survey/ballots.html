@@ -7,11 +7,13 @@
   <h1>Ballot #{{ ballots.number }} for {{ survey.title }}</h1>
 </div>
 <div id="navbuttons">
+   <a href='{% url surveydashboard survey.slug %}' data-ajax="false">Back to Dashboard</a>
+   <br />
   {% if ballots.has_previous %}
-    <a href="?page={{ ballots.previous_page_number }}">Previous</a>
+    <a href="?page={{ ballots.previous_page_number }}" data-ajax="false">Previous</a>
   {% endif %}
   {% if ballots.has_next %}
-    <a href="?page={{ ballots.next_page_number }}">Next</a>
+    <a href="?page={{ ballots.next_page_number }}" data-ajax="false">Next</a>
   {% endif %}
 </div>
 <div data-role="content">
