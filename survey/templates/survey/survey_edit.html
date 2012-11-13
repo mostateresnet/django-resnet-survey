@@ -27,6 +27,7 @@
       <label for="slug">SLUG:</label>
       <input type="text" name="slug" id="slug" value='{{ survey.slug }}'/>
     </div>
+    <button class= "submit" id="submit" type="button">Submit</button>
     {% include 'survey/includes/question_edit.html' %}
     <div id="new-buttons">
       <button id="new-text-area" type="button" >
@@ -61,7 +62,7 @@
 
     </div>
     <div id="submit">
-      <button id="submit" type="button">Submit</button>
+      <button class= "submit" id="submit" type="button">Submit</button>
     </div>
 
   </form>
