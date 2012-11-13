@@ -87,6 +87,15 @@ var newDropDownList = newQuestionHandler('DD');
 
 $.ready = function(){
     $('.submit').click(function(e){
+        // Restrict the tile to reasonable bounds.
+        if (($('#title').val().length < 1) || ($('#title').val().length > 1024))
+        {
+          alert('Survey Titles must be between 1 and 1024 characters.');
+          e.preventDefault();
+          e.stopPropagation();
+          return false;  
+        }
+
         var data = {title: $('#title').val(), slug: $('#slug').val(), questions: []};
         $('.question').each(function(index, el){
             var $el = $(el);
