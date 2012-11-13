@@ -9,7 +9,7 @@ from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from datetime import timedelta
 from survey import settings
 import json
@@ -122,10 +122,14 @@ class SurveyEditView(SurveyDashboardView):
         # edit the title if it has changed
         survey.title = data.get('title')
         #survey.use_cookies = data.get('use_cookies')
-
-        survey.save()
+        #edit slug if it has changed
+        survey.slug = slugify(data.get('slug'))
+        try:
+            survey.save()
+        except IntegrityError:
+            return HttpResponse(json.dumps({'status': 'failure', 'error': 'That SLUG already exists'}), mimetype='application/json')
         Question.add_questions(questions, survey)
-        return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
+        return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
 
 
 class SurveyResultsView(SurveyDashboardView):
