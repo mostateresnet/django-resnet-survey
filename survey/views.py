@@ -196,7 +196,7 @@ class SurveyNewView(TemplateView):
         questions = data.get('questions', [])
         survey.save()
         Question.add_questions(questions, survey)
-        return HttpResponse(json.dumps({'status': 'success', 'url': survey.get_absolute_url()}), mimetype='application/json')
+        return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[slug])}), mimetype='application/json')
 
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyNewView, self).get_context_data(*args, **kwargs)
