@@ -51,7 +51,6 @@ class Migration(SchemaMigration):
         db.create_table('survey_answer', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('choice', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['survey.Choice'])),
-            ('text', self.gf('django.db.models.fields.CharField')(max_length=1024)),
             ('ballot', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['survey.Ballot'], null=True)),
         ))
         db.send_create_signal('survey', ['Answer'])
@@ -91,8 +90,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Answer'},
             'ballot': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['survey.Ballot']", 'null': 'True'}),
             'choice': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['survey.Choice']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'text': ('django.db.models.fields.CharField', [], {'max_length': '1024'})
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         'survey.ballot': {
             'Meta': {'object_name': 'Ballot'},
