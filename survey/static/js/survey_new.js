@@ -87,7 +87,7 @@ var newDropDownList = newQuestionHandler('DD');
 
 $.ready = function(){
     $('#submit').click(function(e){
-        var data = {title: $('#title').val(), questions: []};
+        var data = {title: $('#title').val(), slug: $('#slug').val(), questions: []};
         $('.question').each(function(index, el){
             var $el = $(el);
             var questionData = {};
@@ -108,7 +108,12 @@ $.ready = function(){
             'type': 'POST',
             'data': {'r': JSON.stringify(data)},
             'success':function(data, textStatus, jqXHR){
-                window.location = data['url'];
+                if ('error' in data){
+                    alert(data['error']);
+                }
+                else{
+                    window.location = data['url'];
+                }
             }
         });
     });

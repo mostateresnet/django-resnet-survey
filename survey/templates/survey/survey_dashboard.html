@@ -47,7 +47,7 @@
 {% block content %}
 
 <ul class='buttons'>
-      <li><a href='{% url survey survey.slug %}'>View</a>
+      <li><a href='{% url survey survey.slug %}' target ='_bank'>View</a>
     {% if not survey.is_active and not survey.closed %}
       <li><a href='{% url publishsurvey survey.slug %}'>Publish</a></li>
     {% elif not survey.closed %}

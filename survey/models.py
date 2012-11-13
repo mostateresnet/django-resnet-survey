@@ -8,7 +8,7 @@ class Survey(models.Model):
     Survey model has a set of questions.
     """
     title = models.CharField(max_length=1024)
-    slug = models.SlugField(max_length=1024, primary_key=True)
+    slug = models.SlugField(max_length=1024, unique=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=1024, null=False, blank=True)
