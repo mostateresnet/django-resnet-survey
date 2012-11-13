@@ -86,7 +86,7 @@ var newRadioButtons = newQuestionHandler('RA');
 var newDropDownList = newQuestionHandler('DD');
 
 $.ready = function(){
-    $('#submit').click(function(e){
+    $('.submit').click(function(e){
         var data = {title: $('#title').val(), slug: $('#slug').val(), questions: []};
         $('.question').each(function(index, el){
             var $el = $(el);
