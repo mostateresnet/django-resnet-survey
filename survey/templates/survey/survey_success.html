@@ -2,6 +2,9 @@
 {% load static from staticfiles %}
 
 {% block content %}
+  {% if redirect %}
+    <meta http-equiv="refresh" content="5;url={% url survey survey.slug %}" />
+  {% endif %}
   <div data-role="content">
     <img src="{% static 'img/thankyou.png' %}" id="thanks" />
   </div>

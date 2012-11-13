@@ -75,7 +75,7 @@ class SurveyView(View):
         # if survey.use_cookies is true
         # and also check to see if the survey is active
         if (not request.COOKIES.get(survey.cookie, None) or not survey.use_cookies) and survey.is_active:
-            response = render_to_response('survey/survey_success.html', context_instance=RequestContext(request))
+            response = render_to_response('survey/survey_success.html', context_instance=RequestContext(request, {'redirect': not survey.use_cookies, 'survey': survey }))
             # the cookie doesn't exist yet, it will be added to the response here
             # but only if survey.use_cookies is true
             if (survey.use_cookies):
