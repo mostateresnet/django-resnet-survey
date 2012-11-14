@@ -16,6 +16,7 @@
 }
 .button-header ul{
   display:inline-block;
+
 }
 .hidden{
   display:none;
@@ -100,5 +101,34 @@ img#thanks {
 #currentTab:hover{
     background-color: #EEE;
 }
+.header_bar
+{
+	font-size: 18pt;
+/*  border: 2px solid #E8E8E8; */
+  background-color: #888888;
+  padding-left: 5px;
+  margin-bottom: 5px;
+  color: white;
+  line-height: 25px;
+}
+
+
+
+.header_button
+{
+  float: right;
+	font-size: 14pt;
+  background-color: #333;
+  padding-left: 5px;
+  padding-right: 5px; 
+ /* border-left: 2px solid #E8E8E8;*/
+}
+
+.header_button a
+{
+  color: white;
+  text-decoration:none;
+}
+
 
 

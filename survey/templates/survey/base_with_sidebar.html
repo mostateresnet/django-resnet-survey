@@ -16,8 +16,10 @@
 
 <div id='sidebar'>
   {% block sidebar %}
-    <h2>Surveys</h2>
-    <a href='{% url newsurvey %}'>Create a new Survey</a>
+    <div class = 'header_bar'>Surveys
+      <div class = 'header_button'><a href='{% url newsurvey %}'>New</a></div>
+    </div>
+    
     <ul>
     {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" %}
     {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" %}
