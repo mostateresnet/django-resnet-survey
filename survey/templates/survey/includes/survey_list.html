@@ -1,14 +1,11 @@
-<div class="ul-tree">
+<li class="list_reset">
+  <span class="accordion_sidebar accordion collapsed slow">{{ title }}</span>
   <ul>
-    <li>
-      <span class="collapsed expandable strong">{{ title }}</span>
-      <ul>
-        {% for survey in surveys %}
-          <li>
-            <a href="{% url surveydashboard survey.slug %}">{{ survey }}</a>
-          </li>
-        {% endfor %}
-      </ul>
-    </li>
+    {% for survey in surveys %}
+      <li>
+        <a href="{% url surveydashboard survey.slug %}">{{ survey }}</a>
+      </li>
+    {% endfor %}
   </ul>
-</div>
+</li>
+

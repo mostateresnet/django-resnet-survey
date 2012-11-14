@@ -1,0 +1,34 @@
+.accordion_sidebar
+{
+    background-repeat: no-repeat;
+    background-color: transparent;
+    padding-left: 18px;
+}
+
+.list_reset
+{
+    padding: 0px;
+    margin: 0px;
+}
+
+ul
+{
+    padding: 0px;
+    margin: 0px;
+}
+
+li
+{
+    padding-left: 10px;
+    list-style-type: none;
+}
+
+.collapsed 
+{
+    background-image: url("/static/img/expand.png");
+}
+
+.expanded 
+{
+    background-image: url("/static/img/collapse.png");
+}

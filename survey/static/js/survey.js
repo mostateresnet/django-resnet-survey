@@ -1,4 +1,4 @@
-$.ready = function(){
+$(document).ready(function()
     $('form').submit(function(e)
     {
       $('.required').each(function(index, el)
@@ -22,4 +22,8 @@ $.ready = function(){
         
       });
     });
-}
+});
+
+
+
+

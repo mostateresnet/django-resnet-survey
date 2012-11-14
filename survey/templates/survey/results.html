@@ -7,21 +7,12 @@
 {% endblock %}
 
 {% block content %}
-<script type="text/javascript">
-jQuery(document).ready(function(){
-  $('.accordion .head').click(function() {
-      $(this).siblings("ul").toggle('slow');
-      return false;
-  }).siblings("ul").hide();
-});
-</script>
-
   <a href='{% url exportresults survey.slug %}'>Export Report to Excel</a>
   {% regroup choices by question as question_list %}
     {% for question in question_list %}      
       {% if question.grouper.type == 'TB' or question.grouper.type == 'TA' %}
-        <div class = "accordion">
-        <label class = "head field_title_accordion">{{ question.grouper }}</label>
+        <div>
+        <label class = "accordion slow field_title_accordion">{{ question.grouper }}</label>
         <ul>
       {% else %}             
         <label class = "field_title">{{ question.grouper }}</label>
@@ -49,5 +40,4 @@ jQuery(document).ready(function(){
       {% endif %}
     {% endfor %}
   <label class = "foot_note">Note: Click on a question field to filter results.</label>
-
 {% endblock %}
