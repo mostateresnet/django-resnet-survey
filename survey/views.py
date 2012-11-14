@@ -1,13 +1,12 @@
 from django.utils.timezone import now
 from survey.models import Survey, Question, Ballot, Answer, Choice
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.views.generic import View, TemplateView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count
 from django.db import transaction, IntegrityError
 from datetime import timedelta
@@ -175,20 +174,25 @@ class BallotResultsView(SurveyDashboardView):
     
     def get_context_data(self, *args, **kwargs):
         context = super(BallotResultsView, self).get_context_data(*args, **kwargs)
-        ballot_list = self.object.ballot_set.all()
-        paginator = Paginator(ballot_list, 1)
-
-        page = self.request.GET.get('page')
+        ballot_id = self.kwargs['ballot_id']
+        if ballot_id is None:
+            try:
+                ballot = self.object.ballot_set.all()[0]
+            except IndexError:
+                raise Http404
+        else:
+            ballot = get_object_or_404(Ballot, pk=self.kwargs['ballot_id'], survey=self.object)
         try:
-            ballots = paginator.page(page)
-        except PageNotAnInteger:
-            ballots = paginator.page(1)
-        except EmptyPage:
-            ballots = paginator.page(paginator.num_pages)
-        context.update({"ballots": ballots})
+            next_ballot = Ballot.objects.filter(pk__gt=ballot.pk, survey=self.object).order_by('pk')[0]
+        except IndexError:
+            next_ballot=None
+        try:
+            previous_ballot = Ballot.objects.filter(pk__lt=ballot.pk, survey=self.object).order_by('-pk')[0]
+        except IndexError:
+            previous_ballot=None
+        context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot":previous_ballot})
         return context
         
-
 
 class SurveyNewView(TemplateView):
     template_name = 'survey/survey_new.html'

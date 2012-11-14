@@ -21,7 +21,7 @@
 
       {% for choice in question.list %}
         {% if choice.question.type == 'TB' or choice.question.type == 'TA' %}
-          <li>{{ choice.message }}</li>
+          <li><a href="{% url ballot survey.slug choice.get_first_answer.ballot.pk %}">{{ choice.message }}</a></li>
         {% else %}             
           <tr>
             <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>

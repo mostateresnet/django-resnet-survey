@@ -145,6 +145,12 @@ class Choice(models.Model):
 
     def __unicode__(self):
         return self.message
+        
+    def get_first_answer(self): #only used for text based answers
+        try:
+            return self.answer_set.all()[0]            
+        except IndexError:
+            return None
 
 
 class Answer(models.Model):
