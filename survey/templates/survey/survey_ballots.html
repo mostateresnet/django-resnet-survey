@@ -1,6 +1,15 @@
-{% extends "survey/survey.html" %}
+{% extends "survey/survey_dashboard.html" %}
+{% load static from staticfiles %}
 
-{% block title %}Ballot #{{ ballots.number }} - {{ survey.title }}{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+    <script type='text/javascript' src='{% static "js/reorder.js" %}'></script>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reorder.css' %}" />
+{% endblock %}
 
 {% block content %}
 <div data-role="header">
@@ -20,20 +29,21 @@
   {% for ballot in ballots %}
     {% for question, choices in ballot.question_list %}
       {% if question.type == 'TB' %}
-        <label for="q{{ question.pk }}">{{ question }}</label>
-        <input type="text" name="q{{ question.pk }}" id="q{{ question.pk }}" value="{% firstof choices.0.1 '' %}" />
+        <label for="q{{ question.pk }}">{{ question }}:</label>
+        <label>{% firstof choices.0.1 '' %}</label>
       {% endif %}
       
       {% if question.type == 'TA' %}
         <label for="q{{ question.pk }}">{{ question }}</label>
-        <textarea id="q{{ question.pk }}" name="q{{ question.pk }}">{% firstof choices.0.1 '' %}</textarea>
+        <br />
+        <label>{% firstof choices.0.1 '' %}</label>
       {% endif %}
       
       {% if question.type == 'RA' %}
         <fieldset data-role="controlgroup">
           <legend>{{ question }}</legend>
             {% for choice, answer in choices %}
-              <input type="radio" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
+              <input type="radio" disabled="disabled" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
               <label for="c{{ choice.pk }}">{{ choice }}</label>
             {% endfor %}
         </fieldset>
@@ -43,21 +53,19 @@
         <div data-role="controlgroup">
           <legend>{{ question }}</legend>
             {% for choice, answer in choices %}
-              <input type="checkbox" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
+              <input type="checkbox" disabled="disabled" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
               <label for="c{{ choice.pk }}">{{ choice }}</label>
             {% endfor %}
         </div>
       {% endif %}
       
       {% if question.type == 'DD' %}
-        <label for="c{{ choice.pk }}" class="select">{{ question }}</label>
-        <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
-          <option>Select one</option>
-          {% for choice, answer in choices %}
-            <option value="c{{ choice.pk }}" {% if answer %}selected="selected"{% endif %}>{{ choice }}</option>
-          {% endfor %}
-        </select>
+        <label for="c{{ choice.pk }}" class="select">{{ question }}:</label>
+      {% for choice, answer in choices %}
+        {% if answer %}<label>{{ choice }}</label>{% endif %}
+      {% endfor %}
       {% endif %}
+      <br />
     {% endfor %}
   {% endfor %}
 </div>
