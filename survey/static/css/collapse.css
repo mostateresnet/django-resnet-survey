@@ -3,6 +3,7 @@
     background-repeat: no-repeat;
     background-color: transparent;
     padding-left: 18px;
+    cursor:pointer;
 }
 
 .list_reset
@@ -23,7 +24,7 @@ li
     list-style-type: none;
 }
 
-.collapsed 
+.accordion
 {
     background-image: url("/static/img/expand.png");
 }

@@ -9,6 +9,11 @@
 {% block javascript %}
 {{ block.super }}
 <script type='text/javascript' src="{% static 'js/collapse.js' %}"></script>
+<script type='text/javascript'>
+  $(function(){
+    $( ".accordion" ).collapser(true); 
+  });
+</script>
 {% endblock %}
 
 {% block body %}
@@ -21,9 +26,9 @@
     </div>
     
     <ul>
-    {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" %}
-    {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" %}
-    {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title="Closed Surveys" %}
+    {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" catid="sidebar_1" %}
+    {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" catid="sidebar_2" %}
+    {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title="Closed Surveys" catid="sidebar_3" %}
     </ul>
   {% endblock %}
 </div>

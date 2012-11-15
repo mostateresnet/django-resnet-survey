@@ -48,6 +48,9 @@ ul
 
 .field_title_accordion
 {
+    background-repeat: no-repeat;
+    background-color: transparent;
+    padding-left: 18px;
     font-weight: bold;
     cursor:pointer;
 }

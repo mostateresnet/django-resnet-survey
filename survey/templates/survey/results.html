@@ -12,7 +12,7 @@
     {% for question in question_list %}      
       {% if question.grouper.type == 'TB' or question.grouper.type == 'TA' %}
         <div>
-        <label class = "accordion slow field_title_accordion">{{ question.grouper }}</label>
+        <label id = "{{ survey.slug }}_{{ question.grouper.order_number }}" class = "accordion field_title_accordion">{{ question.grouper }}</label>
         <ul>
       {% else %}             
         <label class = "field_title">{{ question.grouper }}</label>
