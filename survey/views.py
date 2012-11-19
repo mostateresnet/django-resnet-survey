@@ -31,10 +31,29 @@ class IndexView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         return survey_list_processor()
 
+class AccessMixin(object):
+    """
+    Requires an implementation of the hasAccess() function which
+    determines the requirements for access to a specific view otherwise
+    raises a 404 if access is denied.
 
-class SurveyDashboardView(DetailView):
+    For example: results should only be allowed on a closed survey.
+    """
+    def hasAccess(self):
+        raise NotImplementedError("You must implement that hasAccess() method on all DetailAccessView's.")
+
+    def dispatch(self, request, *args, **kwargs):
+        handler = super(AccessMixin, self).dispatch(request, *args, **kwargs)
+        if not self.hasAccess():
+            raise Http404
+        return handler
+
+class SurveyDashboardView(AccessMixin, DetailView):
     model = Survey
     template_name = 'survey/survey_dashboard.html'
+
+    def hasAccess(self):
+        return True
 
     def post(self, request, slug):
         survey = self.get_object()
@@ -57,8 +76,6 @@ class SurveyView(View):
     def inactive_survey_response(self, request, duplicate=False):
         return render_to_response('survey/survey_closed.html',
                                context_instance=RequestContext(request, {'duplicate': duplicate}))
-
-
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
@@ -111,6 +128,9 @@ class SurveyEditView(SurveyDashboardView):
     model = Survey
     template_name = 'survey/survey_edit.html'
 
+    def hasAccess(self):
+        return self.get_object().is_unpublished
+
     def post(self, request, slug):
         survey = self.get_object()
         data = json.loads(request.POST.get('r'))
@@ -134,6 +154,9 @@ class SurveyEditView(SurveyDashboardView):
 class SurveyResultsView(SurveyDashboardView):
     template_name = 'survey/results.html'
     model = Survey
+
+    def hasAccess(self):
+        return self.get_object().closed
 
     # order_number (question has an order arg)
 
@@ -171,7 +194,10 @@ class SurveyResultsView(SurveyDashboardView):
 
 class BallotResultsView(SurveyDashboardView):
     template_name='survey/survey_ballots.html'
-    
+
+    def hasAccess(self):
+        return self.get_object().closed
+
     def get_context_data(self, *args, **kwargs):
         context = super(BallotResultsView, self).get_context_data(*args, **kwargs)
         ballot_id = self.kwargs['ballot_id']
@@ -192,7 +218,7 @@ class BallotResultsView(SurveyDashboardView):
             previous_ballot=None
         context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot":previous_ballot})
         return context
-        
+
 
 class SurveyNewView(TemplateView):
     template_name = 'survey/survey_new.html'
@@ -264,9 +290,13 @@ class SurveyQRCodeView(View):
         img.save(response, 'PNG')
         return response
 
-class SurveyExportView(View):
+class SurveyExportView(SurveyDashboardView):
+
+    def hasAccess(self):
+        return self.get_object().closed
+
     def get(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
+        survey = self.get_object()
         if not request.user.is_staff:
             return HttpResponseForbidden()
 
@@ -320,6 +350,9 @@ class SurveyExportView(View):
 
 class SurveyReorderView(SurveyDashboardView):
     template_name = 'survey/reorder.html'
+
+    def hasAccess(self):
+        return self.get_object().is_unpublished
 
     def post(self, request, slug):
         #get POST data

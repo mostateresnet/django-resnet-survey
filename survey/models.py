@@ -33,17 +33,21 @@ class Survey(models.Model):
             new_question.id = None
             new_question.survey = other
             new_question.save()
-            # copy the choices 
+            # copy the choices
             for choice in question_set:
                 new_choice = choice
                 new_choice.id = None
                 new_choice.question = new_question
                 new_choice.save()
-                
-    
+
+
     @property
     def closed(self):
-        return self.end_date <= now()
+        return self.end_date and self.end_date <= now()
+
+    @property
+    def is_unpublished(self):
+        return not self.is_active and not self.closed
 
     def track(self, on=True):
         self.use_cookies = on
@@ -107,7 +111,7 @@ class Question(models.Model):
         ('DD', 'dropdown'),
     )
     type = models.CharField(max_length=2, choices=QUESTION_TYPES)
-    
+
     class Meta:
         ordering = ['order_number']
 
@@ -145,12 +149,6 @@ class Choice(models.Model):
 
     def __unicode__(self):
         return self.message
-        
-    def get_first_answer(self): #only used for text based answers
-        try:
-            return self.answer_set.all()[0]            
-        except IndexError:
-            return None
 
 
 class Answer(models.Model):
