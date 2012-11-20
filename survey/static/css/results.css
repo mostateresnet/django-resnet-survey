@@ -66,3 +66,19 @@ ul
     display: block;
     font-style:italic
 }
+
+.results{
+    width:100%;
+    margin-bottom:10px;
+}
+
+.result{
+    width:48%;
+    padding:1%;
+}
+
+.piegraph{
+    width:48%;
+    height:200px;
+    padding:1%;
+}
