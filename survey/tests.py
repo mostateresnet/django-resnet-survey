@@ -5,11 +5,12 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.utils.timezone import now
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import utc
 from survey.models import Survey, Question, Choice, Answer, Ballot
 
 
@@ -215,3 +216,21 @@ class SurveyViewTest(TestCase):
         self.client.get(reverse('closesurvey', args=[self.survey.slug]))
         self.survey = Survey.objects.get(pk=self.survey.pk)
         self.assertFalse(self.survey.is_active)
+
+class SurveyDashboardViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.client.login(username='admin', password='asdf')
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.arbitrary_date_str = 'Mon, 01 Jan 2013 00:00:00 GMT'
+        self.arbitrary_date = datetime.strptime(self.arbitrary_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+    
+    def test_set_future_start_date(self):
+        self.client.post(reverse('surveydashboard', args=[self.survey.slug]), {'future_publish_date': self.arbitrary_date_str})
+        self.survey = Survey.objects.get(slug="my-new-survey")
+        self.assertEqual(self.survey.start_date, self.arbitrary_date)
+    
+    def test_set_future_end_date(self):
+        self.client.post(reverse('surveydashboard', args=[self.survey.slug]), {'future_close_date': self.arbitrary_date_str})
+        self.survey = Survey.objects.get(slug="my-new-survey")
+        self.assertEqual(self.survey.end_date, self.arbitrary_date)
