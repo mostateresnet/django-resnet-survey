@@ -71,6 +71,10 @@ class Survey(models.Model):
         # Thu, 08 Nov 2012 22:03:00 GMT
         setattr(self, field, dt)
         self.save()
+    
+    @property
+    def has_results(self):
+        return self.ballot_set.all().count() > 0
 
     def __unicode__(self):
         return self.title
