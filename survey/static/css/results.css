@@ -1,9 +1,5 @@
-.result{
-  
-}
 .piegraph{
     width:48%;
-    //height:200px;
     padding:1%;
 }
 table{
@@ -16,8 +12,6 @@ table a{ color:#4E769B; }
 table a:hover{ color:#839FB9; }
 tr.choice:nth-child(odd){ background-color:#BACD84; }
 .result h4{ 
-  //float:right;
-  //width:91%;
   color:#FFF;
   background-color:#97AE48;
 }
