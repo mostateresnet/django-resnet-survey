@@ -1,16 +1,13 @@
 <div class='future-wrapper'>
     {% if survey.start_date and not survey.is_active and not survey.closed %}
-      <h2 class='button-header'>Future Publish Date <ul class='buttons'><li><a id='edit-publish-date' href='#'>Edit</a></li></ul></h2>
       <p>Will be published on {{ survey.start_date }}</p>
     {% elif not survey.is_active and not survey.closed %}
-      <h2>Set Future Publish Date</h2>
       <form method='post' action=''>
         {% csrf_token %}
           <input class='future_date' type='text' name='future_publish_date' />
           <input class='save_future_publish_date' type='submit' name='save_publish_date' value='Save Publish Date' />
       </form>
     {% else %}
-      <h2>Publish Date</h2>
       {{ survey.start_date }}
     {% endif %}
     <form method='post' action='' class='hidden'>

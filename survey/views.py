@@ -126,7 +126,7 @@ class SurveyView(View):
 
 class SurveyEditView(SurveyDashboardView):
     model = Survey
-    template_name = 'survey/survey_edit.html'
+    template_name = 'survey/survey_form.html'
 
     def hasAccess(self):
         return self.get_object().is_unpublished
@@ -185,6 +185,7 @@ class SurveyResultsView(SurveyDashboardView):
 
             choices = combined_choices
         else:
+            print survey.question_set.all()
             choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))
 
         query = {'choices': choices, 'choice_id': int(self.kwargs.get('choice_id', -1)) }
@@ -221,7 +222,7 @@ class BallotResultsView(SurveyDashboardView):
 
 
 class SurveyNewView(TemplateView):
-    template_name = 'survey/survey_new.html'
+    template_name = 'survey/survey_form.html'
 
     def post(self, request):
         data = json.loads(request.POST.get('r'))

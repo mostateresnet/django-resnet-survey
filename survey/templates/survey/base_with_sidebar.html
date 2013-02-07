@@ -17,27 +17,30 @@
 {% endblock %}
 
 {% block body %}
-<div id='header'>Survey Dashboard</div>
-
-<div id='sidebar'>
-  {% block sidebar %}
-    <div class = 'header_bar'>Surveys
-      <div class = 'header_button'><a href='{% url newsurvey %}'>New</a></div>
+<header><img src='{% static "img/logo.png" %}' alt='' /></header>
+<div id='same-height-wrapper' class='group'>
+  <div id='sidebar-wrapper'>
+    <h3 id='surveys-header'>SURVEYS
+    <a class='new-button' href='{% url newsurvey %}'><img src='{% static "img/newbutton.png" %}' alt='' /></a>
+    </h3>
+    <div id='sidebar'>
+      {% block sidebar %}
+        <ul>
+          {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" catid="sidebar_1" %}
+            {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" catid="sidebar_2" %}
+              {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title="Closed Surveys" catid="sidebar_3" %}
+                </ul>
+                {% endblock %}
     </div>
-    
-    <ul>
-    {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title="Unpublished Surveys" catid="sidebar_1" %}
-    {% include 'survey/includes/survey_list.html' with surveys=published_surveys title="Published Surveys" catid="sidebar_2" %}
-    {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title="Closed Surveys" catid="sidebar_3" %}
-    </ul>
-  {% endblock %}
-</div>
+  </div>
 
-<div id='content'>
-  {% block header %}{% endblock %}
-  {% block content %}{% endblock %}
-</div>
+  <div id='content'>
+    {% block header %}{% endblock %}
+    <div id='main-content'>
+      {% block content %}{% endblock %}
+    </div>
+  </div>
 
-<div class='clear'></div>
+</div>
 
 {% endblock %}

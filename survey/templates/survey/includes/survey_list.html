@@ -1,11 +1,10 @@
 <li class="list_reset">
-  <span id = "{{catid}}" class="accordion_sidebar accordion">{{ title }}</span>
+  <span id="{{ catid }}" class="accordion_sidebar accordion">{{ title }}</span>
   <ul>
-    {% for survey in surveys %}
+    {% for survey_item in surveys %}
       <li>
-        <a href="{% url surveydashboard survey.slug %}">{{ survey }}</a>
+        <a {% if survey == survey_item %}class='current-survey'{% endif %} href="{% url surveydashboard survey_item.slug %}">{{ survey_item }}</a>
       </li>
     {% endfor %}
   </ul>
 </li>
-

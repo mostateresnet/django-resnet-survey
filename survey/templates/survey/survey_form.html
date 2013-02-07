@@ -1,0 +1,65 @@
+{% extends "survey/survey_dashboard.html" %}
+{% load static from staticfiles %}
+
+{% block css %}
+  {{ block.super }}
+  <link href="{% static 'css/survey_form.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block header %}
+  {% if object.pk %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h3>
+    Build A Survey
+    <div class="help-text">
+      Select the question you'd like to make by choosing an option from the toolbox on the right.
+    </div>
+  </h3>
+  <form>
+    <div id="survey-details">
+      <table>
+        <tr>
+          <td class="field-name">Title:</td>
+          <td class="field"><input type="text" name="title" id="title" value='{{ survey }}'/></td>
+        </tr>
+
+        <tr>
+          <td class="field-name">Slug:</td>
+          <td class="field"><input type="text" name="slug" id="slug" value='{{ survey.slug }}'/></td>
+        </tr>
+      </table>
+
+      <table>
+        <tr><td>Description:</td><td></td></tr>
+        <tr>
+          <td colspan="2">
+            <textarea></textarea>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    {% include 'survey/includes/question_edit.html' %}
+
+  </form>
+
+  <!-- TOOLBOX -->
+  <div id="toolbox">
+    <ul>
+      <li id="new-text-area"><span>MULTILINE TEXT BOX</span></li>
+      <li id="new-text-box"><span>TEXT BOX</span></li>
+      <li id="new-check-boxes"><span>CHECK BOXES</span></li>
+      <li id="new-radio-buttons"><span>RADIO BUTTONS</span></li>
+      <li id="new-drop-down-list"><span>DROP-DOWN LIST</span></li>
+      <li id="submit"><span>SAVE</span></li>
+    </ul>
+  </div>
+  <!-- END TOOLBOX -->
+
+{% endblock %}
+

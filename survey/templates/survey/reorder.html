@@ -12,7 +12,10 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Reorder - {{ survey.title }}</h1>            
+    <h3>
+      Reorder - {{ survey.title }}
+      <div class='help-text'>Click and drag the questions to reorder.</div>
+    </h3>
     <form action="" method="post" id="order">
         {% csrf_token %}
         <ul id="sortable" class="reorder">
