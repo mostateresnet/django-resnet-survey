@@ -1,32 +1,21 @@
 {% load static from staticfiles %}
 
 {% for question in survey.question_set.all %}
-	<div class="question">
-	  <h2 class='question-type-name'>{{ question.get_type_display|title }}</h2>
-	  <div class="message">
-	    <label>{% block message_label %}Question:{% endblock %}</label>
-	    <input type="hidden" name="question-type" value="{{ question.type }}" />
-	    <input type="text" name="question-message" value='{{ question.message }}' />
-	    <button type="button" class="remove-question">
-	      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
-	    </button>
-	  </div>
+  <div class="question">
+    <div class="question-number">
+     <span>{{ forloop.counter }}</span>
+    </div>
+    <div class="message">
+      <input type="hidden" name="question-type" value='{{ question.type }}' />
+      <input type="text" name="question-message" value='{{ question.message }}' />
+    </div>
     {% if question.type != 'TA' and question.type != 'TB' %}
       {% for choice in question.choice_set.all %}
         <div class="choice">
-          <label for="choice-message">Choice: </label>
+          <span class="{{ question.get_type_display }}">{{ question.get_type_display }}</span>
           <input type="text" name="choice-message" value='{{ choice }}' />
-          <button type="button" class="remove-choice">
-            <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
-          </button>
-          <br />
         </div>
-        {% if forloop.last %}
-          <button type="button" class="new-choice">
-            <div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Choice</span></div>
-          </button>
-        {% endif %}
       {% endfor %}
     {% endif %}
-	</div>
+  </div>
 {% endfor %}

@@ -1,0 +1,84 @@
+#main-content{
+  padding-right:0;
+}
+#toolbox{
+  float:right;
+  width:29%;
+  padding:1%;
+  padding-right:0;
+  background-color:#FFF;
+  font-weight:bold;
+  -webkit-border-radius: 5px 0px 0px 5px;
+  border-radius: 5px 0px 0px 5px;
+}
+#toolbox li{
+  background-repeat:no-repeat;
+  background-image:url('../img/toolbox_icons.png');
+  height:32px;
+  margin-bottom:10px;
+  position:relative;
+}
+#toolbox li span{
+  position:absolute;
+  top:8px;
+  left:40px;
+}
+#new-text-area{background-position:0 0;}
+#new-text-box{background-position:0px -63px;}
+#new-check-boxes{background-position:0 -95px;}
+#new-radio-buttons{background-position:0 -32px;}
+#new-drop-down-list{background-position:0 -126px;}
+#submit{background-position:0 -160px;}
+form{
+  width:68%;
+  padding:2% 1%;
+  padding-top:0;
+  float:left;
+}
+input[type=text]{
+  width:97%;
+  padding:1%;
+}
+textarea{
+  width:96%;
+  height:50px;
+  padding:2%;
+  font-size:10pt;
+  font-family:helvetica, arial, sans-serif;
+  border:1px solid #CCC;
+}
+#survey-details{
+  border-top:2px solid #FFF;
+  border-bottom:2px solid #FFF;
+  font-size:15pt;
+  padding:10px 0;
+  margin-bottom:10px;
+}
+table{
+  width:100%;
+  border-spacing:2px;
+}
+.field-name{
+  width:11%;
+}
+tr{
+  margin:2px 0;
+}
+.field{
+  width:89%;
+}
+.question:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.message{
+  float:right;
+  width:90%;
+}
+.choice{
+  float:right;
+  width:85%;
+}

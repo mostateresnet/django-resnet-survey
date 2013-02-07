@@ -27,7 +27,7 @@
         {% if current_tab == "survey/survey_form.html" %}
             id="currentTab"
         {% endif %}
-      >EDIT</a></li>
+      >Edit</a></li>
       <li><a href='{% url surveyreorder survey.slug %}'
         {% if current_tab == "survey/reorder.html" %}
             id="currentTab"

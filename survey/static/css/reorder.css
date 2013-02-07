@@ -2,7 +2,6 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 60%;
  }
  
 #sortable li {
@@ -10,7 +9,6 @@
     padding: 0.4em;
     padding-left: 1.5em;
     font-size: 1.4em;
-    width: 475px;
 }
 
 #sortable li span {

@@ -8,46 +8,37 @@
 
 {% block javascript %}
 {{ block.super }}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src='{% static "js/results.js" %}'></script>
+{% comment %}<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src='{% static "js/results.js" %}'></script>{% endcomment %}
 {% endblock %}
 
 
 {% block content %}
+  <h3>
+    View Results
+    <div class="help-text">Click on a question field to filter results.</div>
+  </h3>
   <a href='{% url exportresults survey.slug %}'>Export Report to Excel</a>
-  <label class = "foot_note">Note: Click on a question field to filter results.</label>
-  {% regroup choices by question as question_list %}
-    {% for question in question_list %}      
-        <div class='results left'>
-      {% if question.grouper.type == 'TB' or question.grouper.type == 'TA' %}
-        <label id = "{{ survey.slug }}_{{ question.grouper.order_number }}" class = "accordion field_title_accordion">{{ question.grouper }}</label>
-        <ul>
-      {% else %} 
-        <div class='left result'>
-        <label class = "field_title">{{ question.grouper }}</label>
+  <div class="results">
+    {% regroup choices by question as question_list %}
+    {% for question in question_list %}
+      <div class="question-number">
+        <span>{{ forloop.counter }}</span>
+      </div>
+      <div class="result">
+        <h4>{{ question.grouper }}</h4>
         <table>
-      {% endif %}
-
-      {% for choice in question.list %}
-        {% if choice.question.type == 'TB' or choice.question.type == 'TA' %}
-          <li><a href="{% url ballot survey.slug choice.get_first_answer.ballot.pk %}">{{ choice.message }}</a></li>
-        {% else %}             
-          <tr>
-            <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>
-              <a href="{% url surveyresults survey.slug choice.pk %}">{{ choice.message }}:</a>
-            </td>
-            <td>{% firstof choice.num_answers '0' %}</td>
-          </tr>
-        {% endif %}
-      {% endfor %}
-
-      {% if question.grouper.type == 'TB' or question.grouper.type == 'TA' %}
-        </ul>
-      {% else %}             
+          {% for choice in question.list %}
+	    <tr class="choice">
+              <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>
+                <a href="{% url surveyresults survey.slug choice.pk %}">{{ choice.message }}:</a>
+              </td>
+              <td>{% firstof choice.num_answers '0' %}</td>
+            </tr>
+          {% endfor %}
         </table>
-        </div>
-        <div class='piegraph left' id='id_{{ question.grouper.pk }}'></div>
-      {% endif %}
-        </div>
+        <div class='piegraph' id='id_{{ question.grouper.pk }}'></div>
+      </div>
     {% endfor %}
+  </div>
 {% endblock %}

@@ -26,10 +26,10 @@ li
 
 .accordion
 {
-    background-image: url("/static/img/expand.png");
+    background-image: url("../img/collapsed.png");
 }
 
 .expanded 
 {
-    background-image: url("/static/img/collapse.png");
+    background-image: url("../img/expanded.png");
 }
