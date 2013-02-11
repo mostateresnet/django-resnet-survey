@@ -1,7 +1,5 @@
-{% load static from staticfiles %}
-
 {% for question in survey.question_set.all %}
-  <div class="question">
+  <div class="question {{ question.get_type_display }}">
     <div class="question-number">
      <span>{{ forloop.counter }}</span>
     </div>
@@ -12,7 +10,6 @@
     {% if question.type != 'TA' and question.type != 'TB' %}
       {% for choice in question.choice_set.all %}
         <div class="choice">
-          <span class="{{ question.get_type_display }}">{{ question.get_type_display }}</span>
           <input type="text" name="choice-message" value='{{ choice }}' />
         </div>
       {% endfor %}

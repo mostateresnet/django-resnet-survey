@@ -14,21 +14,27 @@
 #toolbox li{
   background-repeat:no-repeat;
   background-image:url('../img/toolbox_icons.png');
-  height:32px;
+  height:30px;
   margin-bottom:10px;
   position:relative;
+  cursor:pointer;
+}
+#toolbox li:hover {
+  background-color:#4E769B;
+  color:#FFFFFF;
 }
 #toolbox li span{
   position:absolute;
   top:8px;
   left:40px;
+  text-transform:uppercase;
 }
-#new-text-area{background-position:0 0;}
-#new-text-box{background-position:0px -63px;}
-#new-check-boxes{background-position:0 -95px;}
-#new-radio-buttons{background-position:0 -32px;}
-#new-drop-down-list{background-position:0 -126px;}
-#submit{background-position:0 -160px;}
+#new-text-area{background-position:0px 0px;}
+#new-text-box{background-position:0px -60px;}
+#new-check-boxes{background-position:0 -90px;}
+#new-radio-buttons{background-position:0 -30px;}
+#new-drop-down-list{background-position:0 -120px;}
+#submit{background-position:0 -150px;}
 form{
   width:68%;
   padding:2% 1%;
@@ -70,7 +76,7 @@ tr{
 .question:after {
     content: ".";
     display: block;
-    height: 0;
+    height: 20px;
     clear: both;
     visibility: hidden;
 }
@@ -80,5 +86,17 @@ tr{
 }
 .choice{
   float:right;
-  width:85%;
+  width:90%;
 }
+.question .choice input[type="text"] {
+  position:relative;
+  left:7%;
+  width:90%;
+}
+.question .choice {
+  background-repeat:no-repeat;
+  background-image:url('../img/choice_icons.png');
+}
+.question.radio .choice{background-position:0px 0px;}
+.question.checkbox .choice{background-position:0px -33px;}
+.question.dropdown .choice{background-position:0px -66px;}

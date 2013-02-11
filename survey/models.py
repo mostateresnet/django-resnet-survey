@@ -107,6 +107,7 @@ class Question(models.Model):
     required = models.BooleanField(default=False)
     order_number = models.PositiveIntegerField(default=0)
 
+    # DO NOT change the display name for these types - the css depends on them
     QUESTION_TYPES = (
         ('TB', 'textbox'),
         ('TA', 'textarea'),
