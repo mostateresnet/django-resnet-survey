@@ -155,9 +155,6 @@ class SurveyResultsView(SurveyDashboardView):
     template_name = 'survey/results.html'
     model = Survey
 
-    def hasAccess(self):
-        return self.get_object().has_results
-
     # order_number (question has an order arg)
 
     def get_context_data(self, *args, **kwargs):
@@ -195,9 +192,6 @@ class SurveyResultsView(SurveyDashboardView):
 
 class BallotResultsView(SurveyDashboardView):
     template_name='survey/survey_ballots.html'
-
-    def hasAccess(self):
-        return self.get_object().has_results
 
     def get_context_data(self, *args, **kwargs):
         context = super(BallotResultsView, self).get_context_data(*args, **kwargs)
