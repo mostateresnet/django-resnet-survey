@@ -296,11 +296,8 @@ class SurveyExportView(SurveyDashboardView):
     def hasAccess(self):
         return self.get_object().has_results
 
-    def get(self, request, slug):
-        survey = self.get_object()
-        if not request.user.is_staff:
-            return HttpResponseForbidden()
 
+    def generateExcelSummary(self, survey):
         wb = xlwt.Workbook()
         ws = wb.add_sheet('Survey Results')
         ws_text = wb.add_sheet('TextResults')
@@ -339,15 +336,55 @@ class SurveyExportView(SurveyDashboardView):
                     ws.write(counter, 0, str(choice))
                     ws.write(counter, 1, choice.answer_set.count())
             counter += 2
+        return wb
 
-        report_title="Test Report"
-        date = datetime.datetime.now().strftime("%m-%d-%Y")
-        response = HttpResponse(mimetype='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=Report_%s_%s.xls' % ('_'.join(report_title.split()), date)
+    def generateExcelFull(self, survey):
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Survey Results')
 
-        wb.save(response)
+        question_font = xlwt.Font()
+        question_font.bold = True
+        question_style = xlwt.XFStyle()
+        question_style.font = question_font
 
-        return response
+        col_counter = 1
+        for question in survey.question_set.all():
+            ws.col(col_counter).width = 256*30
+            ws.write(0, col_counter, str(question), question_style)
+            col_counter = col_counter + 1
+
+        row_counter = 1
+        for ballot in survey.ballot_set.all():
+            col_counter = 1
+            ws.write(row_counter, 0, str(ballot.pk))
+            for answer in ballot.answer_list():
+
+                ws.write(row_counter, col_counter, ','.join(answer))
+                col_counter = col_counter + 1
+            row_counter = row_counter + 1
+        return wb
+
+    def get(self, request, slug):
+        survey = self.get_object()
+        if not request.user.is_staff:
+            return HttpResponseForbidden()
+
+        if 'rtype' in request.GET:
+            if request.GET['rtype'] == 'Summary':
+                wb = self.generateExcelSummary(survey)
+            elif request.GET['rtype'] == 'Full':
+                wb = self.generateExcelFull(survey)
+
+            report_title="Test Report"
+            date = datetime.datetime.now().strftime("%m-%d-%Y")
+            response = HttpResponse(mimetype='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename=Report_%s_%s.xls' % ('_'.join(report_title.split()), date)
+
+            wb.save(response)
+
+            return response
+        else:
+            return HttpResponse(json.dumps({'status': 'failure', 'error': 'Report type not selected!'}), mimetype='application/json')
 
 class SurveyReorderView(SurveyDashboardView):
     template_name = 'survey/reorder.html'

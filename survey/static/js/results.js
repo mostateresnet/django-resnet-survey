@@ -21,8 +21,21 @@ function drawChart( graphdiv ) {
   wrapper.draw();
 }
 
-function setUpGraphs(){
+function setUpGraphs()
+{
   $('.piegraph').each(function(){
     drawChart( $(this) );
   });
 }
+
+$(document).ready(function()
+{
+    $('#excel-report-button').click(function(e)
+    {
+        var EXPORT_EXCEL_URL = $(this).attr('data-export-url');
+        var export_type = $('#excel-report-select').val();
+        window.location.href = EXPORT_EXCEL_URL + "?rtype="+export_type;
+    });
+});
+
+
