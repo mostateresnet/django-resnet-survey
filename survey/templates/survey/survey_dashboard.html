@@ -59,8 +59,7 @@
     <label for='end-date'>End:</label>
     <input type='text' id='end-date' name='end-date' />
   </div>
-  <div class='toggle-label'>Allow Survey Station: <a class='toggle-button' id='toggle_track' hre
-f='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:"No,Yes" }}</a></div>
+  <div class='toggle-label'>Allow Survey Station: <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:"No,Yes" }}</a></div>
 
 
   <a href='{% url qrcode survey.slug %}'>Download QR Code</a>
