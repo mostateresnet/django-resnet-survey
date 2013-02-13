@@ -8,8 +8,8 @@
 
 {% block javascript %}
 {{ block.super }}
-{% comment %}<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src='{% static "js/results.js" %}'></script>{% endcomment %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src='{% static "js/results.js" %}'></script>
 {% endblock %}
 
 
@@ -18,7 +18,17 @@
     View Results
     <div class="help-text">Click on a question field to filter results.</div>
   </h3>
-  <a href='{% url exportresults survey.slug %}'>Export Report to Excel</a>
+
+    <label>Excel Report</label>
+    <select id = 'excel-report-select' name='Excel Report'>
+    <option value='Summary'>Summary</option>
+    <option value='Full'>Full</option>
+    </select>
+
+    <button id='excel-report-button' type='button' data-export-url='{% url exportresults survey.slug %}'>Export</button>
+
+
+
   <div class="results">
     {% regroup choices by question as question_list %}
     {% for question in question_list %}

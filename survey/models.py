@@ -191,3 +191,14 @@ class Ballot(models.Model):
             question_tuple = (question, choice_list)
             question_list.append(question_tuple)
         return question_list
+
+    def answer_list(self):
+        """
+        Returns a list of answers
+        """
+        answer_list = []
+        for question in self.survey.question_set.all():
+            answer = self.answer_set.filter(choice__question=question).values_list('choice__message', flat=True)
+            answer_list.append(answer);
+        return answer_list
+
