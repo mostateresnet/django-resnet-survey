@@ -1,96 +1,109 @@
-{% extends "survey/base.html" %}
 {% load static from staticfiles %}
-
-{% block title %}{{ survey.title }}{% endblock %}
-
-{% block css %}
-{{ block.super }}
-<link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" />
-<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.mobile.resnet.min.css' %}" />
-{% endblock %}
-
-{% block javascript %}
-{{ block.super }}
-  <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
-  <script src="{% static 'js/survey.js' %}"></script>
-{% endblock %}
-
-{% block extrahead %}
-    {{ block.super }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-{% endblock %}
 
-{% block content %}
-<div data-role="header">
-    <h1>{{ survey.title }}</h1>
-</div>
-<div data-role="content">
-    <form action='{% url survey slug=survey.slug %}' method='POST'>
-      {% csrf_token %}
-      {% for question in survey.question_set.all %}  
-      <div class="{{ question.required|yesno:'required,' }} question_type_{{ question.type }}">
+    {% block css %}
+      <link rel="shortcut icon" href='{% static "img/favicon.ico" %}' />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui-1.9.2.custom.css' %}" />
+      <link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile.structure-1.1.0.min.css" />     
+      <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.mobile.resnet.min.css' %}" />
+    {% endblock %}
+        <script type="text/javascript">
+            STATIC_URL="{{ STATIC_URL }}";
+        </script>
+    {% block javascript %}
+      <script type='text/javascript' src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+      <script type='text/javascript' src='{% static "js/base.js" %}'></script>
+      <script type='text/javascript' src='{% static "js/jquery-ui-1.8.23.custom.min.js" %}'></script>
+      <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+      <script src="{% static 'js/survey.js' %}"></script>
+    {% endblock %}
+    <title>{% block title %}{{ survey.title }}{% endblock %}</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      {% block body %}
+        {% block content %}
+        <div data-role="header">
+            <h1>{{ survey.title }}</h1>
+        </div>
+        <div data-role="content">
+            <form action='{% url survey slug=survey.slug %}' method='POST'>
+              {% csrf_token %}
+              {% for question in survey.question_set.all %}  
+              <div class="{{ question.required|yesno:'required,' }} question_type_{{ question.type }}">
 
-        {% if question.type == 'TB' %}
-            <label for="q{{ question.pk }}">{{ forloop.counter }}. 
-              <span class = "ui-header-text">{{ question }}</span>
-              {% if question.required %}*{% endif %}
-            </label>
-            <input type="text" name="q{{ question.pk }}" id="q{{ question.pk }}" value="" />
-        {% endif %}
-        
-        {% if question.type == 'TA' %}
-            <label for="q{{ question.pk }}">{{ forloop.counter }}. 
-              <span class = "ui-header-text">{{ question }}</span>
-              {% if question.required %}*{% endif %}
-            </label>
-            <textarea id="q{{ question.pk }}" name="q{{ question.pk }}" ></textarea>
-        {% endif %}
-        
-        {% if question.type == 'RA' %}
-            <fieldset data-role="controlgroup">
-                <legend>{{ forloop.counter }}. 
-                  <span class = "ui-header-text">{{ question }}</span>
-                  {% if question.required %}*{% endif %}
-                </legend>
-                {% for choice in question.choice_set.all %}
-                    <input type="radio" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" />
-                    <label for="c{{ choice.pk }}">{{ choice }}</label>
-                {% endfor %}
-            </fieldset>
-        {% endif %}
-    
-        {% if question.type == 'CH' %}
-            <div data-role="controlgroup">
-                <legend>{{ forloop.counter }}. 
-                  <span class = "ui-header-text">{{ question }}</span>
-                  {% if question.required %}*{% endif %}
-                </legend>
-                {% for choice in question.choice_set.all %}
-                    <input type="checkbox" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" />
-                    <label for="c{{ choice.pk }}">{{ choice }}</label>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        {% if question.type == 'DD' %}
-            <label for="c{{ choice.pk }}">{{ forloop.counter }}. 
-              <span class = "ui-header-text">{{ question }}</span>
-              {% if question.required %}*{% endif %}
-            </label>
+                {% if question.type == 'TB' %}
+                    <label for="q{{ question.pk }}">{{ forloop.counter }}. 
+                      <span class = "ui-header-text">{{ question }}</span>
+                      {% if question.required %}*{% endif %}
+                    </label>
+                    <input type="text" name="q{{ question.pk }}" id="q{{ question.pk }}" value="" />
+                {% endif %}
+                
+                {% if question.type == 'TA' %}
+                    <label for="q{{ question.pk }}">{{ forloop.counter }}. 
+                      <span class = "ui-header-text">{{ question }}</span>
+                      {% if question.required %}*{% endif %}
+                    </label>
+                    <textarea id="q{{ question.pk }}" name="q{{ question.pk }}" ></textarea>
+                {% endif %}
+                
+                {% if question.type == 'RA' %}
+                    <fieldset data-role="controlgroup">
+                        <legend>{{ forloop.counter }}. 
+                          <span class = "ui-header-text">{{ question }}</span>
+                          {% if question.required %}*{% endif %}
+                        </legend>
+                        {% for choice in question.choice_set.all %}
+                            <input type="radio" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" />
+                            <label for="c{{ choice.pk }}">{{ choice }}</label>
+                        {% endfor %}
+                    </fieldset>
+                {% endif %}
+            
+                {% if question.type == 'CH' %}
+                    <div data-role="controlgroup">
+                        <legend>{{ forloop.counter }}. 
+                          <span class = "ui-header-text">{{ question }}</span>
+                          {% if question.required %}*{% endif %}
+                        </legend>
+                        {% for choice in question.choice_set.all %}
+                            <input type="checkbox" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" />
+                            <label for="c{{ choice.pk }}">{{ choice }}</label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                {% if question.type == 'DD' %}
+                    <label for="c{{ choice.pk }}">{{ forloop.counter }}. 
+                      <span class = "ui-header-text">{{ question }}</span>
+                      {% if question.required %}*{% endif %}
+                    </label>
 
-            <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
-              <option value="_BAD_">Select one</option>
-              {% for choice in question.choice_set.all %}
-                <option value="c{{ choice.pk }}">{{ choice }}</option>
+                    <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
+                      <option value="_BAD_">Select one</option>
+                      {% for choice in question.choice_set.all %}
+                        <option value="c{{ choice.pk }}">{{ choice }}</option>
+                      {% endfor %}
+                    </select>
+                {% endif %}
+              </div>      
               {% endfor %}
-            </select>
-        {% endif %}
-      </div>      
-      {% endfor %}
-       
-      {% if survey.is_active %}
-        <input type="submit" value="Submit"/>
-      {% endif %}
-    </form>
-</div>
+               
+              {% if survey.is_active %}
+                <input type="submit" value="Submit"/>
+              {% endif %}
+            </form>
+        </div>
+    {% endblock %}
 {% endblock %}
+
+    </div>
+  </body>
+</html>
+
