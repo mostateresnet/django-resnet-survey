@@ -1,37 +1,24 @@
-{% load static %}
 {% block question %}
-<div class="question">
-  <h2 class='question-type-name'>{% block question_type_name %}{% endblock %}</h2>
-  <input type="checkbox" name="question-required" id="question-required"/>
-  <label for="question-required">Required</label>
-  <div class="message">
-    <label>{% block message_label %}Question:{% endblock %}</label>
-    <input type="hidden" name="question-type" value="{% block question_type %}{% endblock %}" />
-    <input type="text" name="question-message" />
-    <button type="button" class="remove-question">
-      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
-    </button>
+  <div class="question {% block question_type_class %}{{ question.get_type_display }}{% endblock %}">
+    <div class="question-number">
+      <span></span>
+    </div>
+    <div class="message">
+      <input type="hidden" name="question-type" value='{% block question_type %}{{ question.type }}{% endblock %}' />
+      <input type="text" name="question-message" placeholder="Question" value='{{ question.message }}' />
+      <span class="delete" title="Delete this question"></span>
+    </div>
+    
+    {% block question_choices %}
+      {% if question.type != 'TA' and question.type != 'TB' %}
+        {% for choice in question.choice_set.all %}
+          {% include 'survey/includes/question_choice.html' %}
+        {% empty %}
+          {% include 'survey/includes/question_choice.html' %}
+          {% include 'survey/includes/question_choice.html' %}
+        {% endfor %}
+        <a class="add-choice toggle-button">Add another choice</a>
+      {% endif %}
+    {% endblock %}
   </div>
-  {% block question_choices %}
-  <div class="choice">
-    <label for="choice-message">Choice: </label>
-    <input type="text" name="choice-message" />
-    <button type="button" class="remove-choice">
-      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
-    </button>
-    <br />
-  </div>
-  <div class="choice">
-    <label for="choice-message">Choice: </label>
-    <input type="text" name="choice-message" />
-    <button type="button" class="remove-choice">
-      <div class="img-button-text"><img src="{% static 'img/remove.png' %}" alt="" height="15" /></div>
-    </button>
-    <br />
-  </div>
-  <button type="button" class="new-choice">
-    <div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Choice</span></div>
-  </button>
-  {% endblock %}
-</div>
 {% endblock %}

@@ -38,6 +38,12 @@ blockquote:before, blockquote:after, q:before, q:after {
 table {
   border-spacing: 0;
 }
+/* Various placeholder styles */
+.placeholder{color: #a9a9a9;}
+::-webkit-input-placeholder{color: #a9a9a9;}
+:-moz-placeholder{color: #a9a9a9;}
+::-moz-placeholder{color: #a9a9a9;}
+:-ms-input-placeholder{color: #a9a9a9;}
 /*************************** END RESET CSS ******************************************/
 media (min-width: 50em) {
   #wrapper {
@@ -51,6 +57,9 @@ media (min-width: 50em) {
 }
 body{
   font-family: "Century Gothic", helvitica, arial, sans-serif;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
 }
 h1,h2,h3,h4,h5,h6{
   font-weight:bold;

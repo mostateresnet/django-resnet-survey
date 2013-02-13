@@ -18,6 +18,11 @@
   margin-bottom:10px;
   position:relative;
   cursor:pointer;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 #toolbox li:hover {
   background-color:#4E769B;
@@ -34,12 +39,16 @@
 #new-check-boxes{background-position:0 -90px;}
 #new-radio-buttons{background-position:0 -30px;}
 #new-drop-down-list{background-position:0 -120px;}
-#submit{background-position:0 -150px;}
+#submit{
+  background-position:0 -150px;
+  margin-bottom:0px;
+}
 form{
   width:68%;
   padding:2% 1%;
   padding-top:0;
   float:left;
+  counter-reset:question_count;
 }
 input[type=text]{
   width:97%;
@@ -74,19 +83,25 @@ tr{
   width:89%;
 }
 .question:after {
-    content: ".";
-    display: block;
-    height: 20px;
-    clear: both;
-    visibility: hidden;
+  content: ".";
+  display: block;
+  height: 20px;
+  clear: both;
+  visibility: hidden;
 }
-.message{
+.choice, .message{
   float:right;
   width:90%;
+  position:relative;
 }
-.choice{
+.add-choice{
   float:right;
-  width:90%;
+  width:77%;
+  cursor:pointer;
+}
+.question .question-number span:before {
+  counter-increment:question_count;
+  content:counter(question_count);
 }
 .question .choice input[type="text"] {
   position:relative;
@@ -100,3 +115,22 @@ tr{
 .question.radio .choice{background-position:0px 0px;}
 .question.checkbox .choice{background-position:0px -33px;}
 .question.dropdown .choice{background-position:0px -66px;}
+
+#survey-menu {
+  border-top:2px solid #C9DA9E;
+  padding-top:10px;
+}
+.message:hover input[type=text]{width:92%;}
+.choice:hover input[type=text]{width:85%;}
+.message:hover input[type=text], .choice:hover input[type=text]{
+  padding-right:28px;
+}
+.message:hover .delete, .choice:hover .delete {
+  width:20px;
+  height:20px;
+  position:absolute;
+  top:6px;
+  right:5px;
+  cursor:pointer;
+  background-image:url('../img/delete_icon.png');
+}

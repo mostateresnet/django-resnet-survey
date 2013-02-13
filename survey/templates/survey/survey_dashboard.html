@@ -22,7 +22,7 @@
             id="currentTab"
         {% endif %}
     >GENERAL</a></li>
-    {% if not survey.is_active and not survey.closed %}
+    {% if survey.is_unpublished %}
       <li><a href='{% url surveyedit survey.slug %}'
         {% if current_tab == "survey/survey_form.html" %}
             id="currentTab"
@@ -35,14 +35,18 @@
       >REORDER</a></li>
     {% endif %}
     <li><a href='{% url surveyresults survey.slug %}'
-        {% if current_tab == "survey/results.html" %}
-            id="currentTab"
-        {% endif %}
+      {% if current_tab == "survey/results.html" %}
+          id="currentTab"
+      {% endif %}
     >RESULTS</a></li>
     <li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>
     {% block extra_tabs %}
-        <li><a href='{% url survey survey.slug %}' target ='_blank'>VIEW</a>
-        <li><a href='{% url surveyclone survey.slug %}'>CLONE</a>
+      <li>
+        <a href='{% url survey survey.slug %}' target ='_blank'>
+          {% if survey.is_unpublished %}PRE{% endif %}VIEW
+        </a>
+      </li>
+      <li><a href='{% url surveyclone survey.slug %}'>CLONE</a></li>
     {% endblock %}
   </ul>
 {% endblock %}

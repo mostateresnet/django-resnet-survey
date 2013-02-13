@@ -25,4 +25,19 @@ function eraseCookie(name) {
     createCookie(name,"",-1);
 }
 
-
+$(function(){
+    $(document).on('focus', '[placeholder]', function() {
+        var input = $(this);
+        if (input.val() == input.attr('placeholder')) {
+            input.val('');
+            input.toggleClass('placeholder', false);
+        }
+    }).on('blur', '[placeholder]', function() {
+        var input = $(this);
+        if (input.val() == '' || input.val() == input.attr('placeholder')) {
+            input.toggleClass('placeholder', true);
+            input.val(input.attr('placeholder'));
+        }
+    });
+    $('[placeholder]').blur();
+});

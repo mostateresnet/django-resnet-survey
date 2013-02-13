@@ -139,10 +139,10 @@ class SurveyEditView(SurveyDashboardView):
         # due to cascading deletes, this will also delete choices
         survey.question_set.all().delete()
         # edit the title if it has changed
-        survey.title = data.get('title')
-        #survey.use_cookies = data.get('use_cookies')
+        survey.title = data.get('title', '')
+        survey.description = data.get('description', '')
         #edit slug if it has changed
-        survey.slug = slugify(data.get('slug'))
+        survey.slug = slugify(data.get('slug', ''))
         try:
             survey.save()
         except IntegrityError:
@@ -226,12 +226,14 @@ class SurveyNewView(TemplateView):
 
     def post(self, request):
         data = json.loads(request.POST.get('r'))
-        slug = slugify(data.get('title', ''))
-        survey = Survey.objects.create(slug=slug, title=data.get('title', ''))
+        slug = slugify(data.get('slug', ''))
+        try:
+            survey = Survey.objects.create(slug=slug, title=data.get('title', ''), description=data.get('description', ''))
+        except IntegrityError:
+            return HttpResponse(json.dumps({'status': 'failure', 'error': 'That SLUG already exists'}), mimetype='application/json')
         questions = data.get('questions', [])
-        survey.save()
         Question.add_questions(questions, survey)
-        return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[slug])}), mimetype='application/json')
+        return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
 
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyNewView, self).get_context_data(*args, **kwargs)
