@@ -39,14 +39,14 @@
           id="currentTab"
       {% endif %}
     >RESULTS</a></li>
-    <li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>
+    {% comment %}<li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>{% endcomment %}
     {% block extra_tabs %}
       <li>
         <a href='{% url survey survey.slug %}' target ='_blank'>
           {% if survey.is_unpublished %}PRE{% endif %}VIEW
         </a>
       </li>
-      <li><a href='{% url surveyclone survey.slug %}'>CLONE</a></li>
+      <li><a id="clone">CLONE</a></li>
     {% endblock %}
   </ul>
 {% endblock %}

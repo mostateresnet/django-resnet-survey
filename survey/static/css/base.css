@@ -142,6 +142,7 @@ a{
 }
 .tabs li a:hover{
   background:#4E769B;
+  cursor: pointer;
 }
 .toggle-label{
   margin-top: 12px;
