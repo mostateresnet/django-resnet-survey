@@ -40,7 +40,6 @@ class Survey(models.Model):
                 new_choice.question = new_question
                 new_choice.save()
 
-
     @property
     def closed(self):
         return self.end_date and self.end_date <= now()
@@ -71,7 +70,7 @@ class Survey(models.Model):
         # Thu, 08 Nov 2012 22:03:00 GMT
         setattr(self, field, dt)
         self.save()
-    
+
     @property
     def has_results(self):
         return self.ballot_set.all().count() > 0
@@ -136,7 +135,8 @@ class Question(models.Model):
         """
         counter = 1
         for question_data in questions:
-            question = cls.objects.create(survey=survey, message=question_data.get('message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
+            question = cls.objects.create(survey=survey, message=question_data.get(
+                'message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
             counter += 1
             for choice_message in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice_message)
@@ -199,6 +199,5 @@ class Ballot(models.Model):
         answer_list = []
         for question in self.survey.question_set.all():
             answer = self.answer_set.filter(choice__question=question).values_list('choice__message', flat=True)
-            answer_list.append(answer);
+            answer_list.append(answer)
         return answer_list
-

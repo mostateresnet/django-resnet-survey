@@ -17,11 +17,12 @@ import xlwt
 import datetime
 from xlwt import Workbook, Formula, easyxf
 
+
 def survey_list_processor(request=None):
     return {
-    'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
-    'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
-    'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('end_date')[:10]
+        'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
+        'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
+        'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('end_date')[:10]
     }
 
 
@@ -30,6 +31,7 @@ class IndexView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         return survey_list_processor()
+
 
 class AccessMixin(object):
     """
@@ -47,6 +49,7 @@ class AccessMixin(object):
         if not self.hasAccess():
             raise Http404
         return handler
+
 
 class SurveyDashboardView(AccessMixin, DetailView):
     model = Survey
@@ -75,7 +78,7 @@ class SurveyDashboardView(AccessMixin, DetailView):
 class SurveyView(View):
     def inactive_survey_response(self, request, duplicate=False):
         return render_to_response('survey/survey_closed.html',
-                               context_instance=RequestContext(request, {'duplicate': duplicate}))
+                                  context_instance=RequestContext(request, {'duplicate': duplicate}))
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
@@ -91,7 +94,8 @@ class SurveyView(View):
         # if survey.use_cookies is true
         # and also check to see if the survey is active
         if (not request.COOKIES.get(survey.cookie, None) or not survey.use_cookies) and survey.is_active:
-            response = render_to_response('survey/survey_success.html', context_instance=RequestContext(request, {'redirect': not survey.use_cookies, 'survey': survey }))
+            response = render_to_response(
+                'survey/survey_success.html', context_instance=RequestContext(request, {'redirect': not survey.use_cookies, 'survey': survey}))
             # the cookie doesn't exist yet, it will be added to the response here
             # but only if survey.use_cookies is true
             if (survey.use_cookies):
@@ -141,7 +145,7 @@ class SurveyEditView(SurveyDashboardView):
         # edit the title if it has changed
         survey.title = data.get('title', '')
         survey.description = data.get('description', '')
-        #edit slug if it has changed
+        # edit slug if it has changed
         survey.slug = slugify(data.get('slug', ''))
         try:
             survey.save()
@@ -161,14 +165,15 @@ class SurveyResultsView(SurveyDashboardView):
         context = super(SurveyResultsView, self).get_context_data(*args, **kwargs)
         survey = self.object
         if 'choice_id' in self.kwargs:
-            d = Answer.objects.filter(choice=self.kwargs['choice_id']).values_list('ballot', flat = True)
+            d = Answer.objects.filter(choice=self.kwargs['choice_id']).values_list('ballot', flat=True)
             b = Ballot.objects.filter(pk__in=d)
-            q = Answer.objects.filter(ballot__in=b).values_list('choice', flat = True)
+            q = Answer.objects.filter(ballot__in=b).values_list('choice', flat=True)
             # count_choices choices that have answers
-            count_choices = Choice.objects.filter(pk__in = q).select_related('question').order_by('question__order_number').annotate(num_answers=Count('answer'))
+            count_choices = Choice.objects.filter(
+                pk__in=q).select_related('question').order_by('question__order_number').annotate(num_answers=Count('answer'))
             # zero_choices choices that do not have answers
             zero_choices = Choice.objects.filter(question__in=survey.question_set.all()) \
-                .exclude(Q(question__type='TA')|Q(question__type='TB')|Q(pk__in=count_choices)) \
+                .exclude(Q(question__type='TA') | Q(question__type='TB') | Q(pk__in=count_choices)) \
                 .select_related('question')
 
             combined_choices = []
@@ -182,16 +187,15 @@ class SurveyResultsView(SurveyDashboardView):
 
             choices = combined_choices
         else:
-            print survey.question_set.all()
             choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))
 
-        query = {'choices': choices, 'choice_id': int(self.kwargs.get('choice_id', -1)) }
+        query = {'choices': choices, 'choice_id': int(self.kwargs.get('choice_id', -1))}
         context.update(query)
         return context
 
 
 class BallotResultsView(SurveyDashboardView):
-    template_name='survey/survey_ballots.html'
+    template_name = 'survey/survey_ballots.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(BallotResultsView, self).get_context_data(*args, **kwargs)
@@ -206,12 +210,12 @@ class BallotResultsView(SurveyDashboardView):
         try:
             next_ballot = Ballot.objects.filter(pk__gt=ballot.pk, survey=self.object).order_by('pk')[0]
         except IndexError:
-            next_ballot=None
+            next_ballot = None
         try:
             previous_ballot = Ballot.objects.filter(pk__lt=ballot.pk, survey=self.object).order_by('-pk')[0]
         except IndexError:
-            previous_ballot=None
-        context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot":previous_ballot})
+            previous_ballot = None
+        context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot": previous_ballot})
         return context
 
 
@@ -242,6 +246,7 @@ class SurveyPublishView(View):
             survey.publish()
         return HttpResponseRedirect(reverse('index'))
 
+
 class SurveyTrackView(View):
     def get(self, request, slug):
         survey = Survey.objects.get(slug=slug)
@@ -249,12 +254,14 @@ class SurveyTrackView(View):
             survey.track(not survey.use_cookies)
         return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
 
+
 class SurveyCloseView(View):
     def get(self, request, slug):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
             survey.close()
         return HttpResponseRedirect(reverse('index'))
+
 
 class SurveyCloneView(View):
     # Ajax View
@@ -266,17 +273,18 @@ class SurveyCloneView(View):
                 try:
                     new_survey = Survey.objects.create(title=title, slug=slugify(title))
                     # survey successfully created
-                    survey.clone( new_survey )
+                    survey.clone(new_survey)
                 except IntegrityError:
                     return HttpResponse(json.dumps({
-                            'status': 'IntegrityError',
-                            'error': 'A survey with that title already exists.'
-                        }), mimetype='application/json')
+                        'status': 'IntegrityError',
+                        'error': 'A survey with that title already exists.'
+                    }), mimetype='application/json')
                 return HttpResponse(json.dumps({
-                        'status': 'success',
-                        'url': reverse('surveydashboard', args=(new_survey.slug,))
-                       }), mimetype='application/json')
+                    'status': 'success',
+                    'url': reverse('surveydashboard', args=(new_survey.slug,))
+                }), mimetype='application/json')
         return HttpResponse(json.dumps({'status': 'Auth Error', 'error': 'You are not authorized to do that.'}), mimetype='application/json')
+
 
 class SurveyQRCodeView(View):
     def get(self, request, slug):
@@ -287,11 +295,11 @@ class SurveyQRCodeView(View):
         img.save(response, 'PNG')
         return response
 
+
 class SurveyExportView(SurveyDashboardView):
 
     def hasAccess(self):
         return self.get_object().has_results
-
 
     def generateExcelSummary(self, survey):
         wb = xlwt.Workbook()
@@ -302,8 +310,8 @@ class SurveyExportView(SurveyDashboardView):
         question_font.bold = True
         question_style = xlwt.XFStyle()
         question_style.font = question_font
-        ws.col(0).width = 256*50
-        ws_text.col(0).width = 256*75
+        ws.col(0).width = 256 * 50
+        ws_text.col(0).width = 256 * 75
 
         ws.write(0, 0, "Question", question_style)
         ws.write(0, 1, "Tally", question_style)
@@ -320,11 +328,11 @@ class SurveyExportView(SurveyDashboardView):
                 counter_text += 2
                 ws_text.write(counter_text, 0, str(question), question_style)
                 counter += 1
-                ws.write(counter, 0, xlwt.Formula("HYPERLINK(\"#TextResults!A" + str(counter_text+1) + "\", \"Click to see text results\")"))
+                ws.write(counter, 0, xlwt.Formula("HYPERLINK(\"#TextResults!A" + str(counter_text + 1) + "\", \"Click to see text results\")"))
                 for choice in question.choice_set.all():
                     for answer in choice.answer_set.all():
                         counter_text += 1
-                        ws_text.row(counter_text).height = 256*3
+                        ws_text.row(counter_text).height = 256 * 3
                         ws_text.write(counter_text, 0, str(answer), text_question_style)
             elif question.type == 'RA' or question.type == 'CH' or question.type == 'DD':
                 for choice in question.choice_set.all():
@@ -345,7 +353,7 @@ class SurveyExportView(SurveyDashboardView):
 
         col_counter = 1
         for question in survey.question_set.all():
-            ws.col(col_counter).width = 256*30
+            ws.col(col_counter).width = 256 * 30
             ws.write(0, col_counter, str(question), question_style)
             col_counter = col_counter + 1
 
@@ -371,7 +379,7 @@ class SurveyExportView(SurveyDashboardView):
             elif request.GET['rtype'] == 'Full':
                 wb = self.generateExcelFull(survey)
 
-            report_title="Test Report"
+            report_title = "Test Report"
             date = datetime.datetime.now().strftime("%m-%d-%Y")
             response = HttpResponse(mimetype='application/ms-excel')
             response['Content-Disposition'] = 'attachment; filename=Report_%s_%s.xls' % ('_'.join(report_title.split()), date)
@@ -382,6 +390,7 @@ class SurveyExportView(SurveyDashboardView):
         else:
             return HttpResponse(json.dumps({'status': 'failure', 'error': 'Report type not selected!'}), mimetype='application/json')
 
+
 class SurveyReorderView(SurveyDashboardView):
     template_name = 'survey/reorder.html'
 
@@ -389,14 +398,12 @@ class SurveyReorderView(SurveyDashboardView):
         return self.get_object().is_unpublished
 
     def post(self, request, slug):
-        #get POST data
+        # get POST data
         orderDict = request.POST
-        #update questions with new order_number
+        # update questions with new order_number
         with transaction.commit_on_success():
             for pk, order in orderDict.iteritems():
                 pk = pk[3:]
-                Question.objects.filter(pk = pk).update(order_number = order[0])
-        #return success
+                Question.objects.filter(pk=pk).update(order_number=order[0])
+        # return success
         return HttpResponse(json.dumps({'status': 'success'}), mimetype='application/json')
-
-

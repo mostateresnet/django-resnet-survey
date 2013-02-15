@@ -217,6 +217,7 @@ class SurveyViewTest(TestCase):
         self.survey = Survey.objects.get(pk=self.survey.pk)
         self.assertFalse(self.survey.is_active)
 
+
 class SurveyDashboardViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
@@ -224,12 +225,12 @@ class SurveyDashboardViewTest(TestCase):
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
         self.arbitrary_date_str = 'Mon, 01 Jan 2013 00:00:00 GMT'
         self.arbitrary_date = datetime.strptime(self.arbitrary_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
-    
+
     def test_set_future_start_date(self):
         self.client.post(reverse('surveydashboard', args=[self.survey.slug]), {'future_publish_date': self.arbitrary_date_str})
         self.survey = Survey.objects.get(slug="my-new-survey")
         self.assertEqual(self.survey.start_date, self.arbitrary_date)
-    
+
     def test_set_future_end_date(self):
         self.client.post(reverse('surveydashboard', args=[self.survey.slug]), {'future_close_date': self.arbitrary_date_str})
         self.survey = Survey.objects.get(slug="my-new-survey")
