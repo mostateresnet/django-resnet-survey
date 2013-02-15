@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.timezone import now, utc
+from django.utils.timezone import now, get_current_timezone
 from datetime import datetime
 
 
@@ -64,10 +64,15 @@ class Survey(models.Model):
         self.end_date = dt
         self.save()
 
-    def set_future_date(self, field, dtStr):
-        dt = datetime.strptime(dtStr, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
-
-        # Thu, 08 Nov 2012 22:03:00 GMT
+    def set_date(self, field, dtStr, tmStr):
+        if dtStr == "":
+            setattr(self, field, None)
+            self.save()
+            return
+        try:
+            dt = datetime.strptime(dtStr+ " " +tmStr, '%m/%d/%Y %I:%M%p').replace(tzinfo=get_current_timezone())
+        except ValueError:
+            dt = datetime.strptime(dtStr, '%m/%d/%Y').replace(tzinfo=get_current_timezone())
         setattr(self, field, dt)
         self.save()
 

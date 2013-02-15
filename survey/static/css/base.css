@@ -226,7 +226,7 @@ header{
   padding:5px;
 }
 #survey-duration input{
-  margin-right:10%;
+  width:15%;
 }
 #sortable li{
   cursor:move;
@@ -246,4 +246,19 @@ header{
   width:99%;
   text-align:center;
   font-weight:bold;
+}
+.ui-datepicker-trigger{
+  background-image:url('../img/calendar_icon.png');
+  background-position: 0px -2px;
+  width: 15px;
+  height: 15px;
+  position: relative;
+  top: 5px;
+  right: 20px;
+}
+.absolute{
+  width:0;
+  height:0;
+  position:absolute;
+  text-align:center;
 }

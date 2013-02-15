@@ -9,6 +9,7 @@ urlpatterns = patterns(
     url(r'^new/$', login_required(SurveyNewView.as_view()), name='newsurvey'),
     url(r'^(?P<slug>[-_\w]+)/$', SurveyView.as_view(), name='survey'),
     url(r'^(?P<slug>[-_\w]+)/edit/$', login_required(SurveyEditView.as_view()), name='surveyedit'),
+    url(r'^(?P<slug>[-_\w]+)/duration/$', login_required(SurveyDurationView.as_view()), name='surveyduration'),
     url(r'^(?P<slug>[-_\w]+)/publish/$', login_required(SurveyPublishView.as_view()), name='publishsurvey'),
     url(r'^(?P<slug>[-_\w]+)/close/$', login_required(SurveyCloseView.as_view()), name='closesurvey'),
     url(r'^(?P<slug>[-_\w]+)/track/$', login_required(SurveyTrackView.as_view()), name='surveytrack'),

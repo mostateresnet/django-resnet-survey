@@ -1,32 +1,19 @@
-function edit_future_date_handler(e){
+function save_survey_duration(e){
   e.preventDefault();
-  $this = $(this);
-  var divParent = $this.parents('.future-wrapper');
-  divParent.find('p').toggle();
-  divParent.find('.hidden').toggle();
-  text = $this.text() == 'Edit' ? 'Cancel' : 'Edit';
-  $this.text(text);
-}
-
-function update_future_date(e){
-  e.preventDefault();
-  var $this = $(this);
-  var future_date = $this.siblings('.future_date');
-  var formData = {}
-  
-  formData[ future_date.attr('name') ] = new Date(future_date.val()).toUTCString();
-
-  $.post(FUTURE_URL, formData, function(data){
-    $this.parents('.future-wrapper').html(data);
-  });
-}
-
-function verify_survey_close(e)
-{
-  var x = confirm('This will permanently close this survey, are you sure?')
-  if( !x ){
-  e.preventDefault(); 
+  var data = {};
+  data.start_date = $('input[name="start-date"]').val();
+  data.start_time = $('input[name="start-time"]').val();
+  data.end_date = $('input[name="end-date"]').val();
+  data.end_time = $('input[name="end-time"]').val();
+  data.set_duration = "";
+  if(data.end_time === ""){
+    delete data.end_time;
   }
+  $.post($(this).attr('data-url'), data, function(response){
+    if('errors' in response){
+      alert(response.errors);
+    }
+  });
 }
 
 function clone_survey_dialog(e){
@@ -43,10 +30,24 @@ function clone_survey_dialog(e){
     });
 }
 
-$(document).ready(function()
-{
-  $('#close_survey').click(verify_survey_close);
+$(document).ready(function(){
   $('#clone').click(clone_survey_dialog);
+  $('input[name="set-duration"]').click(save_survey_duration);
+  // Datepicker
+  $('input[name="start-date"], input[name="end-date"]').datepicker({
+    showOn: "button",
+    buttonImageOnly: true,
+    buttonText: "Click to pick a date.",
+    minDate:new Date(),
+  });
+  // to remove the space preserved by the relative positiong
+  // there needs to be an absolutely positioned wrapper
+  $('.ui-datepicker-trigger').wrap('<span class="absolute" />');
+  // Timepicker
+  $('input[name="start-time"], input[name="end-time"]').timepicker({ 
+    'scrollDefaultNow': true,
+    'step': 15
+  });
   $('input[name="submit-clone"]').click(function(e){
     e.preventDefault();
     var div = $(this).closest('div');

@@ -3,14 +3,13 @@
 
 {% block css %}
 {{ block.super }}
-<link type='text/css' rel='stylesheet' href='{% static "css/jquery-ui-timepicker-addon.css" %}' />
+<link type='text/css' rel='stylesheet' href='{% static "css/jquery.timepicker.css" %}' />
 {% endblock %}
 
 {% block javascript %}
 {{ block.super }}
-<script type='text/javascript' src='{% static "js/jquery.slider-access.js" %}'></script>
-<script type='text/javascript' src='{% static "js/jquery.timepicker-add-on.min.js" %}'></script>
 <script type='text/javascript' src='{% static "js/ajaxsend.js" %}'></script>
+<script type='text/javascript' src='{% static "js/jquery.timepicker.min.js" %}'></script>
 <script type='text/javascript' src='{% static "js/survey_dashboard.js" %}'></script>
 {% endblock %}
 
@@ -65,13 +64,16 @@
 
   <h3>
     Survey Duration
-    <div class='help-text'>Select a box to choose a date</div>
+    <div class='help-text'>The date and time for a survey to start and end</div>
   </h3>
   <div id='survey-duration'>
-    <label for='start-date'>Start:</label>
-    <input type='text' id='start-date' name='start-date' />
-    <label for='end-date'>End:</label>
-    <input type='text' id='end-date' name='end-date' />
+    Start:
+    <input type="text" id="start-date" name="start-date" value='{{ survey.start_date|date:"m/d/Y" }}' />
+    <input type="text" name="start-time" value='{{ survey.start_date|date:"h:iA" }}' />
+    End:
+    <input type="text" id="end-date" name="end-date" value='{{ survey.end_date|date:"m/d/Y" }}' />
+    <input type="text" name="end-time" value='{{ survey.end_date|date:"h:iA" }}' />
+    <input data-url='{% url surveyduration survey.slug %}' class="button" type="submit" name="set-duration" value="Save Duration" />
   </div>
   <div class='toggle-label'>Allow Survey Station: <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:"No,Yes" }}</a></div>
 

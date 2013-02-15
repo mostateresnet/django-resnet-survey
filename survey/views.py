@@ -42,7 +42,7 @@ class AccessMixin(object):
     For example: results should only be allowed on a closed survey.
     """
     def hasAccess(self):
-        raise NotImplementedError("You must implement that hasAccess() method on all DetailAccessView's.")
+        raise NotImplementedError("You must implement the hasAccess() method on all DetailAccessView's.")
 
     def dispatch(self, request, *args, **kwargs):
         handler = super(AccessMixin, self).dispatch(request, *args, **kwargs)
@@ -237,6 +237,34 @@ class SurveyNewView(TemplateView):
         context = super(SurveyNewView, self).get_context_data(*args, **kwargs)
         context.update(survey_list_processor())
         return context
+
+
+class SurveyDurationView(SurveyDashboardView):
+    def get(self, request):
+        return Http404()
+
+    def post(self, request, slug):
+        errors = []
+        if 'set_duration' in request.POST:
+            survey = Survey.objects.get(slug=slug)
+            survey.set_date('start_date', 
+                            request.POST.get('start_date', ''),
+                            request.POST.get('start_time', '')
+                            )
+            if 'end_date' in request.POST:
+                survey.set_date('end_date', 
+                                request.POST.get('end_date', ''),
+                                request.POST.get('end_time', '')
+                                )
+        if errors:
+            return HttpResponse(json.dumps({
+                        'status': 'error',
+                        'errors': errors 
+                        }), mimetype='application/json')
+        return HttpResponse(json.dumps({
+                    'status': 'success',
+                    'success': ''
+                    }), mimetype='application/json')
 
 
 class SurveyPublishView(View):
