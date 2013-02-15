@@ -17,8 +17,18 @@
           {% include 'survey/includes/question_choice.html' %}
           {% include 'survey/includes/question_choice.html' %}
         {% endfor %}
-        <a class="add-choice toggle-button">Add another choice</a>
       {% endif %}
     {% endblock %}
+    <div class="question-options">
+      {% block question_add_choice %}
+        {% if question.type != 'TA' and question.type != 'TB' %}
+          <a class="add-choice toggle-button">Add another choice</a>
+        {% endif %}
+      {% endblock %}
+      <label class="question-required">
+        <input type="checkbox" name="question-required" {% if question.required %}checked="checked"{% endif %} />
+        <span class="toggle-button">Required</span>
+      </label>
+    </div>
   </div>
 {% endblock %}

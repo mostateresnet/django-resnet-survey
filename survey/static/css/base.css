@@ -158,6 +158,7 @@ a{
   text-align:center;
   text-decoration:none;
   font-size:12pt;
+  cursor:pointer;
 }
 #thanks {
   width: 100%;

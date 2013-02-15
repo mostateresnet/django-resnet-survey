@@ -12,8 +12,9 @@ function removeChoice(e){
 
 function newChoice(e){
     $this = $(e.currentTarget);
-    var $choice = $this.siblings('.choice').first().clone();
-    $this.before($choice);
+    var $last_choice = $this.parent().siblings('.choice').last()
+    var $choice = $last_choice.clone();
+    $last_choice.after($choice);
     $choice.find('input').val('').blur();
 }
 

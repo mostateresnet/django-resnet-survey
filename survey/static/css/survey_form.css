@@ -94,10 +94,16 @@ tr{
   width:90%;
   position:relative;
 }
+.question-options {
+  width:100%;
+  text-align:right;
+}
 .add-choice{
-  float:right;
-  width:77%;
-  cursor:pointer;
+  width:52%;
+}
+.add-choice:hover{
+  background-color:#4E769B;
+  color:#fff
 }
 .question .question-number span:before {
   counter-increment:question_count;
@@ -133,4 +139,22 @@ tr{
   right:5px;
   cursor:pointer;
   background-image:url('../img/delete_icon.png');
+}
+
+.question-required {
+  margin-left:1%;
+}
+
+.question-required input {
+  position:absolute;
+  top:-200px;
+}
+
+.question-required input:checked + span {
+  background-color:#4E769B;
+  color:#fff
+}
+
+.toggle-button {
+  font-size:10pt;
 }
