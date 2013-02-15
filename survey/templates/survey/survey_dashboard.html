@@ -33,12 +33,13 @@
             id="currentTab"
         {% endif %}
       >REORDER</a></li>
+    {% else %}
+      <li><a href='{% url surveyresults survey.slug %}'
+        {% if current_tab == "survey/results.html" %}
+            id="currentTab"
+        {% endif %}
+      >RESULTS</a></li>
     {% endif %}
-    <li><a href='{% url surveyresults survey.slug %}'
-      {% if current_tab == "survey/results.html" %}
-          id="currentTab"
-      {% endif %}
-    >RESULTS</a></li>
     {% comment %}<li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>{% endcomment %}
     {% block extra_tabs %}
       <li>

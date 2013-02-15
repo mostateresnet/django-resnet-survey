@@ -2,14 +2,14 @@
 {% load static from staticfiles %}
 
 {% block css %}
-    {{ block.super }}
-    <link rel="stylesheet" href='{% static "css/results.css" %}'/>
+  {{ block.super }}
+  <link rel="stylesheet" href='{% static "css/results.css" %}'/>
 {% endblock %}
 
 {% block javascript %}
-{{ block.super }}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src='{% static "js/results.js" %}'></script>
+  {{ block.super }}
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript" src='{% static "js/results.js" %}'></script>
 {% endblock %}
 
 
@@ -19,16 +19,16 @@
     <div class="help-text">Click on a question field to filter results.</div>
   </h3>
 
-    <label>Excel Report</label>
-    <select id = 'excel-report-select' name='Excel Report'>
-    <option value='Summary'>Summary</option>
-    <option value='Full'>Full</option>
+  <div class="excel-reports">
+    <label>Export to Excel:</label>
+    <select id='excel-report-select' name='Excel Report'>
+      <option value='Full'>Full Report</option>
+      <option value='Summary'>Summary</option>
     </select>
 
     <button id='excel-report-button' type='button' data-export-url='{% url exportresults survey.slug %}'>Export</button>
-
-
-
+  </div>
+  
   <div class="results">
     {% regroup choices by question as question_list %}
     {% for question in question_list %}
@@ -37,17 +37,27 @@
       </div>
       <div class="result">
         <h4>{{ question.grouper }}</h4>
-        <table>
-          {% for choice in question.list %}
-	    <tr class="choice">
-              <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>
-                <a href="{% url surveyresults survey.slug choice.pk %}">{{ choice.message }}:</a>
-              </td>
-              <td>{% firstof choice.num_answers '0' %}</td>
+        {% if question.grouper.type != 'TA' and question.grouper.type != 'TB' %}
+          <table class="result-data">
+            {% for choice in question.list %}
+              <tr class="choice">
+                <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>
+                  <a href="{% url surveyresults survey.slug choice.pk %}">{{ choice.message }}</a>
+                </td>
+                <td>{% firstof choice.num_answers '0' %}</td>
+              </tr>
+            {% endfor %}
+          </table>
+          <div class='piegraph' id='id_{{ question.grouper.pk }}'></div>
+        {% else %}
+          <table>
+            <tr class="choice">
+              <td>Total Responses:</td>
+              <td>{{ question.list|length }}</td>
             </tr>
-          {% endfor %}
-        </table>
-        <div class='piegraph' id='id_{{ question.grouper.pk }}'></div>
+          </table>
+          <span class="help-text">* Export report to Excel to read full responses.</span>
+        {% endif %}
       </div>
     {% endfor %}
   </div>

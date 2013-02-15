@@ -1,6 +1,7 @@
 .piegraph{
-    width:48%;
-    padding:1%;
+  width:97%;
+  height:150px;
+  padding:1%;
 }
 table{
   width:100%;
@@ -15,5 +16,11 @@ tr.choice:nth-child(odd){ background-color:#BACD84; }
   color:#FFF;
   background-color:#97AE48;
 }
-tr.choice td:nth-child(1){ width:70% }
-tr.choice td:nth-child(2){ width:30% }
+tr.choice td:nth-child(1){ width:92% }
+tr.choice td:nth-child(2){ width:8% }
+.result{
+  margin-bottom: 20px;
+}
+.question-number {
+  z-index:5;
+}
