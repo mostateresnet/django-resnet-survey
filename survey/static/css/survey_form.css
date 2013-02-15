@@ -146,8 +146,7 @@ tr{
 }
 
 .question-required input {
-  position:absolute;
-  top:-200px;
+  display:none;
 }
 
 .question-required input:checked + span {
