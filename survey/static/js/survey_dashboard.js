@@ -43,7 +43,7 @@ function clone_survey_dialog(e){
     });
 }
 
-$.ready = function()
+$(document).ready(function()
 {
   $('#close_survey').click(verify_survey_close);
   $('#clone').click(clone_survey_dialog);
@@ -66,4 +66,4 @@ $.ready = function()
         div.find('.error').html('An error has occurred and the survey has not been cloned.\nPlease try again.');
       });
   });
-}
+});
