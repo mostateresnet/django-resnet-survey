@@ -45,18 +45,14 @@ table {
 ::-moz-placeholder{color: #a9a9a9;}
 :-ms-input-placeholder{color: #a9a9a9;}
 /*************************** END RESET CSS ******************************************/
-media (min-width: 50em) {
+@media (min-width: 1100px) {
   #wrapper {
-    width: 50em;
+    width: 1100px;
     margin: auto;
   }
 }
-#wrapper{
-  width:1100px;
-  margin: auto;
-}
 body{
-  font-family: "Century Gothic", helvitica, arial, sans-serif;
+  font-family: "Century Gothic", helvetica, arial, sans-serif;
   font-style: normal;
   font-variant: normal;
   font-weight: normal;
@@ -108,7 +104,7 @@ a{
 
 }
 .hidden{
-  display:none;4
+  display:none;
 }
 .left{
   float:left;
