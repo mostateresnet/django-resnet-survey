@@ -1,19 +1,30 @@
-function save_survey_duration(e){
-  e.preventDefault();
-  var data = {};
-  data.start_date = $('input[name="start-date"]').val();
-  data.start_time = $('input[name="start-time"]').val();
-  data.end_date = $('input[name="end-date"]').val();
-  data.end_time = $('input[name="end-time"]').val();
-  data.set_duration = "";
-  if(data.end_time === ""){
-    delete data.end_time;
-  }
-  $.post($(this).attr('data-url'), data, function(response){
-    if('errors' in response){
-      alert(response.errors);
+function save_survey_duration(e)
+{
+    e.preventDefault();
+    var data = {};
+    data.start_date = $('input[name="start-date"]').val();
+    data.start_time = $('input[name="start-time"]').val();
+    data.end_date = $('input[name="end-date"]').val();
+    data.end_time = $('input[name="end-time"]').val();
+    data.set_duration = "";
+    if(data.end_time === "")
+    { delete data.end_time; }
+
+    var old_sd = $('#survey-duration').attr('data-start-date-time');
+
+    if (!old_sd && (data.start_date || data.start_time))
+    { 
+      if (!confirm('Publishing a survey is one way and cannot be undone, are you sure you want to publish this survey?'))
+      { return; } 
     }
-  });
+
+    $.post($(this).attr('data-url'), data, function(response){
+    if('errors' in response)
+    { alert(response.errors); }
+    else
+    { location.reload(); }
+
+    });    
 }
 
 function clone_survey_dialog(e){
