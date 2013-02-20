@@ -1,5 +1,9 @@
+import datetime
+import json
+import qrcode
+import xlwt
+
 from django.utils.timezone import now
-from survey.models import Survey, Question, Ballot, Answer, Choice
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.views.generic import View, TemplateView
@@ -9,13 +13,9 @@ from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.db.models import Q, Count
 from django.db import transaction, IntegrityError
-from datetime import timedelta
+
+from survey.models import Survey, Question, Ballot, Answer, Choice
 from survey import settings
-import json
-import qrcode
-import xlwt
-import datetime
-from xlwt import Workbook, Formula, easyxf
 
 
 def survey_list_processor(request=None):
@@ -99,7 +99,7 @@ class SurveyView(View):
             # the cookie doesn't exist yet, it will be added to the response here
             # but only if survey.use_cookies is true
             if (survey.use_cookies):
-                response.set_cookie(survey.cookie, value='True', max_age=timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
+                response.set_cookie(survey.cookie, value='True', max_age=datetime.timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
 
             ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'], survey=survey)
             for question in survey.question_set.all():
@@ -346,7 +346,7 @@ class SurveyExportView(SurveyDashboardView):
 
         ws_text.write(0, 0, "Question", question_style)
 
-        text_question_style = easyxf("align: wrap on")
+        text_question_style = xlwt.easyxf("align: wrap on")
 
         counter = 2
         counter_text = 0
