@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block javascript %}
     {{ block.super }}
@@ -19,21 +20,21 @@
 {% endblock %}
 
 {% block content %}
-<a href='{% url index %}'>Go Home</a>
+<a href='{% url index %}'>{% trans "Go Home" %}</a>
 <form>
   <div class="title">
-    <label for="title">Title:</label>
+    <label for="title">{% trans "Title:" %}</label>
     <input type="text" name="title" id="title"/>
   </div>
   <div id="new-buttons">
-    <button id="new-text-area" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Multiline Text Box</span></div></button>
-    <button id="new-text-box" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Text Box</span></div></button>
-    <button id="new-check-boxes" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Check Boxes</span></div></button>
-    <button id="new-radio-buttons" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Radio Buttons</span></div></button>
-    <button id="new-drop-down-list" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>Drop-Down List</span></div></button>
+    <button id="new-text-area" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>{% trans "Multiline Text Box" %}</span></div></button>
+    <button id="new-text-box" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>{% trans "Text Box" %}</span></div></button>
+    <button id="new-check-boxes" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>{% trans "Check Boxes" %}</span></div></button>
+    <button id="new-radio-buttons" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>{% trans "Radio Buttons" %}</span></div></button>
+    <button id="new-drop-down-list" type="button" ><div class="img-button-text"><img src="{% static 'img/add.png' %}" alt="" height="12" /> <span>{% trans "Drop-down List" %}</span></div></button>
   </div>
   <div id="submit">
-    <button class="submit" id="submit" type="button">Submit</button>
+    <button class="submit" id="submit" type="button">{% trans "Submit" %}</button>
   </div>  
 </form>
 {% endblock %}

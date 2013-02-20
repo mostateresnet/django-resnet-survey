@@ -1,4 +1,5 @@
+{% load i18n %}
 <div class="choice">
-  <input type="text" name="choice-message" placeholder="Choice" value='{{ choice }}' />
-  <span class="delete" title="Delete this choice"></span>
+  <input type="text" name="choice-message" placeholder="{% trans 'Choice' %}" value='{{ choice }}' />
+  <span class="delete" title="{% trans 'Delete this choice' %}"></span>
 </div>

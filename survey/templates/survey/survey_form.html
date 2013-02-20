@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block css %}
   {{ block.super }}
@@ -28,27 +29,27 @@
 
 {% block content %}
   <h3>
-    Build A Survey
+    {% trans "Build A Survey" %}
     <div class="help-text">
-      Select the question you'd like to make by choosing an option from the toolbox on the right.
+      {% trans "Select the question you'd like to make by choosing an option from the toolbox on the right." %}
     </div>
   </h3>
   <form id="survey-form">
     <div id="survey-details">
       <table>
         <tr>
-          <td class="field-name">Title:</td>
+          <td class="field-name">{% trans "Title:" %}</td>
           <td class="field"><input type="text" name="title" id="title" value='{{ survey }}'/></td>
         </tr>
 
         <tr>
-          <td class="field-name">Slug:</td>
+          <td class="field-name">{% trans "Slug:" %}</td>
           <td class="field"><input type="text" name="slug" id="slug" value='{{ survey.slug }}'/></td>
         </tr>
       </table>
 
       <table>
-        <tr><td>Description:</td><td></td></tr>
+        <tr><td>{% trans "Description:" %}</td><td></td></tr>
         <tr>
           <td colspan="2">
             <textarea id="description">{{ survey.description }}</textarea>
@@ -67,14 +68,14 @@
   <!-- TOOLBOX -->
   <div id="toolbox">
     <ul>
-      <li id="new-text-area"><span>Multiline Text Box</span></li>
-      <li id="new-text-box"><span>Text Box</span></li>
-      <li id="new-check-boxes"><span>Check Boxes</span></li>
-      <li id="new-radio-buttons"><span>Radio Buttons</span></li>
-      <li id="new-drop-down-list"><span>Drop-down List</span></li>
+      <li id="new-text-area"><span>{% trans "Multiline Text Box" %}</span></li>
+      <li id="new-text-box"><span>{% trans "Text Box" %}</span></li>
+      <li id="new-check-boxes"><span>{% trans "Check Boxes" %}</span></li>
+      <li id="new-radio-buttons"><span>{% trans "Radio Buttons" %}</span></li>
+      <li id="new-drop-down-list"><span>{% trans "Drop-down List" %}</span></li>
     </ul>
     <ul id="survey-menu">
-      <li id="submit"><span>Save Survey</span></li>
+      <li id="submit"><span>{% trans "Save Survey" %}</span></li>
     </ul>
   </div>
   <!-- END TOOLBOX -->

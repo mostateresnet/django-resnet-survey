@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block javascript %}
     {{ block.super }}
@@ -13,8 +14,8 @@
 
 {% block content %}
     <h3>
-      Reorder - {{ survey.title }}
-      <div class='help-text'>Click and drag the questions to reorder.</div>
+      {% trans "Reorder" %} - {{ survey.title }}
+      <div class='help-text'>{% trans "Click and drag the questions to reorder." %}</div>
     </h3>
     <form action="" method="post" id="order">
         {% csrf_token %}

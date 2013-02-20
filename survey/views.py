@@ -13,6 +13,7 @@ from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.db.models import Q, Count
 from django.db import transaction, IntegrityError
+from django.utils.translation import ugettext as _
 
 from survey.models import Survey, Question, Ballot, Answer, Choice
 from survey import settings
@@ -150,7 +151,7 @@ class SurveyEditView(SurveyDashboardView):
         try:
             survey.save()
         except IntegrityError:
-            return HttpResponse(json.dumps({'status': 'failure', 'error': 'That SLUG already exists'}), mimetype='application/json')
+            return HttpResponse(json.dumps({'status': 'failure', 'error': _('That SLUG already exists')}), mimetype='application/json')
         Question.add_questions(questions, survey)
         return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
 
@@ -228,7 +229,7 @@ class SurveyNewView(TemplateView):
         try:
             survey = Survey.objects.create(slug=slug, title=data.get('title', ''), description=data.get('description', ''))
         except IntegrityError:
-            return HttpResponse(json.dumps({'status': 'failure', 'error': 'That SLUG already exists'}), mimetype='application/json')
+            return HttpResponse(json.dumps({'status': 'failure', 'error': _('That SLUG already exists')}), mimetype='application/json')
         questions = data.get('questions', [])
         Question.add_questions(questions, survey)
         return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
@@ -305,13 +306,13 @@ class SurveyCloneView(View):
                 except IntegrityError:
                     return HttpResponse(json.dumps({
                         'status': 'IntegrityError',
-                        'error': 'A survey with that title already exists.'
+                        'error': _('A survey with that title already exists.')
                     }), mimetype='application/json')
                 return HttpResponse(json.dumps({
                     'status': 'success',
                     'url': reverse('surveydashboard', args=(new_survey.slug,))
                 }), mimetype='application/json')
-        return HttpResponse(json.dumps({'status': 'Auth Error', 'error': 'You are not authorized to do that.'}), mimetype='application/json')
+        return HttpResponse(json.dumps({'status': 'Auth Error', 'error': _('You are not authorized to do that.')}), mimetype='application/json')
 
 
 class SurveyQRCodeView(View):
@@ -331,8 +332,8 @@ class SurveyExportView(SurveyDashboardView):
 
     def generateExcelSummary(self, survey):
         wb = xlwt.Workbook()
-        ws = wb.add_sheet('Survey Results')
-        ws_text = wb.add_sheet('TextResults')
+        ws = wb.add_sheet(_('Survey Results'))
+        ws_text = wb.add_sheet(_('Text Results'))
 
         question_font = xlwt.Font()
         question_font.bold = True
@@ -341,10 +342,10 @@ class SurveyExportView(SurveyDashboardView):
         ws.col(0).width = 256 * 50
         ws_text.col(0).width = 256 * 75
 
-        ws.write(0, 0, "Question", question_style)
-        ws.write(0, 1, "Tally", question_style)
+        ws.write(0, 0, _("Question"), question_style)
+        ws.write(0, 1, _("Tally"), question_style)
 
-        ws_text.write(0, 0, "Question", question_style)
+        ws_text.write(0, 0, _("Question"), question_style)
 
         text_question_style = xlwt.easyxf("align: wrap on")
 
@@ -372,7 +373,7 @@ class SurveyExportView(SurveyDashboardView):
 
     def generateExcelFull(self, survey):
         wb = xlwt.Workbook()
-        ws = wb.add_sheet('Survey Results')
+        ws = wb.add_sheet(_('Survey Results'))
 
         question_font = xlwt.Font()
         question_font.bold = True
@@ -416,7 +417,7 @@ class SurveyExportView(SurveyDashboardView):
 
             return response
         else:
-            return HttpResponse(json.dumps({'status': 'failure', 'error': 'Report type not selected!'}), mimetype='application/json')
+            return HttpResponse(json.dumps({'status': 'failure', 'error': _('Report type not selected!')}), mimetype='application/json')
 
 
 class SurveyReorderView(SurveyDashboardView):
