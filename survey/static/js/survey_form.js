@@ -32,7 +32,7 @@ var newCheckBoxes = newQuestionHandler('CH');
 var newRadioButtons = newQuestionHandler('RA');
 var newDropDownList = newQuestionHandler('DD');
 
-$.ready = function(){
+$(document).ready(function(){
     $('#submit').click(function(e){
         // Restrict the tile to reasonable bounds.
         if (($('#title').val().length < 1) || ($('#title').val().length > 1024))
@@ -81,4 +81,4 @@ $.ready = function(){
     $('.add-choice').live('click', newChoice);
     $('.choice .delete').live('click', removeChoice);
     $('.message .delete').live('click', removeQuestion);
-}
+});
