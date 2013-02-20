@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block javascript %}
     {{ block.super }}
@@ -15,13 +16,13 @@
 <div data-role="header">
 </div>
 <div id="navbuttons">
-   <a href='{% url surveydashboard survey.slug %}' data-ajax="false">Back to Dashboard</a>
+   <a href='{% url surveydashboard survey.slug %}' data-ajax="false">{% trans "Back to Dashboard" %}</a>
    <br />
   {% if previous_ballot != None %}
-    <a href="{% url ballot survey.slug previous_ballot.pk %}"data-ajax="false">Previous</a>
+    <a href="{% url ballot survey.slug previous_ballot.pk %}"data-ajax="false">{% trans "Previous" %}</a>
   {% endif %}
   {% if next_ballot != None %}
-    <a href="{% url ballot survey.slug next_ballot.pk %}" data-ajax="false">Next</a>
+    <a href="{% url ballot survey.slug next_ballot.pk %}" data-ajax="false">{% trans "Next" %}</a>
   {% endif %}
 </div>
 <div data-role="content">

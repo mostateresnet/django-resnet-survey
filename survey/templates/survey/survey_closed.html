@@ -1,9 +1,10 @@
 {% extends "survey/base.html" %}
+{% load i18n %}
 
 {% block content %}
   {% if duplicate %}
-    <strong>You've already submitted a vote for this survey.</strong>
+    <strong>{% trans "You've already submitted a vote for this survey." %}</strong>
   {% else %}
-    <strong>Sorry, this survey is closed.</strong>
+    <strong>{% trans "Sorry, this survey is closed." %}</strong>
   {% endif %}
 {% endblock %}

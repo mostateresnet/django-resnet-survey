@@ -1,5 +1,6 @@
 {% extends "survey/base.html" %}
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block title %}{{ survey.title }}{% endblock %}
 
@@ -79,7 +80,7 @@
             </label>
 
             <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
-              <option value="_BAD_">Select one</option>
+              <option value="_BAD_">{% trans "Select one" %}</option>
               {% for choice in question.choice_set.all %}
                 <option value="c{{ choice.pk }}">{{ choice }}</option>
               {% endfor %}
@@ -89,7 +90,7 @@
       {% endfor %}
        
       {% if survey.is_active %}
-        <input type="submit" value="Submit"/>
+        <input type="submit" value="{% trans 'Submit' %}"/>
       {% endif %}
     </form>
 </div>

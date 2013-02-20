@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load i18n %}
 
 {% block css %}
   {{ block.super }}
@@ -15,18 +16,18 @@
 
 {% block content %}
   <h3>
-    View Results
-    <div class="help-text">Click on a question field to filter results.</div>
+    {% trans "View Results" %}
+    <div class="help-text">{% trans "Click on a question field to filter results." %}</div>
   </h3>
 
   <div class="excel-reports">
-    <label>Export to Excel:</label>
-    <select id='excel-report-select' name='Excel Report'>
-      <option value='Full'>Full Report</option>
-      <option value='Summary'>Summary</option>
+    <label>{% trans "Export to Excel:" %}</label>
+    <select id='excel-report-select' name='{% trans "Excel Report" %}'>
+      <option value='Full'>{% trans "Full Report" %}</option>
+      <option value='Summary'>{% trans "Summary" %}</option>
     </select>
 
-    <button id='excel-report-button' type='button' data-export-url='{% url exportresults survey.slug %}'>Export</button>
+    <button id='excel-report-button' type='button' data-export-url='{% url exportresults survey.slug %}'>{% trans "Export" %}</button>
   </div>
   
   <div class="results">
@@ -52,11 +53,11 @@
         {% else %}
           <table>
             <tr class="choice">
-              <td>Total Responses:</td>
+              <td>{% trans "Total Responses:" %}</td>
               <td>{{ question.list|length }}</td>
             </tr>
           </table>
-          <span class="help-text">* Export report to Excel to read full responses.</span>
+          <span class="help-text">{% trans "* Export report to Excel to read full responses." %}</span>
         {% endif %}
       </div>
     {% endfor %}

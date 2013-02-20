@@ -1,3 +1,4 @@
+{% load i18n %}
 {% block question %}
   <div class="question {% block question_type_class %}{{ question.get_type_display }}{% endblock %}">
     <div class="question-number">
@@ -5,8 +6,8 @@
     </div>
     <div class="message">
       <input type="hidden" name="question-type" value='{% block question_type %}{{ question.type }}{% endblock %}' />
-      <input type="text" name="question-message" placeholder="Question" value='{{ question.message }}' />
-      <span class="delete" title="Delete this question"></span>
+      <input type="text" name="question-message" placeholder="{% trans 'Question' %}" value='{{ question.message }}' />
+      <span class="delete" title="{% trans 'Delete this question' %}"></span>
     </div>
     
     {% block question_choices %}
@@ -22,12 +23,12 @@
     <div class="question-options">
       {% block question_add_choice %}
         {% if question.type != 'TA' and question.type != 'TB' %}
-          <a class="add-choice toggle-button">Add another choice</a>
+          <a class="add-choice toggle-button">{% trans 'Add another choice' %}</a>
         {% endif %}
       {% endblock %}
       <label class="question-required">
         <input type="checkbox" name="question-required" {% if question.required %}checked="checked"{% endif %} />
-        <span class="toggle-button">Required</span>
+        <span class="toggle-button">{% trans 'Required' %}</span>
       </label>
     </div>
   </div>
