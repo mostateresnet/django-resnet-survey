@@ -14,17 +14,18 @@ function save_survey_duration(e)
 
     if (!old_sd && (data.start_date || data.start_time))
     { 
-      if (!confirm('Publishing a survey is one way and cannot be undone, are you sure you want to publish this survey?'))
+      if (!confirm('Once a survey gets ballots it cannot be modified or unpublished, are you sure you wish to publish this survey?'))
       { return; } 
     }
 
-    $.post($(this).attr('data-url'), data, function(response){
+    $.post($(this).attr('data-url'), data, function(response)
+    {
     if('errors' in response)
     { alert(response.errors); }
     else
     { location.reload(); }
 
-    });    
+    });
 }
 
 function clone_survey_dialog(e){

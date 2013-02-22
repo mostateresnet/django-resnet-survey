@@ -219,7 +219,6 @@ class BallotResultsView(SurveyDashboardView):
         context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot": previous_ballot})
         return context
 
-
 class SurveyNewView(TemplateView):
     template_name = 'survey/survey_form.html'
 
@@ -248,15 +247,18 @@ class SurveyDurationView(SurveyDashboardView):
         errors = []
         if 'set_duration' in request.POST:
             survey = Survey.objects.get(slug=slug)
-            survey.set_date('start_date', 
-                            request.POST.get('start_date', ''),
-                            request.POST.get('start_time', '')
-                            )
-            if 'end_date' in request.POST:
-                survey.set_date('end_date', 
-                                request.POST.get('end_date', ''),
-                                request.POST.get('end_time', '')
+            if survey.start_date < now() and self.get_object().has_results:
+                errors.append('A surveys publish date cannot be changed if it has already gone live.')
+            else:
+                survey.set_date('start_date', 
+                                request.POST.get('start_date', ''),
+                                request.POST.get('start_time', '')
                                 )
+                if 'end_date' in request.POST:
+                    survey.set_date('end_date', 
+                                    request.POST.get('end_date', ''),
+                                    request.POST.get('end_time', '')
+                                    )
         if errors:
             return HttpResponse(json.dumps({
                         'status': 'error',
