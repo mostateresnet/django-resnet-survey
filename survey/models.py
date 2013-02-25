@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import now, get_current_timezone
 from datetime import datetime
-
+from django.contrib.auth.models import User
 
 class Survey(models.Model):
     """
@@ -13,6 +13,7 @@ class Survey(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=1024, null=False, blank=True)
     use_cookies = models.BooleanField(default=True)
+    creator = models.ForeignKey(User, related_name="+")
 
     @models.permalink
     def get_absolute_url(self):
