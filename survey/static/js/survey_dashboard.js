@@ -43,6 +43,18 @@ function clone_survey_dialog(e){
 }
 
 $(document).ready(function(){
+
+  $('#delete_survey').click(function(e)
+  {
+    if (!confirm('Delete this survey?'))
+    { return; } 
+
+    var data = {};
+    var refresh_url = $(this).attr('data-refresh');
+    $.post($(this).attr('data-href'), data, function(r)
+    { window.location = refresh_url; });      
+  });
+   
   $('#clone').click(clone_survey_dialog);
   $('input[name="set-duration"]').click(save_survey_duration);
   // Datepicker

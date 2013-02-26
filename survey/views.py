@@ -226,7 +226,7 @@ class SurveyNewView(TemplateView):
         data = json.loads(request.POST.get('r'))
         slug = slugify(data.get('slug', ''))
         try:
-            survey = Survey.objects.create(slug=slug, title=data.get('title', ''), description=data.get('description', ''))
+            survey = Survey.objects.create(slug=slug, title=data.get('title', ''), description=data.get('description', ''), creator=request.user)
         except IntegrityError:
             return HttpResponse(json.dumps({'status': 'failure', 'error': _('That SLUG already exists')}), mimetype='application/json')
         questions = data.get('questions', [])
@@ -291,6 +291,12 @@ class SurveyCloseView(View):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
             survey.close()
+        return HttpResponseRedirect(reverse('index'))
+
+class SurveyDeleteView(View):
+    def post(self, request, slug):
+        if request.user.is_staff:
+            Survey.objects.filter(slug=slug).delete()
         return HttpResponseRedirect(reverse('index'))
 
 

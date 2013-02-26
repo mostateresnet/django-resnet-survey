@@ -12,6 +12,7 @@ urlpatterns = patterns(
     url(r'^(?P<slug>[-_\w]+)/duration/$', login_required(SurveyDurationView.as_view()), name='surveyduration'),
     url(r'^(?P<slug>[-_\w]+)/publish/$', login_required(SurveyPublishView.as_view()), name='publishsurvey'),
     url(r'^(?P<slug>[-_\w]+)/close/$', login_required(SurveyCloseView.as_view()), name='closesurvey'),
+    url(r'^(?P<slug>[-_\w]+)/delete/$', login_required(SurveyDeleteView.as_view()), name='surveydelete'),
     url(r'^(?P<slug>[-_\w]+)/track/$', login_required(SurveyTrackView.as_view()), name='surveytrack'),
     url(r'^(?P<slug>[-_\w]+)/clone/$', login_required(SurveyCloneView.as_view()), name='surveyclone'),
     url(r'^(?P<slug>[-_\w]+)/results/$', login_required(SurveyResultsView.as_view()), name='surveyresults'),

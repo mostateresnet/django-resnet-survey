@@ -64,7 +64,7 @@ class Survey(models.Model):
             dt = now()
         self.end_date = dt
         self.save()
-
+    
     def set_date(self, field, dtStr, tmStr):
         if dtStr == "":
             setattr(self, field, None)

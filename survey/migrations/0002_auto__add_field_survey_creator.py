@@ -5,12 +5,14 @@ from south.v2 import SchemaMigration
 from django.db import models
 
 
+
 class Migration(SchemaMigration):
+    no_dry_run = True
 
     def forwards(self, orm):
-        # Adding field 'Survey.creator'
+        # Adding field 'Survey.creator'        
         db.add_column('survey_survey', 'creator',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, related_name='+', to=orm['auth.User']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=orm['auth.User'].objects.all()[0].pk, related_name='+', to=orm['auth.User']),
                       keep_default=False)
 
 
