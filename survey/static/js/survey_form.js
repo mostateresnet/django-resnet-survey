@@ -81,4 +81,7 @@ $(document).ready(function(){
     $('.add-choice').live('click', newChoice);
     $('.choice .delete').live('click', removeChoice);
     $('.message .delete').live('click', removeQuestion);
+    $(window).scroll(function(){
+      $('#toolbox').toggleClass('scrolling', $(window).scrollTop() > $('#toolbox-outer').offset().top);
+    });
 });

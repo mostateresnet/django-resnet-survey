@@ -1,15 +1,18 @@
 #main-content{
   padding-right:0;
 }
-#toolbox{
+#toolbox, #toolbox-outer{
   float:right;
-  width:29%;
-  padding:1%;
+  width:220px;
   padding-right:0;
   background-color:#FFF;
   font-weight:bold;
   -webkit-border-radius: 5px 0px 0px 5px;
-  border-radius: 5px 0px 0px 5px;
+  border-radius: 5px 0px 0px 5px;  
+}
+
+#toolbox ul{
+    padding: 4%;
 }
 #toolbox li{
   background-repeat:no-repeat;
@@ -156,4 +159,9 @@ tr{
 
 .toggle-button {
   font-size:10pt;
+}
+
+.scrolling {
+    position: fixed;
+    top: 0;
 }

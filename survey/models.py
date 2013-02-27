@@ -3,6 +3,7 @@ from django.utils.timezone import now, get_current_timezone
 from datetime import datetime
 from django.contrib.auth.models import User
 
+
 class Survey(models.Model):
     """
     Survey model has a set of questions.
@@ -64,14 +65,14 @@ class Survey(models.Model):
             dt = now()
         self.end_date = dt
         self.save()
-    
+
     def set_date(self, field, dtStr, tmStr):
         if dtStr == "":
             setattr(self, field, None)
             self.save()
             return
         try:
-            dt = datetime.strptime(dtStr+ " " +tmStr, '%m/%d/%Y %I:%M%p').replace(tzinfo=get_current_timezone())
+            dt = datetime.strptime(dtStr + " " + tmStr, '%m/%d/%Y %I:%M%p').replace(tzinfo=get_current_timezone())
         except ValueError:
             dt = datetime.strptime(dtStr, '%m/%d/%Y').replace(tzinfo=get_current_timezone())
         setattr(self, field, dt)

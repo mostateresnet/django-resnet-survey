@@ -219,6 +219,7 @@ class BallotResultsView(SurveyDashboardView):
         context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot": previous_ballot})
         return context
 
+
 class SurveyNewView(TemplateView):
     template_name = 'survey/survey_form.html'
 
@@ -250,24 +251,24 @@ class SurveyDurationView(SurveyDashboardView):
             if survey.start_date < now() and self.get_object().has_results:
                 errors.append('A surveys publish date cannot be changed if it has already gone live.')
             else:
-                survey.set_date('start_date', 
+                survey.set_date('start_date',
                                 request.POST.get('start_date', ''),
                                 request.POST.get('start_time', '')
                                 )
                 if 'end_date' in request.POST:
-                    survey.set_date('end_date', 
+                    survey.set_date('end_date',
                                     request.POST.get('end_date', ''),
                                     request.POST.get('end_time', '')
                                     )
         if errors:
             return HttpResponse(json.dumps({
-                        'status': 'error',
-                        'errors': errors 
-                        }), mimetype='application/json')
+                'status': 'error',
+                'errors': errors
+            }), mimetype='application/json')
         return HttpResponse(json.dumps({
-                    'status': 'success',
-                    'success': ''
-                    }), mimetype='application/json')
+            'status': 'success',
+            'success': ''
+        }), mimetype='application/json')
 
 
 class SurveyPublishView(View):
@@ -292,6 +293,7 @@ class SurveyCloseView(View):
         if request.user.is_staff:
             survey.close()
         return HttpResponseRedirect(reverse('index'))
+
 
 class SurveyDeleteView(View):
     def post(self, request, slug):
