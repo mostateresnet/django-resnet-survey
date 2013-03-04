@@ -10,9 +10,13 @@ class Migration(SchemaMigration):
     no_dry_run = True
 
     def forwards(self, orm):
-        # Adding field 'Survey.creator'        
+        # Adding field 'Survey.creator'
+        try:
+            user_pk = orm['auth.User'].objects.all()[0].pk
+        except IndexError:
+            user_pk = 0
         db.add_column('survey_survey', 'creator',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=orm['auth.User'].objects.all()[0].pk, related_name='+', to=orm['auth.User']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=user_pk, related_name='+', to=orm['auth.User']),
                       keep_default=False)
 
 
