@@ -12,6 +12,11 @@ class ChoiceInline(admin.TabularInline):
     extra = 0
 
 
+class PresetChoiceInline(admin.TabularInline):
+    model = PresetChoice
+    extra = 1
+
+
 class SurveyAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     inlines = [
@@ -32,10 +37,14 @@ class BallotAdmin(admin.ModelAdmin):
     ]
 
 
+class PresetAdmin(admin.ModelAdmin):
+    inlines = [
+        PresetChoiceInline,
+    ]
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Ballot, BallotAdmin)
+admin.site.register(Preset, PresetAdmin)
 admin.site.register(Choice)
 admin.site.register(Answer)
-admin.site.register(Preset)
-admin.site.register(PresetChoice)
