@@ -7,6 +7,7 @@ urlpatterns = patterns(
     'survey.views',
     url(r'^$', login_required(IndexView.as_view()), name='index'),
     url(r'^new/$', login_required(SurveyNewView.as_view()), name='newsurvey'),
+    url(r'^presets/$', login_required(PresetSearchView.as_view()), name='preset_search_view'),
     url(r'^(?P<slug>[-_\w]+)/$', SurveyView.as_view(), name='survey'),
     url(r'^(?P<slug>[-_\w]+)/edit/$', login_required(SurveyEditView.as_view()), name='surveyedit'),
     url(r'^(?P<slug>[-_\w]+)/duration/$', login_required(SurveyDurationView.as_view()), name='surveyduration'),

@@ -209,3 +209,25 @@ class Ballot(models.Model):
             answer = self.answer_set.filter(choice__question=question).values_list('choice__message', flat=True)
             answer_list.append(answer)
         return answer_list
+
+  
+class Preset(models.Model):
+    """
+    Contains a list of preset choices, i.e. states, timezones, etc...
+    """
+    title = models.CharField(max_length=1024)
+
+    def __unicode__(self):
+        return self.title
+
+
+class PresetChoice(models.Model):
+    """
+    An individual preset string
+    """
+    option = models.CharField(max_length=1024)
+    preset = models.ForeignKey('Preset')
+
+    def __unicode__(self):
+        return self.option
+

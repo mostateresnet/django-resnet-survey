@@ -19,6 +19,15 @@ function newChoice(e){
     $choice.find('input').val('').blur();
 }
 
+function newChoiceDynamic(parent, value)
+{
+    var $last_choice = parent.find('.choice').last()
+    var $choice = $last_choice.clone();
+    $last_choice.after($choice);
+    $choice.find('input').val('').blur();
+    $choice.find('input').val(value);
+}
+
 function newQuestionHandler(questionType){
     return function(){
         var $question = $(QUESTION_SOURCES[questionType]);
@@ -51,6 +60,7 @@ var newTextBox = newQuestionHandler('TB');
 var newCheckBoxes = newQuestionHandler('CH');
 var newRadioButtons = newQuestionHandler('RA');
 var newDropDownList = newQuestionHandler('DD');
+
 
 $(document).ready(function(){
     $('#submit').click(function(e){
@@ -97,6 +107,62 @@ $(document).ready(function(){
             }
         });
     });
+
+    $('.add-preset').live('click', function(e)
+    {
+      var big_parent = $(this).closest(".question");
+      e.preventDefault();
+
+      $('#preset-form').dialog({ 
+          title:'Select Preset',
+          resizable:false,
+          disabled:true,
+          modal:true,
+          hide:'fold',
+          buttons: 
+            {
+                "Use Selected": function() 
+                {    
+
+                    var preset_name = $('.preset-select').find(":selected").text();
+                    $( this ).dialog("close");
+
+                    $.ajax({
+                        url: SEARCH_PRESET_URL,
+                        type: "get",
+                        data: "title=" + preset_name,
+                        success: function(data)
+                        {
+                            var remaining = data['values'].length;
+            
+                            big_parent.children('.choice').each(function(index) 
+                            {   
+                                var opt = $(this).find('input[type=text],textarea,select').filter(':visible:first');
+                                if (index < data['values'].length)
+                                { 
+                                    opt.val( data['values'][index] ); 
+                                    remaining--;
+                                }
+                                else
+                                { $(this).remove(); }
+                            });
+                            for (x = 0; x < remaining; x++)
+                            {
+                                newChoiceDynamic(big_parent, data['values'][x+(data['values'].length-remaining)]);
+                            }
+                        },
+                    });                                        
+                },
+
+                Cancel: function() 
+                { $( this ).dialog("close"); }
+            },
+          close:function(e,ui)
+          { $(this).dialog('destroy');}
+        });
+    });
+
+
     $('#new-text-area').click(newTextArea);
     $('#new-text-box').click(newTextBox);
     $('#new-check-boxes').click(newCheckBoxes);
@@ -110,3 +176,5 @@ $(document).ready(function(){
     });
     initializeSortables()
 });
+
+

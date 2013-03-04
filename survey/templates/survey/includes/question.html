@@ -25,7 +25,8 @@
     <div class="question-options">
       {% block question_add_choice %}
         {% if question.type != 'TA' and question.type != 'TB' %}
-          <a class="add-choice toggle-button">{% trans 'Add another choice' %}</a>
+            <a class="add-choice toggle-button">{% trans 'Add another choice' %}</a>
+            <a class="add-preset toggle-button">{% trans 'Use Preset' %}</a>
         {% endif %}
       {% endblock %}
       <label class="question-required">

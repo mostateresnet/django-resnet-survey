@@ -6,7 +6,7 @@ import xlwt
 from django.utils.timezone import now
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
-from django.views.generic import View, TemplateView
+from django.views.generic import View, TemplateView, ListView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -15,7 +15,7 @@ from django.db.models import Q, Count
 from django.db import transaction, IntegrityError
 from django.utils.translation import ugettext as _
 
-from survey.models import Survey, Question, Ballot, Answer, Choice
+from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, PresetChoice
 from survey import settings
 
 
@@ -133,6 +133,12 @@ class SurveyEditView(SurveyDashboardView):
     model = Survey
     template_name = 'survey/survey_form.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(SurveyEditView, self).get_context_data(*args, **kwargs)
+        context['presets'] = Preset.objects.all()
+        return context
+
+
     def hasAccess(self):
         return self.get_object().is_unpublished
 
@@ -236,8 +242,10 @@ class SurveyNewView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyNewView, self).get_context_data(*args, **kwargs)
+        context['presets'] = Preset.objects.all()
         context.update(survey_list_processor())
         return context
+
 
 
 class SurveyDurationView(SurveyDashboardView):
@@ -248,7 +256,8 @@ class SurveyDurationView(SurveyDashboardView):
         errors = []
         if 'set_duration' in request.POST:
             survey = Survey.objects.get(slug=slug)
-            if survey.start_date < now() and self.get_object().has_results:
+
+            if survey.start_date and survey.start_date < now() and self.get_object().has_results:
                 errors.append('A surveys publish date cannot be changed if it has already gone live.')
             else:
                 survey.set_date('start_date',
@@ -428,3 +437,27 @@ class SurveyExportView(SurveyDashboardView):
             return response
         else:
             return HttpResponse(json.dumps({'status': 'failure', 'error': _('Report type not selected!')}), mimetype='application/json')
+
+class SurveyReorderView(SurveyDashboardView):
+    template_name = 'survey/reorder.html'
+
+    def hasAccess(self):
+        return self.get_object().is_unpublished
+
+    def post(self, request, slug):
+        # get POST data
+        orderDict = request.POST
+        # update questions with new order_number
+        with transaction.commit_on_success():
+            for pk, order in orderDict.iteritems():
+                pk = pk[3:]
+                Question.objects.filter(pk=pk).update(order_number=order[0])
+        # return success
+        return HttpResponse(json.dumps({'status': 'success'}), mimetype='application/json')
+
+
+class PresetSearchView(DetailView):
+    def get(self, request):
+        all_choices = PresetChoice.objects.filter(preset__title__iexact=self.request.GET.get('title', ''))
+        return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True)) }), mimetype='application/json')
+

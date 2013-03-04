@@ -17,6 +17,8 @@
     QUESTION_SOURCES["CH"] = "{% filter escapejs %}{% spaceless %}{% include 'survey/includes/question_checkbox.html' %}{% endspaceless %}{% endfilter %}";
     QUESTION_SOURCES["RA"] = "{% filter escapejs %}{% spaceless %}{% include 'survey/includes/question_radio.html' %}{% endspaceless %}{% endfilter %}";
     QUESTION_SOURCES["DD"] = "{% filter escapejs %}{% spaceless %}{% include 'survey/includes/question_dropdown.html' %}{% endspaceless %}{% endfilter %}";
+
+    var SEARCH_PRESET_URL = '{% url preset_search_view %}'; 
   </script>
 {% endblock %}
 
@@ -28,6 +30,14 @@
 {% endblock %}
 
 {% block content %}
+<div class='hidden' id='preset-form'>
+    <select class='preset-select' size="10" name="preset-selection">
+        {% for preset in presets %}
+            <option>{{ preset }}</option>
+        {% endfor %}
+    </select>
+</div>
+
   <h3>
     {% trans "Build A Survey" %}
     <div class="help-text">

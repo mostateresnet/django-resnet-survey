@@ -25,11 +25,11 @@
     <a class='new-button' href='{% url newsurvey %}'><img src='{% static "img/newbutton.png" %}' alt='' /></a>
     </h3>
     <div id='sidebar'>
-      {% block sidebar %}
+    {% block sidebar %}
         <ul>
-          {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title=_('Unpublished Surveys') catid="sidebar_1" %}
-          {% include 'survey/includes/survey_list.html' with surveys=published_surveys title=_('Published Surveys') catid="sidebar_2" %}
-          {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title=_('Closed Surveys') catid="sidebar_3" %}
+            {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title=_('Unpublished Surveys') catid="sidebar_1" %}
+            {% include 'survey/includes/survey_list.html' with surveys=published_surveys title=_('Published Surveys') catid="sidebar_2" %}
+            {% include 'survey/includes/survey_list.html' with surveys=closed_surveys title=_('Closed Surveys') catid="sidebar_3" %}
         </ul>
     {% endblock %}
     </div>

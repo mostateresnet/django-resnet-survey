@@ -115,9 +115,13 @@ tr{
   text-align:right;
 }
 .add-choice{
-  width:52%;
+  width:35%;
 }
-.add-choice:hover{
+.add-preset{
+  margin-left: 1%;
+}
+
+.add-choice:hover, .add-preset:hover{
   background-color:#4E769B;
   color:#fff
 }
@@ -180,4 +184,9 @@ tr{
 .scrolling {
     position: fixed;
     top: 0;
+}
+
+.preset-select
+{
+    width: 98%;
 }
