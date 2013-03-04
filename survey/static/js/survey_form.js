@@ -10,13 +10,9 @@ function removeChoice(e){
     }
 }
 
-function newChoice(e){
-    
-    $this = $(e.currentTarget);
-    var $last_choice = $this.parent().siblings('.choices').children('.choice').last();
-    var $choice = $last_choice.clone();
-    $last_choice.after($choice);
-    $choice.find('input').val('').blur();
+function newChoice(e)
+{
+    newChoiceDynamic($(e.currentTarget).parent().siblings('.choices'), "");
 }
 
 function newChoiceDynamic(parent, value)
@@ -24,8 +20,7 @@ function newChoiceDynamic(parent, value)
     var $last_choice = parent.find('.choice').last()
     var $choice = $last_choice.clone();
     $last_choice.after($choice);
-    $choice.find('input').val('').blur();
-    $choice.find('input').val(value);
+    $choice.find('input').val(value).blur();
 }
 
 function newQuestionHandler(questionType){
@@ -110,7 +105,7 @@ $(document).ready(function(){
 
     $('.add-preset').live('click', function(e)
     {
-      var big_parent = $(this).closest(".question");
+      var big_parent = $(this).closest(".question").find(".choices");      
       e.preventDefault();
 
       $('#preset-form').dialog({ 
@@ -134,7 +129,6 @@ $(document).ready(function(){
                         success: function(data)
                         {
                             var remaining = data['values'].length;
-            
                             big_parent.children('.choice').each(function(index) 
                             {   
                                 var opt = $(this).find('input[type=text],textarea,select').filter(':visible:first');

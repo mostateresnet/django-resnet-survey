@@ -210,7 +210,7 @@ class Ballot(models.Model):
             answer_list.append(answer)
         return answer_list
 
-  
+
 class Preset(models.Model):
     """
     Contains a list of preset choices, i.e. states, timezones, etc...
@@ -230,4 +230,3 @@ class PresetChoice(models.Model):
 
     def __unicode__(self):
         return self.option
-

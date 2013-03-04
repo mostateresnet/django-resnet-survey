@@ -138,7 +138,6 @@ class SurveyEditView(SurveyDashboardView):
         context['presets'] = Preset.objects.all()
         return context
 
-
     def hasAccess(self):
         return self.get_object().is_unpublished
 
@@ -245,7 +244,6 @@ class SurveyNewView(TemplateView):
         context['presets'] = Preset.objects.all()
         context.update(survey_list_processor())
         return context
-
 
 
 class SurveyDurationView(SurveyDashboardView):
@@ -438,6 +436,7 @@ class SurveyExportView(SurveyDashboardView):
         else:
             return HttpResponse(json.dumps({'status': 'failure', 'error': _('Report type not selected!')}), mimetype='application/json')
 
+
 class SurveyReorderView(SurveyDashboardView):
     template_name = 'survey/reorder.html'
 
@@ -459,5 +458,4 @@ class SurveyReorderView(SurveyDashboardView):
 class PresetSearchView(DetailView):
     def get(self, request):
         all_choices = PresetChoice.objects.filter(preset__title__iexact=self.request.GET.get('title', ''))
-        return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True)) }), mimetype='application/json')
-
+        return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True))}), mimetype='application/json')
