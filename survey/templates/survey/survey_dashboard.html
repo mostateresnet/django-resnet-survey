@@ -28,12 +28,7 @@
         {% if current_tab == "survey/survey_form.html" %}
             id="currentTab"
         {% endif %}
-      >{% trans "EDIT" %}</a></li>
-      <li><a href='{% url surveyreorder survey.slug %}'
-        {% if current_tab == "survey/reorder.html" %}
-            id="currentTab"
-        {% endif %}
-      >{% trans "REORDER" %}</a></li>        
+      >{% trans "EDIT" %}</a></li> 
         {% if survey.creator == user %}
           <li><a id="delete_survey" data-href='{% url surveydelete survey.slug %}' data-refresh='{% url index %}'
           >{% trans "DELETE" %}</a></li>

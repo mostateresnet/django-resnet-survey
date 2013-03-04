@@ -11,8 +11,9 @@ function removeChoice(e){
 }
 
 function newChoice(e){
+    
     $this = $(e.currentTarget);
-    var $last_choice = $this.parent().siblings('.choice').last()
+    var $last_choice = $this.parent().siblings('.choices').children('.choice').last();
     var $choice = $last_choice.clone();
     $last_choice.after($choice);
     $choice.find('input').val('').blur();
@@ -21,9 +22,28 @@ function newChoice(e){
 function newQuestionHandler(questionType){
     return function(){
         var $question = $(QUESTION_SOURCES[questionType]);
-        $('#survey-form').append($question);
+        $('#questions').append($question);
         $question.find('[placeholder]').blur();
+        initializeSortables();
     };
+}
+
+function initializeSortables(){
+    $("#questions").sortable({
+        handle: ".question-number",
+        distance: 5,
+        axis: 'y',
+        forcePlaceholderSize: true,        
+        placeholder: 'ui-state-highlight',
+        cursor: 'move',
+    });  
+    $(".choices").sortable({
+        distance: 5,
+        axis: 'y',
+        cursor: 'move',
+        placeholder: 'ui-state-highlight',
+        forcePlaceholderSize: true, 
+    }); 
 }
 
 var newTextArea = newQuestionHandler('TA');
@@ -50,9 +70,13 @@ $(document).ready(function(){
             questionData.type = $el.find('input[name="question-type"]').val();
             questionData.message = $el.find('input[name="question-message"]').val();
             questionData.required = $el.find('input[name="question-required"]').is(":checked");
+            questionData.order_number = index;
             var choices = [];
             $el.find('input[name="choice-message"]').each(function(choiceIndex, choiceEl){
-                choices.push($(choiceEl).val());
+                var choiceData = {};
+                choiceData.message = $(choiceEl).val();
+                choiceData.order_number = choiceIndex;
+                choices.push(choiceData);
             });
             if (choices.length > 0){
                 questionData.choices = choices;
@@ -84,4 +108,5 @@ $(document).ready(function(){
     $(window).scroll(function(){
       $('#toolbox').toggleClass('scrolling', $(window).scrollTop() > $('#toolbox-outer').offset().top);
     });
+    initializeSortables()
 });

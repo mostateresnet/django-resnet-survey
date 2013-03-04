@@ -59,9 +59,11 @@
       </table>
     </div>
 
-    {% for question in survey.question_set.all %}
-      {% include 'survey/includes/question.html' %}
-    {% endfor %}
+    <div id="questions">
+        {% for question in survey.question_set.all %}
+          {% include 'survey/includes/question.html' %}
+        {% endfor %}
+    </div>
 
   </form>
 

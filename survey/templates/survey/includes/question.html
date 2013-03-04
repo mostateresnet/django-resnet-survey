@@ -12,12 +12,14 @@
     
     {% block question_choices %}
       {% if question.type != 'TA' and question.type != 'TB' %}
-        {% for choice in question.choice_set.all %}
-          {% include 'survey/includes/question_choice.html' %}
-        {% empty %}
-          {% include 'survey/includes/question_choice.html' %}
-          {% include 'survey/includes/question_choice.html' %}
-        {% endfor %}
+        <div class="choices">
+            {% for choice in question.choice_set.all %}
+              {% include 'survey/includes/question_choice.html' %}
+            {% empty %}
+              {% include 'survey/includes/question_choice.html' %}
+              {% include 'survey/includes/question_choice.html' %}
+            {% endfor %}
+        </div>
       {% endif %}
     {% endblock %}
     <div class="question-options">

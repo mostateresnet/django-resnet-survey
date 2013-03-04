@@ -92,7 +92,20 @@ tr{
   clear: both;
   visibility: hidden;
 }
-.choice, .message{
+
+.choices{
+    width: 90%;
+    float: right;
+    overflow: auto;
+}
+
+.choice{
+  width:100%;
+  position:relative;
+  cursor: move;
+}
+
+.message{
   float:right;
   width:90%;
   position:relative;
@@ -107,6 +120,9 @@ tr{
 .add-choice:hover{
   background-color:#4E769B;
   color:#fff
+}
+.question-number{
+    cursor: move;
 }
 .question .question-number span:before {
   counter-increment:question_count;

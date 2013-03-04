@@ -145,8 +145,8 @@ class Question(models.Model):
             question = cls.objects.create(survey=survey, message=question_data.get(
                 'message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
             counter += 1
-            for choice_message in question_data.get('choices', []):
-                Choice.objects.create(question=question, message=choice_message)
+            for choice in question_data.get('choices', []):
+                Choice.objects.create(question=question, message=choice['message'], order_number=choice['order_number'])
 
     def __unicode__(self):
         return self.message
@@ -158,6 +158,7 @@ class Choice(models.Model):
     """
     question = models.ForeignKey('Question')
     message = models.CharField(max_length=1024)
+    order_number = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
         return self.message
