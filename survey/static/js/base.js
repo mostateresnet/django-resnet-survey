@@ -38,6 +38,9 @@ $(function(){
             input.toggleClass('placeholder', true);
             input.val(input.attr('placeholder'));
         }
+        else {
+            input.toggleClass('placeholder', false);
+        }
     });
     $('[placeholder]').blur();
 });
