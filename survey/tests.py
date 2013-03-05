@@ -17,7 +17,8 @@ from survey.models import Survey, Question, Choice, Answer, Ballot
 # pylint: disable=R0902
 class QuestionTest(TestCase):
     def setUp(self):
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
         self.question = Question.objects.create(message="What do you like best?", survey=self.survey)
 
     def test_unicode(self):
@@ -26,7 +27,8 @@ class QuestionTest(TestCase):
 
 class ChoiceTest(TestCase):
     def setUp(self):
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
         self.question = Question.objects.create(message="What do you like best?", survey=self.survey)
         self.choice = Choice.objects.create(question=self.question, message="Word up dog")
 
@@ -40,14 +42,15 @@ class IndexViewTest(TestCase):
         self.client.login(username='admin', password='asdf')
 
     def test_get_index(self):
-        Survey.objects.create(title="My new survey", slug="my-new-survey")
+        Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
         response = self.client.get(reverse('index'), follow=True)
         self.assertEqual(response.status_code, 200)
 
 
 class BallotResultsViewTest(TestCase):
     def setUp(self):
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
         self.questionRA = Question.objects.create(message="What time is it", survey=self.survey, type="RA")
         self.choiceRA = Choice.objects.create(question=self.questionRA, message="5 oclock")
         self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
@@ -67,7 +70,7 @@ class SurveyViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
         self.survey_url = self.survey.get_absolute_url()
         self.survey_results_url = reverse('surveyresults', kwargs={'slug': self.survey.slug})
         self.questionRA = Question.objects.create(message="What time is it", survey=self.survey, type="RA")
@@ -102,6 +105,7 @@ class SurveyViewTest(TestCase):
         self.assertFalse(self.survey.is_active)
 
     def test_is_active_false_closes_survey(self):
+        self.client.logout()
         self.survey.start_date = self.now - 2 * self.one_hour
         self.survey.end_date = self.now - self.one_hour
         self.survey.save()
@@ -174,32 +178,23 @@ class SurveyViewTest(TestCase):
         # Needs maor casperjs!
         self.client.get(reverse('newsurvey'))
         data = """
-            {
-                "title": "Getting to know you",
-                "questions": [{
-                    "type": "CH",
-                    "message": "check",
-                    "choices": ["mark", "please", "on the baby"]
-                }, {
-                    "type": "RA",
-                    "message": "radio",
-                    "choices": ["FM", "AM"]
-                }, {
-                    "type": "DD",
-                    "message": "drop",
-                    "choices": ["stop", "roll"]
-                }, {
-                    "type": "TB",
-                    "message": "cardboard"
-                }, {
-                    "type": "TA",
-                    "message": "area"
-                }]
-            }
+            {"title":"a new survey for post data",
+            "slug":"post-data-survey",
+            "description":"fdsasdf",
+            "questions":[
+                {"type":"DD",
+                "message":"ddl",
+                "required":false,
+                "order_number":0,
+                "choices":[
+                    {"message":"1","order_number":0},
+                    {"message":"2","order_number":1}
+                ]}
+            ]}
         """
         postdata = {'r': data}
         self.client.post(reverse('newsurvey'), postdata)
-        self.assertEqual(Survey.objects.get(slug='getting-to-know-you').title, "Getting to know you")
+        self.assertEqual(Survey.objects.get(slug='post-data-survey').title, "a new survey for post data")
 
     def test_survey_publish_publishes_survey(self):
         self.user.is_staff = True
@@ -218,20 +213,19 @@ class SurveyViewTest(TestCase):
         self.assertFalse(self.survey.is_active)
 
 
-class SurveyDashboardViewTest(TestCase):
+class SurveyDurationViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey")
-        self.arbitrary_date_str = 'Mon, 01 Jan 2013 00:00:00 GMT'
-        self.arbitrary_date = datetime.strptime(self.arbitrary_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.arbitrary_start_date_str = 'Mon, 01 Jan 2013 06:00:00 GMT'
+        self.arbitrary_start_date = datetime.strptime(self.arbitrary_start_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+        self.arbitrary_end_date_str = 'Mon, 01 Jan 2020 06:00:00 GMT'
+        self.arbitrary_end_date = datetime.strptime(self.arbitrary_end_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
 
-    def test_set_future_start_date(self):
-        self.client.post(reverse('surveydashboard', args=[self.survey.slug]), {'future_publish_date': self.arbitrary_date_str})
+    def test_set_start_and_end_dates(self):
+        self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:00am',
+                         'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
         self.survey = Survey.objects.get(slug="my-new-survey")
-        self.assertEqual(self.survey.start_date, self.arbitrary_date)
-
-    def test_set_future_end_date(self):
-        self.client.post(reverse('surveydashboard', args=[self.survey.slug]), {'future_close_date': self.arbitrary_date_str})
-        self.survey = Survey.objects.get(slug="my-new-survey")
-        self.assertEqual(self.survey.end_date, self.arbitrary_date)
+        self.assertEqual(self.survey.start_date, self.arbitrary_start_date)
+        self.assertEqual(self.survey.end_date, self.arbitrary_end_date)

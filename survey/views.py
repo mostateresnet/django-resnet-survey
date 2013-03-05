@@ -59,16 +59,6 @@ class SurveyDashboardView(AccessMixin, DetailView):
     def hasAccess(self):
         return True
 
-    def post(self, request, slug):
-        survey = self.get_object()
-        if 'future_publish_date' in request.POST:
-            survey.set_future_date('start_date', request.POST.get('future_publish_date', ''))
-            self.template_name = 'survey/ajax/future_publish.html'
-        elif 'future_close_date' in request.POST:
-            survey.set_future_date('end_date', request.POST.get('future_close_date', ''))
-            self.template_name = 'survey/ajax/future_close.html'
-        return self.get(request, slug)
-
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyDashboardView, self).get_context_data(*args, **kwargs)
         context.update(survey_list_processor())
@@ -78,8 +68,10 @@ class SurveyDashboardView(AccessMixin, DetailView):
 
 class SurveyView(View):
     def inactive_survey_response(self, request, duplicate=False):
-        return render_to_response('survey/survey_closed.html',
-                                  context_instance=RequestContext(request, {'duplicate': duplicate}))
+        response = render_to_response('survey/survey_closed.html',
+                                      context_instance=RequestContext(request, {'duplicate': duplicate}))
+        response.status_code = 403
+        return response
 
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
