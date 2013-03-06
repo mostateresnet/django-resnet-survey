@@ -23,5 +23,9 @@ $(document).ready(function()
         
       });
     });
+
+    $(document).delegate('.ui-page', 'pageshow', function () 
+    { gapi.plusone.go(); });
+
 });
 

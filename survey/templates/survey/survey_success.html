@@ -2,10 +2,33 @@
 {% load static from staticfiles %}
 
 {% block content %}
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>    
+
   {% if redirect %}
     <meta http-equiv="refresh" content="5;url={% url survey survey.slug %}" />
   {% endif %}
   <div data-role="content">
     <img src="{% static 'img/thankyou.png' %}" id="thanks" />
   </div>
+{% endblock %}
+
+{% block footer %}
+    {% if survey.show_social %}
+    <div>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="//{{ request.META.HTTP_HOST }}{% url survey survey.slug %}" data-count="none">Tweet</a>
+        <div class="fb-like" data-href="http{% if request.is_secure %}s{% endif %}://{{ request.META.HTTP_HOST }}{% url survey survey.slug %}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-action="recommend"></div>
+        <div class="g-plusone" data-annotation="bubble" data-href="//{% url survey survey.slug %}" data-size="medium"></div>
+    </div>   
+    {% endif %}
+    {{ block.super }}
 {% endblock %}

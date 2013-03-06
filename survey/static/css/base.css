@@ -258,3 +258,10 @@ header{
   position:absolute;
   text-align:center;
 }
+
+.fb_iframe_widget span
+{
+    vertical-align: baseline !important;
+}
+
+

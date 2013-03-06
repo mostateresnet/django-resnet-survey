@@ -285,6 +285,12 @@ class SurveyTrackView(View):
             survey.track(not survey.use_cookies)
         return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
 
+class SurveySocialView(View):
+    def get(self, request, slug):
+        survey = Survey.objects.get(slug=slug)
+        if request.user.is_staff:
+            survey.social(not survey.show_social)
+        return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
 
 class SurveyCloseView(View):
     def get(self, request, slug):

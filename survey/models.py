@@ -15,6 +15,7 @@ class Survey(models.Model):
     description = models.CharField(max_length=1024, null=False, blank=True)
     use_cookies = models.BooleanField(default=True)
     creator = models.ForeignKey(User, related_name="+")
+    show_social = models.BooleanField(default=True)
 
     @models.permalink
     def get_absolute_url(self):
@@ -52,6 +53,10 @@ class Survey(models.Model):
 
     def track(self, on=True):
         self.use_cookies = on
+        self.save()
+
+    def social(self, on=True):
+        self.show_social = on
         self.save()
 
     def publish(self, dt=None):

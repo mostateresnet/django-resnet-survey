@@ -77,7 +77,7 @@
     <input data-url='{% url surveyduration survey.slug %}' class="button" type="submit" name="set-duration" value="{% trans 'Save Duration' %}" />
   </div>
   <div class='toggle-label'>{% trans "Allow Survey Station:" %} <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:_("No,Yes") }}</a></div>
-
+  <div class='toggle-label'>{% trans "Show Social Media Links:" %} <a class='toggle-button' id='toggle_track' href='{% url surveysocial survey.slug %}'>{{ survey.show_social|yesno:_("Yes,No") }}</a></div>
 
   <a href='{% url qrcode survey.slug %}'>{% trans "Download QR Code" %}</a>
 
