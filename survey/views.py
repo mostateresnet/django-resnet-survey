@@ -46,10 +46,12 @@ class AccessMixin(object):
         raise NotImplementedError("You must implement the hasAccess() method on all DetailAccessView's.")
 
     def dispatch(self, request, *args, **kwargs):
-        handler = super(AccessMixin, self).dispatch(request, *args, **kwargs)
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
         if not self.hasAccess():
             raise Http404
-        return handler
+        return super(AccessMixin, self).dispatch(request, *args, **kwargs)
 
 
 class SurveyDashboardView(AccessMixin, DetailView):
