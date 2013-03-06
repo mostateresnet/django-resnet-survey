@@ -1,9 +1,3 @@
-Django
-South
-# Django-Autofixture Docs:
-# https://github.com/gregmuellegger/django-autofixture
-django-autofixture
-qrcode
 # PIL is required for the qrcode generator
 # if for some reason you don't have the required C libraries
 # use easy_install instead
@@ -11,4 +5,5 @@ qrcode
 # http://www.pythonware.com/products/pil/
 # be sure to follow these instructions in this exact order
 # pil
+qrcode
 xlwt
