@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 from survey.models import Survey, Question, Choice, Answer, Ballot
+import json
 
 
 # pylint: disable=R0902
@@ -211,6 +212,162 @@ class SurveyViewTest(TestCase):
         self.client.get(reverse('closesurvey', args=[self.survey.slug]))
         self.survey = Survey.objects.get(pk=self.survey.pk)
         self.assertFalse(self.survey.is_active)
+        
+class SurveyEditViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.client.login(username='admin', password='asdf')
+        self.survey = Survey.objects.create(title="Text Only Survey", slug="text-only-survey", creator=self.user)
+        self.survey2 = Survey.objects.create(title="Text Only Survey", slug="survey", creator=self.user)
+
+    def test_get_context_data(self):
+        response = self.client.get(reverse('surveyedit', args=[self.survey.slug]), follow=True)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_post(self):
+        data = """
+            {
+                "title":"Text Only Survey",
+                "slug":"text-onlysurvey",
+                "description":"",
+                "questions":
+                [
+                    {
+                        "type":"TA",
+                        "message":"Text Area Question",
+                        "required":false,
+                        "order_number":0
+                    },
+                    {
+                        "type":"TB",
+                        "message":"Text Box Question",
+                        "required":false,
+                        "order_number":1
+                    },
+                    {
+                        "type":"CH",
+                        "message":"Check Box Question",
+                        "required":false,
+                        "order_number":2,
+                        "choices":
+                        [
+                            {
+                                "message":"Check Box Choice 1",
+                                "order_number":0
+                            },
+                            {
+                                "message":"Check Box Choice 2",
+                                "order_number":1
+                            },
+                            {
+                                "message":"Check Box Choice 3",
+                                "order_number":2
+                            }
+                        ]
+                    },
+                    {
+                        "type":"RA",
+                        "message":"Radio Button Question",
+                        "required":false,
+                        "order_number":3,
+                        "choices":
+                        [
+                            {
+                                "message":"Radio Choice 1",
+                                "order_number":0
+                            },
+                            {
+                                "message":"Radio Choice 2",
+                                "order_number":1
+                            },
+                            {
+                                "message":"Radio Choice 3",
+                                "order_number":2
+                            }
+                        ]
+                    },
+                    {
+                        "type":"DD",
+                        "message":"Drop Down List Question",
+                        "required":false,
+                        "order_number":4,
+                        "choices":
+                        [
+                            {
+                                "message":"Drop Down Choice 1",
+                                "order_number":0
+                            },
+                            {
+                                "message":"Drop Down Choice 2",
+                                "order_number":1
+                            },
+                            {
+                                "message":"Drop Down Choice 3",
+                                "order_number":2
+                            }
+                        ]
+                    }
+                ]
+            }
+        """
+        postdata = {'r': data}
+        response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
+        self.assertEqual(response.status_code, 200, "The page didn't return a 200")
+        self.assertEqual(self.survey.title, 'Text Only Survey', "The Survey didn't update properly")
+        self.assertEqual(self.survey.question_set.all()[0].message, 'Text Area Question', "Question didn't update properly")
+        self.assertEqual(self.survey.question_set.all()[2].choice_set.all()[1].message, 'Check Box Choice 2', "Question Order is broken")
+        self.assertEqual(self.survey.question_set.all()[4].choice_set.all()[2].order_number, 2, "Choice Order is broken")
+        
+    def test_survey_slug_unique(self):
+        data = """
+            {
+                "title":"Text Only Survey",
+                "slug":"survey",
+                "description":"",
+                "questions":
+                [
+                    {
+                        "type":"TA",
+                        "message":"Text Area Question",
+                        "required":false,
+                        "order_number":0
+                    }
+                ]
+            }
+        """
+        postdata = {'r': data}
+        response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
+        response_data = json.JSONDecoder().decode(response.content) 
+        self.assertEqual(response_data['error'], 'That SLUG already exists', 'Integrity error: slug uniqueness is not being inforced')
+        
+class SurveyResultsViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.client.login(username='admin', password='asdf')
+        self.survey = Survey.objects.create(title="Text Only Survey", slug="text-only-survey", creator=self.user)
+        self.question1 = Question.objects.create(survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
+        self.choice1 = Choice.objects.create(question=self.question1, message="Q1C1", order_number=0)
+        self.choice2 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=1)
+        self.choice3 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=2)
+        self.question2 = Question.objects.create(survey=self.survey, message="Question(RA)", type="RA", required=False, order_number=1)
+        self.choice4 = Choice.objects.create(question=self.question2, message="Q2C1", order_number=0)
+        self.choice5 = Choice.objects.create(question=self.question2, message="Q2C2", order_number=1)
+        self.choice6 = Choice.objects.create(question=self.question2, message="Q2C2", order_number=2)
+        self.ballot1 = Ballot.objects.create(survey=self.survey)
+        self.ballot2 = Ballot.objects.create(survey=self.survey)
+        self.ballot3 = Ballot.objects.create(survey=self.survey)
+        self.question1.answer_with_choices({self.choice1, self.choice2, self.choice3}, self.ballot1)
+        self.question2.answer_with_choices({self.choice4}, self.ballot1)
+        self.question1.answer_with_choices({self.choice1, self.choice2}, self.ballot2)
+        self.question2.answer_with_choices({self.choice4}, self.ballot2)
+        self.question1.answer_with_choices({self.choice1}, self.ballot3)
+        self.question2.answer_with_choices({self.choice4}, self.ballot3)
+        
+    def test_get_context_data(self):
+        response = self.client.get(reverse('surveyresults', args=[self.survey.slug, self.choice1.pk]))
+        self.assertEqual(response.status_code, 200, "The page didn't return a 200")
+        
+        
 
 
 class SurveyDurationViewTest(TestCase):
