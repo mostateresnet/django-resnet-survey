@@ -436,25 +436,6 @@ class SurveyExportView(SurveyDashboardView):
         else:
             return HttpResponse(json.dumps({'status': 'failure', 'error': _('Report type not selected!')}), mimetype='application/json')
 
-
-class SurveyReorderView(SurveyDashboardView):
-    template_name = 'survey/reorder.html'
-
-    def hasAccess(self):
-        return self.get_object().is_unpublished
-
-    def post(self, request, slug):
-        # get POST data
-        orderDict = request.POST
-        # update questions with new order_number
-        with transaction.commit_on_success():
-            for pk, order in orderDict.iteritems():
-                pk = pk[3:]
-                Question.objects.filter(pk=pk).update(order_number=order[0])
-        # return success
-        return HttpResponse(json.dumps({'status': 'success'}), mimetype='application/json')
-
-
 class PresetSearchView(DetailView):
     def get(self, request):
         all_choices = PresetChoice.objects.filter(preset__title__iexact=self.request.GET.get('title', ''))
