@@ -42,7 +42,7 @@ class AccessMixin(object):
 
     For example: results should only be allowed on a closed survey.
     """
-    def hasAccess(self):
+    def hasAccess(self):  # pragma: no cover
         raise NotImplementedError("You must implement the hasAccess() method on all DetailAccessView's.")
 
     def dispatch(self, request, *args, **kwargs):
@@ -241,8 +241,8 @@ class SurveyNewView(TemplateView):
 
 
 class SurveyDurationView(SurveyDashboardView):
-    def get(self, request):
-        return Http404()
+    def get(self, request, slug):
+        raise Http404()
 
     def post(self, request, slug):
         errors = []
@@ -287,12 +287,14 @@ class SurveyTrackView(View):
             survey.track(not survey.use_cookies)
         return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
 
+
 class SurveySocialView(View):
     def get(self, request, slug):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
             survey.social(not survey.show_social)
         return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
+
 
 class SurveyCloseView(View):
     def get(self, request, slug):
@@ -317,7 +319,7 @@ class SurveyCloneView(View):
             if request.method == 'POST' and 'title' in request.POST:
                 title = request.POST.get('title', '')
                 try:
-                    new_survey = Survey.objects.create(title=title, slug=slugify(title))
+                    new_survey = Survey.objects.create(title=title, slug=slugify(title), creator=request.user)
                     # survey successfully created
                     survey.clone(new_survey)
                 except IntegrityError:
@@ -435,6 +437,7 @@ class SurveyExportView(SurveyDashboardView):
             return response
         else:
             return HttpResponse(json.dumps({'status': 'failure', 'error': _('Report type not selected!')}), mimetype='application/json')
+
 
 class PresetSearchView(DetailView):
     def get(self, request):
