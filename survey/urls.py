@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from survey.views import *
 
 # pylint: disable-msg=C0103,E1120
-dashboard_patterns = patterns('',
+dashboard_patterns = patterns(
+    '',
     url(r'^$', login_required(IndexView.as_view()), name='index'),
     url(r'^new/$', login_required(SurveyNewView.as_view()), name='newsurvey'),
     url(r'^presets/$', login_required(PresetSearchView.as_view()), name='preset_search_view'),
