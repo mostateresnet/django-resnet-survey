@@ -93,10 +93,10 @@ $(document).ready(function(){
             'type': 'POST',
             'data': {'r': JSON.stringify(data)},
             'success':function(data, textStatus, jqXHR){
-                if ('error' in data){
-                    alert(data['error']);
+                if (data['warnings'].length > 0){
+                    alert(data['warnings'].join('\n'));
                 }
-                else{
+                if ('url' in data){
                     window.location = data['url'];
                 }
             }

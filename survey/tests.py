@@ -227,7 +227,7 @@ class SurveyViewTest(TestCase):
         postdata = {'r': data}
         response = self.client.post(reverse('newsurvey'), postdata)
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertEqual(response_data['error'], 'That SLUG already exists', 'Integrity error: slug uniqueness is not being inforced')
+        self.assertIn('That SLUG already exists', response_data['warnings'], 'Integrity error: slug uniqueness is not being inforced')
 
     def test_survey_publish_publishes_survey(self):
         self.user.is_staff = True
@@ -399,7 +399,7 @@ class SurveyEditViewTest(TestCase):
         postdata = {'r': data}
         response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertEqual(response_data['error'], 'That SLUG already exists', 'Integrity error: slug uniqueness is not being inforced')
+        self.assertIn('That SLUG already exists', response_data['warnings'], 'Integrity error: slug uniqueness is not being inforced')
 
 
 class SurveyResultsViewTest(TestCase):

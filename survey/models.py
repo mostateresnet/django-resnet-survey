@@ -97,6 +97,18 @@ class Survey(models.Model):
         """
         return str(self.slug.replace('-', '') + 'ballotcookie')
 
+    def add_questions(self, questions):
+        """
+        Accepts a list of dictionaries containing question data.
+        """
+        counter = 1
+        for question_data in questions:
+            question = Question.objects.create(survey=self, message=question_data.get(
+                'message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
+            counter += 1
+            for choice in question_data.get('choices', []):
+                Choice.objects.create(question=question, message=choice['message'], order_number=choice['order_number'])
+
 
 class QuestionGroup(models.Model):
     """
@@ -139,19 +151,6 @@ class Question(models.Model):
     def answer_with_choices(self, choices, ballot):
         for choice in choices:
             Answer.objects.create(choice=choice, ballot=ballot)
-
-    @classmethod
-    def add_questions(cls, questions, survey):
-        """
-        Accepts a list of dictionaries containing question data.
-        """
-        counter = 1
-        for question_data in questions:
-            question = cls.objects.create(survey=survey, message=question_data.get(
-                'message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
-            counter += 1
-            for choice in question_data.get('choices', []):
-                Choice.objects.create(question=question, message=choice['message'], order_number=choice['order_number'])
 
     def __unicode__(self):
         return self.message

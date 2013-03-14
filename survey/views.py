@@ -19,19 +19,19 @@ from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, Pres
 from survey import settings
 
 
-def survey_list_processor(request=None):
-    return {
-        'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
-        'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
-        'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('end_date')[:10]
-    }
-
-
-class IndexView(TemplateView):
-    template_name = 'survey/index.html'
-
+class SurveyListMixin(object):
     def get_context_data(self, *args, **kwargs):
-        return survey_list_processor()
+        context = {
+            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
+            'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
+            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('end_date')[:10]
+        }
+        context.update(super(SurveyListMixin, self).get_context_data(*args, **kwargs))
+        return context
+
+
+class IndexView(SurveyListMixin, TemplateView):
+    template_name = 'survey/index.html'
 
 
 class AccessMixin(object):
@@ -54,7 +54,7 @@ class AccessMixin(object):
         return super(AccessMixin, self).dispatch(request, *args, **kwargs)
 
 
-class SurveyDashboardView(AccessMixin, DetailView):
+class SurveyDashboardView(AccessMixin, SurveyListMixin, DetailView):
     model = Survey
     template_name = 'survey/survey_dashboard.html'
 
@@ -63,8 +63,7 @@ class SurveyDashboardView(AccessMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(SurveyDashboardView, self).get_context_data(*args, **kwargs)
-        context.update(survey_list_processor())
-        context["current_tab"] = self.template_name
+        context['current_tab'] = self.template_name
         return context
 
 
@@ -123,36 +122,48 @@ class SurveyView(View):
         return self.inactive_survey_response(request, survey.is_active)
 
 
-class SurveyEditView(SurveyDashboardView):
-    model = Survey
+class SurveyFormMixin(SurveyListMixin):
     template_name = 'survey/survey_form.html'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(SurveyEditView, self).get_context_data(*args, **kwargs)
-        context['presets'] = Preset.objects.all()
-        return context
-
-    def hasAccess(self):
-        return self.get_object().is_unpublished
-
-    def post(self, request, slug):
-        survey = self.get_object()
+    def post(self, request, *args, **kwargs):
+        warnings = []
         data = json.loads(request.POST.get('r'))
-        questions = data.get('questions', [])
-        # delete existing questions
-        # due to cascading deletes, this will also delete choices
-        survey.question_set.all().delete()
-        # edit the title if it has changed
+        slug = slugify(data.get('slug', ''))
+        try:
+            survey = self.get_object()
+            if slug != survey.slug:
+                warnings.append(_("This survey's URL has been changed. Be sure to update any QR code images."))
+        except AttributeError:
+            survey = Survey(creator=request.user)
         survey.title = data.get('title', '')
+        survey.slug = slug
         survey.description = data.get('description', '')
-        # edit slug if it has changed
-        survey.slug = slugify(data.get('slug', ''))
         try:
             survey.save()
         except IntegrityError:
-            return HttpResponse(json.dumps({'status': 'failure', 'error': _('That SLUG already exists')}), mimetype='application/json')
-        Question.add_questions(questions, survey)
-        return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
+            warnings = [_('That SLUG already exists')]
+            return HttpResponse(json.dumps({'status': 'failure', 'warnings': warnings}), mimetype='application/json')
+        # delete existing questions
+        # due to cascading deletes, this will also delete choices
+        survey.question_set.all().delete()
+        questions = data.get('questions', [])
+        survey.add_questions(questions)
+        return HttpResponse(json.dumps({'status': 'success', 'warnings': warnings, 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SurveyFormMixin, self).get_context_data(*args, **kwargs)
+        context['presets'] = Preset.objects.all()
+        return context
+
+
+class SurveyNewView(SurveyFormMixin, TemplateView):
+    # Magic
+    pass
+
+
+class SurveyEditView(SurveyFormMixin, SurveyDashboardView):
+    def hasAccess(self):
+        return self.get_object().is_unpublished
 
 
 class SurveyResultsView(SurveyDashboardView):
@@ -216,27 +227,6 @@ class BallotResultsView(SurveyDashboardView):
         except IndexError:
             previous_ballot = None
         context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot": previous_ballot})
-        return context
-
-
-class SurveyNewView(TemplateView):
-    template_name = 'survey/survey_form.html'
-
-    def post(self, request):
-        data = json.loads(request.POST.get('r'))
-        slug = slugify(data.get('slug', ''))
-        try:
-            survey = Survey.objects.create(slug=slug, title=data.get('title', ''), description=data.get('description', ''), creator=request.user)
-        except IntegrityError:
-            return HttpResponse(json.dumps({'status': 'failure', 'error': _('That SLUG already exists')}), mimetype='application/json')
-        questions = data.get('questions', [])
-        Question.add_questions(questions, survey)
-        return HttpResponse(json.dumps({'status': 'success', 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(SurveyNewView, self).get_context_data(*args, **kwargs)
-        context['presets'] = Preset.objects.all()
-        context.update(survey_list_processor())
         return context
 
 
