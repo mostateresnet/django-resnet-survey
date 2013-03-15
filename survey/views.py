@@ -125,6 +125,7 @@ class SurveyView(View):
 class SurveyFormMixin(SurveyListMixin):
     template_name = 'survey/survey_form.html'
 
+    @transaction.commit_on_success
     def post(self, request, *args, **kwargs):
         warnings = []
         data = json.loads(request.POST.get('r'))
