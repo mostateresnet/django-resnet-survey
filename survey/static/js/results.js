@@ -6,17 +6,22 @@ google.setOnLoadCallback(setUpGraphs);
 function drawChart(graphdiv) {
     var table = graphdiv.siblings('table');
     var data = [['','']];
+    var color = '';
+    var font = '';
     table.find('tr').each(function(){
         var tds = $(this).children('td');
         // push the name of the field removing and whitespace
         // as well as the number of items in that field
-        data.push([$(tds[0]).text().replace(/[\n\t]/g, ''), parseInt($(tds[1]).text())]);
+        var label = $(tds[0]);
+        data.push([label.text().replace(/[\n\t]/g, ''), parseInt($(tds[1]).text())]);
+        color = label.css('color');
+        font = label.css('font-family');
+        console.log(font);
     });
-    console.log(table.css('background-color'));
     var wrapper = new google.visualization.ChartWrapper({
         chartType: 'PieChart',
         dataTable: data,
-        options: {'title': graphdiv.siblings('h4').text(), 'backgroundColor': '#C9DA9E'},
+        options: {'backgroundColor': 'transparent', 'legend': {'textStyle': {'color': color, 'fontName': font}}},
         containerId: graphdiv.attr('id')
     });
     wrapper.draw();
