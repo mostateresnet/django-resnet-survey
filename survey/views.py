@@ -328,7 +328,7 @@ class SurveyCloneView(View):
 class SurveyQRCodeView(View):
     def get(self, request, slug):
         survey = get_object_or_404(Survey, slug=slug)
-        img = qrcode.make(request.build_absolute_uri(self.object.get_absolute_url()))
+        img = qrcode.make(request.build_absolute_uri(survey.get_absolute_url()))
         response = HttpResponse(mimetype='image/png')
         response['Content-Disposition'] = 'attachment; filename=%s.png' % survey.slug
         img.save(response, 'PNG')
