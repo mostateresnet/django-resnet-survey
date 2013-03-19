@@ -40,7 +40,7 @@
         {% endif %}
       >{% trans "RESULTS" %}</a></li>
     {% endif %}
-    {% comment %}<li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>{% endcomment %}
+    <li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>
     {% block extra_tabs %}
       <li>
         <a href='{% url survey survey.slug %}' target ='_blank'>
@@ -69,8 +69,8 @@
   </h3>
   <div id='survey-duration' data-start-date-time='{% firstof survey.start_date %}'>
     {% trans "Start:" %}
-    <input type="text" id="start-date" name="start-date" value='{{ survey.start_date|date:"m/d/Y" }}' />
-    <input type="text" name="start-time" value='{{ survey.start_date|date:"h:iA" }}' =/>
+    <input type="text" id="start-date" name="start-date" {% if not survey.is_unpublished and survey.has_results %}disabled{% endif %} value='{{ survey.start_date|date:"m/d/Y" }}' />
+    <input type="text" name="start-time" {% if not survey.is_unpublished and survey.has_results %}disabled{% endif %} value='{{ survey.start_date|date:"h:iA" }}' =/>
     {% trans "End:" %}
     <input type="text" id="end-date" name="end-date" value='{{ survey.end_date|date:"m/d/Y" }}' />
     <input type="text" name="end-time" value='{{ survey.end_date|date:"h:iA" }}' />

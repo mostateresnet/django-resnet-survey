@@ -461,11 +461,11 @@ class SurveyDurationViewTest(TestCase):
         response = self.client.get(reverse('surveyduration', args=[self.survey.slug]))
         self.assertEqual(response.status_code, 404, "The page didn't return a 404")
 
-    def test_survey_change_publish_date_after_gone_life(self):
+    def test_survey_change_publish_date_after_gone_live(self):
         ballot1 = Ballot.objects.create(survey=self.survey)
         self.survey.start_date = self.arbitrary_start_date
         self.survey.save()
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:00am',
+        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:01am',
                                                                                          'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
         response_data = json.JSONDecoder().decode(response.content)
         self.assertEqual(response.status_code, 200, "This page should return a 200")

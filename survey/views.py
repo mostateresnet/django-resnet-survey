@@ -240,18 +240,21 @@ class SurveyDurationView(SurveyDashboardView):
         if 'set_duration' in request.POST:
             survey = Survey.objects.get(slug=slug)
 
-            if survey.start_date and survey.start_date < now() and self.get_object().has_results:
-                errors.append('A surveys publish date cannot be changed if it has already gone live.')
-            else:
-                survey.set_date('start_date',
-                                request.POST.get('start_date', ''),
-                                request.POST.get('start_time', '')
-                                )
-                if 'end_date' in request.POST:
-                    survey.set_date('end_date',
-                                    request.POST.get('end_date', ''),
-                                    request.POST.get('end_time', '')
+            try:
+                if 'start_date' in request.POST:
+                    survey.set_date('start_date',
+                                    request.POST.get('start_date', ''),
+                                    request.POST.get('start_time', '')
                                     )
+            except Survey.AlreadyPublishedError:
+                errors.append('A surveys publish date cannot be changed if it has already gone live.')
+
+            if 'end_date' in request.POST:
+                survey.set_date('end_date',
+                                request.POST.get('end_date', ''),
+                                request.POST.get('end_time', '')
+                                )
+
         if errors:
             return HttpResponse(json.dumps({
                 'status': 'error',

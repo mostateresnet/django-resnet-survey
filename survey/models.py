@@ -21,6 +21,9 @@ class Survey(models.Model):
     def get_absolute_url(self):
         return ('survey', (), {'slug': self.slug})
 
+    class AlreadyPublishedError(Exception):
+        pass
+
     @property
     def is_active(self):
         end_date = self.end_date
@@ -78,6 +81,10 @@ class Survey(models.Model):
             return
         try:
             dt = datetime.strptime(dtStr + " " + tmStr, '%m/%d/%Y %I:%M%p').replace(tzinfo=get_current_timezone())
+            if field == 'start_date' and self.start_date:
+                if self.start_date != dt and self.start_date < now() and self.has_results:
+                    raise self.AlreadyPublishedError
+
         except ValueError:
             dt = datetime.strptime(dtStr, '%m/%d/%Y').replace(tzinfo=get_current_timezone())
         setattr(self, field, dt)

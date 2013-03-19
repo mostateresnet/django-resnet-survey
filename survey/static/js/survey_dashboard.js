@@ -58,7 +58,7 @@ $(document).ready(function(){
   $('#clone').click(clone_survey_dialog);
   $('input[name="set-duration"]').click(save_survey_duration);
   // Datepicker
-  $('input[name="start-date"], input[name="end-date"]').datepicker({
+  $('input[name="start-date"], input[name="end-date"]').not(':disabled').datepicker({
     showOn: "button",
     buttonImageOnly: true,
     buttonText: "Click to pick a date.",

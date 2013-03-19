@@ -29,9 +29,10 @@
 {% for question, choices in ballot.question_list %}
   {% if question.type == 'TB' %}
     <label for="q{{ question.pk }}">{{ question }}:</label>
+    <br />
     {% for choice, answer in choices %}
         {% if answer %}
-            <label>{{ choice }}</label>
+            <label>~{{ choice }}</label>
         {% endif %}
     {% endfor %}
   {% endif %}
@@ -41,7 +42,7 @@
     <br />
     {% for choice, answer in choices %}
         {% if answer %}
-            <label>{{ choice }}</label>
+            <label>~{{ choice }}</label>
         {% endif %}
     {% endfor %}
   {% endif %}
