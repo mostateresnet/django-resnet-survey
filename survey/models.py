@@ -108,13 +108,16 @@ class Survey(models.Model):
         """
         Accepts a list of dictionaries containing question data.
         """
-        counter = 1
         for question_data in questions:
-            question = Question.objects.create(survey=self, message=question_data.get(
-                'message', ''), type=question_data.get('type', ''), required=question_data.get('required'), order_number=counter)
-            counter += 1
+            question = Question.objects.create(
+                survey=self,
+                message=question_data.get('message', ''),
+                type=question_data.get('type', ''),
+                required=question_data.get('required'),
+                order_number=question_data.get('order_number', 0)
+            )
             for choice in question_data.get('choices', []):
-                Choice.objects.create(question=question, message=choice['message'], order_number=choice['order_number'])
+                Choice.objects.create(question=question, message=choice.get('message', ''), order_number=choice.get('order_number', 0))
 
 
 class QuestionGroup(models.Model):
@@ -170,6 +173,9 @@ class Choice(models.Model):
     question = models.ForeignKey('Question')
     message = models.CharField(max_length=1024)
     order_number = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order_number']
 
     def __unicode__(self):
         return self.message
