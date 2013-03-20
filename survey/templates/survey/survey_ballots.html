@@ -13,67 +13,70 @@
 {% endblock %}
 
 {% block content %}
-<div data-role="header">
-</div>
+<div data-role="header"> </div>
 <div id="navbuttons">
    <a href='{% url surveydashboard survey.slug %}' data-ajax="false">{% trans "Back to Dashboard" %}</a>
    <br />
-  {% if previous_ballot != None %}
+  {% if ballot != None and previous_ballot != None %}
     <a href="{% url ballot survey.slug previous_ballot.pk %}"data-ajax="false">{% trans "Previous" %}</a>
   {% endif %}
-  {% if next_ballot != None %}
+  {% if ballot != None and next_ballot != None %}
     <a href="{% url ballot survey.slug next_ballot.pk %}" data-ajax="false">{% trans "Next" %}</a>
   {% endif %}
 </div>
 <div data-role="content">
-{% for question, choices in ballot.question_list %}
-  {% if question.type == 'TB' %}
-    <label for="q{{ question.pk }}">{{ question }}:</label>
-    <br />
-    {% for choice, answer in choices %}
-        {% if answer %}
-            <label>~{{ choice }}</label>
-        {% endif %}
-    {% endfor %}
-  {% endif %}
-  
-  {% if question.type == 'TA' %}
-    <label for="q{{ question.pk }}">{{ question }}</label>
-    <br />
-    {% for choice, answer in choices %}
-        {% if answer %}
-            <label>~{{ choice }}</label>
-        {% endif %}
-    {% endfor %}
-  {% endif %}
-  
-  {% if question.type == 'RA' %}
-    <fieldset data-role="controlgroup">
-      <legend>{{ question }}</legend>
+{% if ballot != None %}
+    {% for question, choices in ballot.question_list %}
+      {% if question.type == 'TB' %}
+        <label for="q{{ question.pk }}">{{ question }}:</label>
+        <br />
         {% for choice, answer in choices %}
-          <input type="radio" disabled="disabled" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
-          <label for="c{{ choice.pk }}">{{ choice }}</label>
+            {% if answer %}
+                <label>~{{ choice }}</label>
+            {% endif %}
         {% endfor %}
-    </fieldset>
-  {% endif %}
-  
-  {% if question.type == 'CH' %}
-    <div data-role="controlgroup">
-      <legend>{{ question }}</legend>
+      {% endif %}
+      
+      {% if question.type == 'TA' %}
+        <label for="q{{ question.pk }}">{{ question }}</label>
+        <br />
         {% for choice, answer in choices %}
-          <input type="checkbox" disabled="disabled" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
-          <label for="c{{ choice.pk }}">{{ choice }}</label>
+            {% if answer %}
+                <label>~{{ choice }}</label>
+            {% endif %}
         {% endfor %}
-    </div>
-  {% endif %}
-  
-  {% if question.type == 'DD' %}
-    <label for="c{{ choice.pk }}" class="select">{{ question }}:</label>
-  {% for choice, answer in choices %}
-    {% if answer %}<label>{{ choice }}</label>{% endif %}
-  {% endfor %}
-  {% endif %}
-  <br />
-{% endfor %}
+      {% endif %}
+      
+      {% if question.type == 'RA' %}
+        <fieldset data-role="controlgroup">
+          <legend>{{ question }}</legend>
+            {% for choice, answer in choices %}
+              <input type="radio" disabled="disabled" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
+              <label for="c{{ choice.pk }}">{{ choice }}</label>
+            {% endfor %}
+        </fieldset>
+      {% endif %}
+      
+      {% if question.type == 'CH' %}
+        <div data-role="controlgroup">
+          <legend>{{ question }}</legend>
+            {% for choice, answer in choices %}
+              <input type="checkbox" disabled="disabled" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
+              <label for="c{{ choice.pk }}">{{ choice }}</label>
+            {% endfor %}
+        </div>
+      {% endif %}
+      
+      {% if question.type == 'DD' %}
+        <label for="c{{ choice.pk }}" class="select">{{ question }}:</label>
+      {% for choice, answer in choices %}
+        {% if answer %}<label>{{ choice }}</label>{% endif %}
+      {% endfor %}
+      {% endif %}
+      <br />
+    {% endfor %}
+{% else %}
+    <label>{% trans "There are no ballots for this survey." %}</label>
+{% endif %}
 </div>
 {% endblock %}

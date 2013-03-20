@@ -216,17 +216,26 @@ class BallotResultsView(SurveyDashboardView):
             try:
                 ballot = self.object.ballot_set.all()[0]
             except IndexError:
-                raise Http404
+                ballot = None
+                #raise Http404
         else:
             ballot = get_object_or_404(Ballot, pk=self.kwargs['ballot_id'], survey=self.object)
+
         try:
-            next_ballot = Ballot.objects.filter(pk__gt=ballot.pk, survey=self.object).order_by('pk')[0]
+            if ballot == None:
+                raise IndexError
+            else:
+                next_ballot = Ballot.objects.filter(pk__gt=ballot.pk, survey=self.object).order_by('pk')[0]
         except IndexError:
             next_ballot = None
         try:
-            previous_ballot = Ballot.objects.filter(pk__lt=ballot.pk, survey=self.object).order_by('-pk')[0]
+            if ballot == None:
+                raise IndexError
+            else:
+                previous_ballot = Ballot.objects.filter(pk__lt=ballot.pk, survey=self.object).order_by('-pk')[0]
         except IndexError:
             previous_ballot = None
+
         context.update({"ballot": ballot, "next_ballot": next_ballot, "previous_ballot": previous_ballot})
         return context
 
