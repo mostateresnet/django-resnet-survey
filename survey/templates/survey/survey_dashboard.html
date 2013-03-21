@@ -29,10 +29,6 @@
             id="currentTab"
         {% endif %}
       >{% trans "EDIT" %}</a></li> 
-        {% if survey.creator == user %}
-          <li><a id="delete_survey" data-href='{% url surveydelete survey.slug %}' data-refresh='{% url index %}'
-          >{% trans "DELETE" %}</a></li>
-        {% endif %}
     {% else %}
       <li><a href='{% url surveyresults survey.slug %}'
         {% if current_tab == "survey/results.html" %}
@@ -40,7 +36,19 @@
         {% endif %}
       >{% trans "RESULTS" %}</a></li>
     {% endif %}
-    <li><a href='{% url ballot survey.slug %}'>BALLOTS</a></li>
+    <li><a href='{% url ballot survey.slug %}' 
+        {% if current_tab == "survey/survey_ballots.html" %}
+            id="currentTab"
+        {% endif %}
+    >{% trans "BALLOTS" %}</a></li>
+
+       {% if not survey.is_active %}
+        {% if survey.creator == user %}
+          <li><a id="delete_survey" data-href='{% url surveydelete survey.slug %}' data-refresh='{% url index %}'
+          >{% trans "DELETE" %}</a></li>
+        {% endif %}
+        {% endif %}
+
     {% block extra_tabs %}
       <li>
         <a href='{% url survey survey.slug %}' target ='_blank'>

@@ -10,46 +10,51 @@
 {% block css %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static 'css/reorder.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/results.css' %}" />
 {% endblock %}
 
 {% block content %}
 <div data-role="header"> </div>
 <div id="navbuttons">
-   <a href='{% url surveydashboard survey.slug %}' data-ajax="false">{% trans "Back to Dashboard" %}</a>
-   <br />
-  {% if ballot != None and previous_ballot != None %}
-    <a href="{% url ballot survey.slug previous_ballot.pk %}"data-ajax="false">{% trans "Previous" %}</a>
-  {% endif %}
-  {% if ballot != None and next_ballot != None %}
-    <a href="{% url ballot survey.slug next_ballot.pk %}" data-ajax="false">{% trans "Next" %}</a>
-  {% endif %}
+    {% if ballot  != None %}
+        <a 
+            {% if previous_ballot != None %} href="{% url ballot survey.slug previous_ballot.pk %}" class="left ballot_btn" 
+            {% else %} class="left ballot_btn_disabled" {% endif %}  
+            data-ajax="false">{% trans "Previous Ballot" %}
+        </a>
+        <a 
+            {% if next_ballot != None %} href="{% url ballot survey.slug next_ballot.pk %}" class="right ballot_btn" 
+            {% else %} class="right ballot_btn_disabled" {% endif %}  
+            data-ajax="false">{% trans "Next Ballot" %}
+        </a>
+    {% endif %}
 </div>
-<div data-role="content">
+<div id="main-content" data-role="content" class="clear">
 {% if ballot != None %}
+    <h3>Ballot ID: {{ ballot.pk }}</h3>
     {% for question, choices in ballot.question_list %}
+    <div class="question-number">
+        <span>{{ forloop.counter }}</span>
+    </div>
+        <div class = "result"><h4>{{ question }}</h4></div>
       {% if question.type == 'TB' %}
-        <label for="q{{ question.pk }}">{{ question }}:</label>
-        <br />
         {% for choice, answer in choices %}
             {% if answer %}
-                <label>~{{ choice }}</label>
+                <p>{{ choice }}</p>
             {% endif %}
         {% endfor %}
       {% endif %}
       
       {% if question.type == 'TA' %}
-        <label for="q{{ question.pk }}">{{ question }}</label>
-        <br />
         {% for choice, answer in choices %}
             {% if answer %}
-                <label>~{{ choice }}</label>
+                <p>{{ choice }}</p>
             {% endif %}
         {% endfor %}
       {% endif %}
       
       {% if question.type == 'RA' %}
         <fieldset data-role="controlgroup">
-          <legend>{{ question }}</legend>
             {% for choice, answer in choices %}
               <input type="radio" disabled="disabled" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
               <label for="c{{ choice.pk }}">{{ choice }}</label>
@@ -59,7 +64,6 @@
       
       {% if question.type == 'CH' %}
         <div data-role="controlgroup">
-          <legend>{{ question }}</legend>
             {% for choice, answer in choices %}
               <input type="checkbox" disabled="disabled" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" {% if answer %}checked="checked"{% endif %} />
               <label for="c{{ choice.pk }}">{{ choice }}</label>
@@ -68,15 +72,16 @@
       {% endif %}
       
       {% if question.type == 'DD' %}
-        <label for="c{{ choice.pk }}" class="select">{{ question }}:</label>
       {% for choice, answer in choices %}
-        {% if answer %}<label>{{ choice }}</label>{% endif %}
+        {% if answer %}<p>{{ choice }}</p>{% endif %}
       {% endfor %}
       {% endif %}
       <br />
+<div class="clear"></div>
     {% endfor %}
 {% else %}
     <label>{% trans "There are no ballots for this survey." %}</label>
 {% endif %}
+
 </div>
 {% endblock %}
