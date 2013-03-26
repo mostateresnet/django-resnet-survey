@@ -72,10 +72,16 @@
       {% endif %}
       
       {% if question.type == 'DD' %}
-      {% for choice, answer in choices %}
-        {% if answer %}<p>{{ choice }}</p>{% endif %}
-      {% endfor %}
+        <fieldset data-role="controlgroup">
+            <select class = "drop_down">
+            {% for choice, answer in choices %}
+              <option {% if answer %}selected{% endif %}>{{ choice }}</option>
+            {% endfor %}
+            </select>
+        </fieldset>
       {% endif %}
+
+
       <br />
 <div class="clear"></div>
     {% endfor %}
