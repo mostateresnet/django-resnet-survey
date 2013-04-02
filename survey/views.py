@@ -24,7 +24,7 @@ class SurveyListMixin(object):
         context = {
             'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
             'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
-            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('end_date')[:10]
+            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date') #[:10]
         }
         context.update(super(SurveyListMixin, self).get_context_data(*args, **kwargs))
         return context
@@ -199,7 +199,7 @@ class SurveyResultsView(SurveyDashboardView):
 
             choices = combined_choices
         else:
-            choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))
+            choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))            
 
         query = {'choices': choices, 'choice_id': int(self.kwargs.get('choice_id', -1))}
         context.update(query)
@@ -446,3 +446,12 @@ class PresetSearchView(DetailView):
     def get(self, request):
         all_choices = PresetChoice.objects.filter(preset__title__iexact=self.request.GET.get('title', ''))
         return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True))}), mimetype='application/json')
+
+class SurveyArchiveView(AccessMixin, SurveyListMixin, ListView):
+    model = Survey
+    template_name = 'survey/archive.html'
+
+    def hasAccess(self):
+        return True
+
+

@@ -1,0 +1,25 @@
+{% extends "survey/base_with_sidebar.html" %}
+{% load static from staticfiles %}
+{% load i18n %}
+
+{% block css %}
+{{ block.super }}
+<link type='text/css' rel='stylesheet' href='{% static "css/archive.css" %}' />
+{% endblock %}
+
+{% block header %}
+  <h2 id='survey-title'>{% trans "Closed Survey Archive" %}</h2>
+{% endblock %}
+
+{% block content %}
+  <h3>
+    {% trans "Surveys" %}
+    <div class='help-text'>{% trans "A complete archive of every closed survey." %}</div>
+  </h3>
+    <br>
+    {% for survey_item in closed_surveys %}
+        <a class = "archive_link" href="{% url surveydashboard survey_item.slug %}">{{ survey_item }}</a>
+    {% endfor %}
+</li>
+
+{% endblock %}

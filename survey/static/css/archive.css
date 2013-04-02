@@ -1,0 +1,8 @@
+.archive_link
+{
+    width: 45%; 
+    display: inline-block; 
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color: #4E769B;
+}
