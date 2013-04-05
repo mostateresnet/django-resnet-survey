@@ -84,9 +84,15 @@
     <input type="text" name="end-time" value='{{ survey.end_date|date:"h:iA" }}' />
     <input data-url='{% url surveyduration survey.slug %}' class="button" type="submit" name="set-duration" value="{% trans 'Save Duration' %}" />
   </div>
-  <div class='toggle-label'>{% trans "Allow Survey Station:" %} <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:_("No,Yes") }}</a></div>
-  <div class='toggle-label'>{% trans "Show Social Media Links:" %} <a class='toggle-button' id='toggle_track' href='{% url surveysocial survey.slug %}'>{{ survey.show_social|yesno:_("Yes,No") }}</a></div>
 
-  <a href='{% url qrcode survey.slug %}'>{% trans "Download QR Code" %}</a>
-
+    <table class="dashboard_details">
+      <tr>
+          <td class='toggle-label'>{% trans "Allow Survey Station:" %} <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:_("No,Yes") }}</a></td>
+          <td rowspan="2"><a href='{% url qrcode survey.slug %}'><img src="{% url qrcode survey.slug %}" width="128" height="128" style="float: right;"></a></td>          
+      </tr>
+      <tr>
+          <td class='toggle-label' >{% trans "Show Social Media Links:" %} <a class='toggle-button' id='toggle_track' href='{% url surveysocial survey.slug %}'>{{ survey.show_social|yesno:_("Yes,No") }}</a></td>
+      </tr>
+    </table>
+    
 {% endblock %}

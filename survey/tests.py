@@ -19,9 +19,12 @@ import unittest
 # pylint: disable=R0902
 class QuestionTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-        self.question = Question.objects.create(message="What do you like best?", survey=self.survey)
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
+        self.question = Question.objects.create(
+            message="What do you like best?", survey=self.survey)
 
     def test_unicode(self):
         self.assertTrue(unicode(self.question))
@@ -29,10 +32,14 @@ class QuestionTest(TestCase):
 
 class ChoiceTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-        self.question = Question.objects.create(message="What do you like best?", survey=self.survey)
-        self.choice = Choice.objects.create(question=self.question, message="Word up dog")
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
+        self.question = Question.objects.create(
+            message="What do you like best?", survey=self.survey)
+        self.choice = Choice.objects.create(
+            question=self.question, message="Word up dog")
 
     def test_unicode(self):
         self.assertTrue(unicode(self.choice))
@@ -40,55 +47,74 @@ class ChoiceTest(TestCase):
 
 class IndexViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
 
     def test_get_index(self):
-        Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
         response = self.client.get(reverse('index'), follow=True)
         self.assertEqual(response.status_code, 200)
 
 
 class BallotResultsViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-        self.questionRA = Question.objects.create(message="What time is it", survey=self.survey, type="RA")
-        self.choiceRA = Choice.objects.create(question=self.questionRA, message="5 oclock")
-        self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
-        self.choiceTB = Choice.objects.create(question=self.questionTB, message="QuestionText")
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
+        self.questionRA = Question.objects.create(
+            message="What time is it", survey=self.survey, type="RA")
+        self.choiceRA = Choice.objects.create(
+            question=self.questionRA, message="5 oclock")
+        self.questionTB = Question.objects.create(
+            message="Textbox question", survey=self.survey, type="TB")
+        self.choiceTB = Choice.objects.create(
+            question=self.questionTB, message="QuestionText")
         self.ballot = Ballot.objects.create(survey=self.survey)
 
     def test_view(self):
-        response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug}), follow=True)
+        response = self.client.get(reverse('ballot', kwargs={
+                                   'slug': self.survey.slug}), follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_empty_page(self):
-        response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug, }), {'page': 0}, follow=True)
+        response = self.client.get(reverse('ballot', kwargs={
+                                   'slug': self.survey.slug, }), {'page': 0}, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_no_ballots_404(self):
         self.ballot.delete()
-        response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug}), follow=True)
+        response = self.client.get(reverse('ballot', kwargs={
+                                   'slug': self.survey.slug}), follow=True)
         self.assertEqual(response.status_code, 404)
 
     def test_get_ballot_or_404(self):
-        response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug, 'ballot_id': 123456789}), follow=True)
+        response = self.client.get(reverse('ballot', kwargs={
+                                   'slug': self.survey.slug, 'ballot_id': 123456789}), follow=True)
         self.assertEqual(response.status_code, 404)
 
 
 class SurveyViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
         self.survey_url = self.survey.get_absolute_url()
-        self.survey_results_url = reverse('surveyresults', kwargs={'slug': self.survey.slug})
-        self.questionRA = Question.objects.create(message="What time is it", survey=self.survey, type="RA")
-        self.choiceRA = Choice.objects.create(question=self.questionRA, message="5 oclock")
-        self.questionTB = Question.objects.create(message="Textbox question", survey=self.survey, type="TB")
-        self.choiceTB = Choice.objects.create(question=self.questionTB, message="QuestionText")
+        self.survey_results_url = reverse(
+            'surveyresults', kwargs={'slug': self.survey.slug})
+        self.questionRA = Question.objects.create(
+            message="What time is it", survey=self.survey, type="RA")
+        self.choiceRA = Choice.objects.create(
+            question=self.questionRA, message="5 oclock")
+        self.questionTB = Question.objects.create(
+            message="Textbox question", survey=self.survey, type="TB")
+        self.choiceTB = Choice.objects.create(
+            question=self.questionTB, message="QuestionText")
         self.now = now()
         self.one_hour = timedelta(hours=1)
 
@@ -140,12 +166,14 @@ class SurveyViewTest(TestCase):
 
     def test_post_survey(self):
         self.survey.publish()
-        postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
+        postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(
+            self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
         response = self.client.post(self.survey_url, postdata)
         self.assertEqual(response.status_code, 200)
 
     def test_survey_results(self):
-        postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
+        postdata = {"q" + unicode(self.questionRA.pk): "c" + unicode(
+            self.choiceRA.pk), "q" + unicode(self.questionTB.pk): "word up dawg"}
         response = self.client.post(self.survey_url, postdata)
         response = self.client.get(self.survey_results_url)
         self.assertEqual(response.status_code, 200)
@@ -206,7 +234,8 @@ class SurveyViewTest(TestCase):
         """
         postdata = {'r': data}
         self.client.post(reverse('newsurvey'), postdata)
-        self.assertEqual(Survey.objects.get(slug='post-data-survey').title, "a new survey for post data")
+        self.assertEqual(Survey.objects.get(
+            slug='post-data-survey').title, "a new survey for post data")
 
     def test_new_survey_unique_slug(self):
         data = """
@@ -227,7 +256,8 @@ class SurveyViewTest(TestCase):
         postdata = {'r': data}
         response = self.client.post(reverse('newsurvey'), postdata)
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertIn('That SLUG already exists', response_data['warnings'], 'Integrity error: slug uniqueness is not being inforced')
+        self.assertIn('That SLUG already exists', response_data[
+                      'warnings'], 'Integrity error: slug uniqueness is not being inforced')
 
     def test_survey_publish_publishes_survey(self):
         self.user.is_staff = True
@@ -248,17 +278,22 @@ class SurveyViewTest(TestCase):
 
 class SurveyEditViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="Text Only Survey", slug="text-only-survey", creator=self.user)
-        self.survey2 = Survey.objects.create(title="Text Only Survey", slug="survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="Text Only Survey", slug="text-only-survey", creator=self.user)
+        self.survey2 = Survey.objects.create(
+            title="Text Only Survey", slug="survey", creator=self.user)
         self.arbitrary_start_date_str = 'Mon, 01 Jan 2013 06:00:00 GMT'
-        self.arbitrary_start_date = datetime.strptime(self.arbitrary_start_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+        self.arbitrary_start_date = datetime.strptime(
+            self.arbitrary_start_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
         self.preset = Preset.objects.create(title="States")
         PresetChoice.objects.create(preset=self.preset, option="MO")
 
     def test_get_context_data(self):
-        response = self.client.get(reverse('surveyedit', args=[self.survey.slug]), follow=True)
+        response = self.client.get(reverse(
+            'surveyedit', args=[self.survey.slug]), follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
@@ -348,12 +383,18 @@ class SurveyEditViewTest(TestCase):
             }
         """
         postdata = {'r': data}
-        response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
-        self.assertEqual(response.status_code, 200, "The page didn't return a 200")
-        self.assertEqual(self.survey.title, 'Text Only Survey', "The Survey didn't update properly")
-        self.assertEqual(self.survey.question_set.all()[0].message, 'Text Area Question', "Question didn't update properly")
-        self.assertEqual(self.survey.question_set.all()[2].choice_set.all()[1].message, 'Check Box Choice 2', "Question Order is broken")
-        self.assertEqual(self.survey.question_set.all()[4].choice_set.all()[2].order_number, 2, "Choice Order is broken")
+        response = self.client.post(reverse(
+            'surveyedit', args=[self.survey.slug]), postdata)
+        self.assertEqual(
+            response.status_code, 200, "The page didn't return a 200")
+        self.assertEqual(
+            self.survey.title, 'Text Only Survey', "The Survey didn't update properly")
+        self.assertEqual(self.survey.question_set.all()[
+                         0].message, 'Text Area Question', "Question didn't update properly")
+        self.assertEqual(self.survey.question_set.all()[2].choice_set.all()[
+                         1].message, 'Check Box Choice 2', "Question Order is broken")
+        self.assertEqual(self.survey.question_set.all()[
+                         4].choice_set.all()[2].order_number, 2, "Choice Order is broken")
 
     def test_has_access(self):
         self.survey.start_date = self.arbitrary_start_date
@@ -376,8 +417,10 @@ class SurveyEditViewTest(TestCase):
             }
         """
         postdata = {'r': data}
-        response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
-        self.assertEqual(response.status_code, 404, "The page didn't return a 404")
+        response = self.client.post(reverse(
+            'surveyedit', args=[self.survey.slug]), postdata)
+        self.assertEqual(
+            response.status_code, 404, "The page didn't return a 404")
 
     def test_survey_slug_unique(self):
         data = """
@@ -397,9 +440,11 @@ class SurveyEditViewTest(TestCase):
             }
         """
         postdata = {'r': data}
-        response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
+        response = self.client.post(reverse(
+            'surveyedit', args=[self.survey.slug]), postdata)
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertIn('That SLUG already exists', response_data['warnings'], 'Integrity error: slug uniqueness is not being inforced')
+        self.assertIn('That SLUG already exists', response_data[
+                      'warnings'], 'Integrity error: slug uniqueness is not being inforced')
 
     def test_survey_slug_or_title_required(self):
         data = """
@@ -426,214 +471,300 @@ class SurveyEditViewTest(TestCase):
 
 class SurveyResultsViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="Text Only Survey", slug="text-only-survey", creator=self.user)
-        self.question1 = Question.objects.create(survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
-        self.choice1 = Choice.objects.create(question=self.question1, message="Q1C1", order_number=0)
-        self.choice2 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=1)
-        self.choice3 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=2)
-        self.question2 = Question.objects.create(survey=self.survey, message="Question(RA)", type="RA", required=False, order_number=1)
-        self.choice4 = Choice.objects.create(question=self.question2, message="Q2C1", order_number=0)
-        self.choice5 = Choice.objects.create(question=self.question2, message="Q2C2", order_number=1)
-        self.choice6 = Choice.objects.create(question=self.question2, message="Q2C2", order_number=2)
+        self.survey = Survey.objects.create(
+            title="Text Only Survey", slug="text-only-survey", creator=self.user)
+        self.question1 = Question.objects.create(
+            survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
+        self.choice1 = Choice.objects.create(
+            question=self.question1, message="Q1C1", order_number=0)
+        self.choice2 = Choice.objects.create(
+            question=self.question1, message="Q1C2", order_number=1)
+        self.choice3 = Choice.objects.create(
+            question=self.question1, message="Q1C2", order_number=2)
+        self.question2 = Question.objects.create(
+            survey=self.survey, message="Question(RA)", type="RA", required=False, order_number=1)
+        self.choice4 = Choice.objects.create(
+            question=self.question2, message="Q2C1", order_number=0)
+        self.choice5 = Choice.objects.create(
+            question=self.question2, message="Q2C2", order_number=1)
+        self.choice6 = Choice.objects.create(
+            question=self.question2, message="Q2C2", order_number=2)
         self.ballot1 = Ballot.objects.create(survey=self.survey)
         self.ballot2 = Ballot.objects.create(survey=self.survey)
         self.ballot3 = Ballot.objects.create(survey=self.survey)
-        self.question1.answer_with_choices({self.choice1, self.choice2, self.choice3}, self.ballot1)
+        self.question1.answer_with_choices({
+                                           self.choice1, self.choice2, self.choice3}, self.ballot1)
         self.question2.answer_with_choices({self.choice4}, self.ballot1)
-        self.question1.answer_with_choices({self.choice1, self.choice2}, self.ballot2)
+        self.question1.answer_with_choices({
+                                           self.choice1, self.choice2}, self.ballot2)
         self.question2.answer_with_choices({self.choice4}, self.ballot2)
         self.question1.answer_with_choices({self.choice1}, self.ballot3)
         self.question2.answer_with_choices({self.choice4}, self.ballot3)
 
     def test_get_context_data(self):
-        response = self.client.get(reverse('surveyresults', args=[self.survey.slug, self.choice1.pk]))
-        self.assertEqual(response.status_code, 200, "The page didn't return a 200")
+        response = self.client.get(reverse('surveyresults', args=[
+                                   self.survey.slug, self.choice1.pk]))
+        self.assertEqual(
+            response.status_code, 200, "The page didn't return a 200")
 
 
 class SurveyDurationViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
         self.arbitrary_start_date_str = 'Mon, 01 Jan 2013 06:00:00 GMT'
-        self.arbitrary_start_date = datetime.strptime(self.arbitrary_start_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+        self.arbitrary_start_date = datetime.strptime(
+            self.arbitrary_start_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
         self.arbitrary_end_date_str = 'Mon, 01 Jan 2020 06:00:00 GMT'
-        self.arbitrary_end_date = datetime.strptime(self.arbitrary_end_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
+        self.arbitrary_end_date = datetime.strptime(
+            self.arbitrary_end_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
 
     def test_set_start_and_end_dates(self):
-        self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:00am',
-                         'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
+        self.client.post(
+            reverse(
+                'surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:00am',
+                                                             'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
         self.survey = Survey.objects.get(slug="my-new-survey")
         self.assertEqual(self.survey.start_date, self.arbitrary_start_date)
         self.assertEqual(self.survey.end_date, self.arbitrary_end_date)
 
     def test_blank_dates(self):
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '', 'start_time': '',
-                                                                                         'end_date': '', 'end_time': '', 'set_duration': ''})
-        self.assertEqual(response.status_code, 200, "This page should return a 200")
+        response = self.client.post(
+            reverse(
+                'surveyduration', args=[self.survey.slug]), {'start_date': '', 'start_time': '',
+                                                             'end_date': '', 'end_time': '', 'set_duration': ''})
+        self.assertEqual(
+            response.status_code, 200, "This page should return a 200")
         self.assertEqual(self.survey.start_date, None)
 
     def test_valid_date_values(self):
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2011', 'start_time': '',
+        response = self.client.post(
+            reverse(
+                'surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2011', 'start_time': '',
                                                                                          'end_date': '', 'end_time': '', 'set_duration': ''})
 
     def test_def_get(self):
-        response = self.client.get(reverse('surveyduration', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 404, "The page didn't return a 404")
+        response = self.client.get(reverse(
+            'surveyduration', args=[self.survey.slug]))
+        self.assertEqual(
+            response.status_code, 404, "The page didn't return a 404")
 
     def test_survey_change_publish_date_after_gone_live(self):
         ballot1 = Ballot.objects.create(survey=self.survey)
         self.survey.start_date = self.arbitrary_start_date
         self.survey.save()
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:01am',
+        response = self.client.post(
+            reverse(
+                'surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:01am',
                                                                                          'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertEqual(response.status_code, 200, "This page should return a 200")
-        self.assertEqual(response_data['errors'][0], "A surveys publish date cannot be changed if it has already gone live.",
-                         "Error: Survey publish dates are being allowed to change once ballots are present")
+        self.assertEqual(
+            response.status_code, 200, "This page should return a 200")
+        self.assertEqual(
+            response_data['errors'][
+                0], "A surveys publish date cannot be changed if it has already gone live.",
+            "Error: Survey publish dates are being allowed to change once ballots are present")
 
 
 class SurveyTrackViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
 
     def test_get(self):
-        response = self.client.get(reverse('surveytrack', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 302, "This request should return a 302")
+        response = self.client.get(reverse(
+            'surveytrack', args=[self.survey.slug]))
+        self.assertEqual(
+            response.status_code, 302, "This request should return a 302")
 
 
 class SurveySovialViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
 
     def test_get(self):
-        response = self.client.get(reverse('surveysocial', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 302, "This request should return a 302")
+        response = self.client.get(reverse(
+            'surveysocial', args=[self.survey.slug]))
+        self.assertEqual(
+            response.status_code, 302, "This request should return a 302")
 
 
 class SurveyDeleteViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
 
     def test_post(self):
-        response = self.client.post(reverse('surveydelete', args=[self.survey.slug]))
+        response = self.client.post(reverse(
+            'surveydelete', args=[self.survey.slug]))
 
 
 class SurveyCloneViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-        self.question1 = Question.objects.create(survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
-        self.choice1 = Choice.objects.create(question=self.question1, message="Q1C1", order_number=0)
-        self.choice2 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=1)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
+        self.question1 = Question.objects.create(
+            survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
+        self.choice1 = Choice.objects.create(
+            question=self.question1, message="Q1C1", order_number=0)
+        self.choice2 = Choice.objects.create(
+            question=self.question1, message="Q1C2", order_number=1)
 
     def test_post_non_unique_slug(self):
-        response = self.client.post(reverse('surveyclone', args=[self.survey.slug]), {'title': 'My new survey'})
+        response = self.client.post(reverse('surveyclone', args=[
+                                    self.survey.slug]), {'title': 'My new survey'})
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
-        self.assertEqual(response_data['error'], 'A survey with that title already exists.', 'Unique slugs are not being enforced')
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")
+        self.assertEqual(response_data[
+                         'error'], 'A survey with that title already exists.', 'Unique slugs are not being enforced')
 
     def test_post_unique_slug(self):
-        response = self.client.post(reverse('surveyclone', args=[self.survey.slug]), {'title': 'food survey'})
+        response = self.client.post(reverse('surveyclone', args=[
+                                    self.survey.slug]), {'title': 'food survey'})
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
-        self.assertEqual(response_data['status'], 'success', 'The procedure did not succeed')
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")
+        self.assertEqual(response_data[
+                         'status'], 'success', 'The procedure did not succeed')
 
     def test_post_not_auth_user(self):
         self.user.is_staff = False
         self.user.save()
-        response = self.client.post(reverse('surveyclone', args=[self.survey.slug]), {'title': 'My new survey'})
+        response = self.client.post(reverse('surveyclone', args=[
+                                    self.survey.slug]), {'title': 'My new survey'})
         response_data = json.JSONDecoder().decode(response.content)
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
-        self.assertEqual(response_data['status'], 'Auth Error', 'The should return an Auth Error')
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")
+        self.assertEqual(response_data[
+                         'status'], 'Auth Error', 'The should return an Auth Error')
 
 
 class SurveyQRCodeView(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
+        self.survey = Survey.objects.create(
+            title="My new survey", slug="my-new-survey", creator=self.user)
 
     def test_get(self):
         try:
-            response = self.client.get(reverse('qrcode', args=[self.survey.slug]))
-            self.assertEqual(response.status_code, 200, "This request should return a 200")
+            response = self.client.get(reverse(
+                'qrcode', args=[self.survey.slug]))
+            self.assertEqual(
+                response.status_code, 200, "This request should return a 200")
         except ImportError:
             return unittest.skip("QRCode testing requires the qrcode library")
 
 
 class SurveyExportViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="Text Only Survey", slug="text-only-survey", creator=self.user)
-        self.question1 = Question.objects.create(survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
-        self.choice1 = Choice.objects.create(question=self.question1, message="Q1C1", order_number=0)
-        self.choice2 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=1)
-        self.choice3 = Choice.objects.create(question=self.question1, message="Q1C2", order_number=2)
-        self.question2 = Question.objects.create(survey=self.survey, message="Question(RA)", type="RA", required=False, order_number=1)
-        self.choice4 = Choice.objects.create(question=self.question2, message="Q2C1", order_number=0)
-        self.choice5 = Choice.objects.create(question=self.question2, message="Q2C2", order_number=1)
-        self.choice6 = Choice.objects.create(question=self.question2, message="Q2C2", order_number=2)
-        self.question3 = Question.objects.create(survey=self.survey, message="Question(TB)", type="TB", required=False, order_number=2)
-        self.choice7 = Choice.objects.create(question=self.question3, message="Q3C1", order_number=0)
+        self.survey = Survey.objects.create(
+            title="Text Only Survey", slug="text-only-survey", creator=self.user)
+        self.question1 = Question.objects.create(
+            survey=self.survey, message="Question1(CH)", type="CH", required=False, order_number=0)
+        self.choice1 = Choice.objects.create(
+            question=self.question1, message="Q1C1", order_number=0)
+        self.choice2 = Choice.objects.create(
+            question=self.question1, message="Q1C2", order_number=1)
+        self.choice3 = Choice.objects.create(
+            question=self.question1, message="Q1C2", order_number=2)
+        self.question2 = Question.objects.create(
+            survey=self.survey, message="Question(RA)", type="RA", required=False, order_number=1)
+        self.choice4 = Choice.objects.create(
+            question=self.question2, message="Q2C1", order_number=0)
+        self.choice5 = Choice.objects.create(
+            question=self.question2, message="Q2C2", order_number=1)
+        self.choice6 = Choice.objects.create(
+            question=self.question2, message="Q2C2", order_number=2)
+        self.question3 = Question.objects.create(
+            survey=self.survey, message="Question(TB)", type="TB", required=False, order_number=2)
+        self.choice7 = Choice.objects.create(
+            question=self.question3, message="Q3C1", order_number=0)
         self.ballot1 = Ballot.objects.create(survey=self.survey)
         self.ballot2 = Ballot.objects.create(survey=self.survey)
         self.ballot3 = Ballot.objects.create(survey=self.survey)
         self.ballot4 = Ballot.objects.create(survey=self.survey)
-        self.question1.answer_with_choices({self.choice1, self.choice2, self.choice3}, self.ballot1)
+        self.question1.answer_with_choices({
+                                           self.choice1, self.choice2, self.choice3}, self.ballot1)
         self.question2.answer_with_choices({self.choice4}, self.ballot1)
-        self.question1.answer_with_choices({self.choice1, self.choice2}, self.ballot2)
+        self.question1.answer_with_choices({
+                                           self.choice1, self.choice2}, self.ballot2)
         self.question2.answer_with_choices({self.choice4}, self.ballot2)
         self.question1.answer_with_choices({self.choice1}, self.ballot3)
         self.question2.answer_with_choices({self.choice4}, self.ballot3)
         self.question3.answer_with_text({self.choice7}, self.ballot4)
 
     def test_get_full_report(self):
-        response = self.client.get(reverse('exportresults', args=[self.survey.slug]), {'rtype': 'Full'})
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
+        response = self.client.get(reverse('exportresults', args=[
+                                   self.survey.slug]), {'rtype': 'Full'})
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")
 
     def test_get_summary_report(self):
-        response = self.client.get(reverse('exportresults', args=[self.survey.slug]), {'rtype': 'Summary'})
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
+        response = self.client.get(reverse('exportresults', args=[
+                                   self.survey.slug]), {'rtype': 'Summary'})
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")
 
     def test_no_report_type_selected(self):
-        response = self.client.get(reverse('exportresults', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
+        response = self.client.get(reverse(
+            'exportresults', args=[self.survey.slug]))
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")
 
     def test_user_not_staff(self):
         self.user.is_staff = False
         self.user.save()
-        response = self.client.get(reverse('exportresults', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 403, "This request should return a 403")
+        response = self.client.get(reverse(
+            'exportresults', args=[self.survey.slug]))
+        self.assertEqual(
+            response.status_code, 403, "This request should return a 403")
 
 
 class PresetSearchView(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
+        self.user = User.objects.create_user(
+            'admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
         self.preset = Preset.objects.create(title="States")
         PresetChoice.objects.create(preset=self.preset, option="MO")
 
     def test_get(self):
-        response = self.client.get(reverse('preset_search_view'), {'title': 'States'})
-        self.assertEqual(response.status_code, 200, "This request should return a 200")
+        response = self.client.get(reverse(
+            'preset_search_view'), {'title': 'States'})
+        self.assertEqual(
+            response.status_code, 200, "This request should return a 200")

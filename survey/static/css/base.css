@@ -142,8 +142,16 @@ a{
 }
 .toggle-label{
   margin-top: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 12px;  
 }
+
+table.dashboard_details td
+{
+  width: 100%;
+  padding: 5px;
+  vertical-align:top;
+}
+
 .toggle-button{
   display:inline-block;
   background:#B0C69D;

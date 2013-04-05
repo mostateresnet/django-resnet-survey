@@ -24,7 +24,7 @@ class SurveyListMixin(object):
         context = {
             'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
             'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
-            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date') #[:10]
+            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date')  # [:10]
         }
         context.update(super(SurveyListMixin, self).get_context_data(*args, **kwargs))
         return context
@@ -204,7 +204,7 @@ class SurveyResultsView(SurveyDashboardView):
 
             choices = combined_choices
         else:
-            choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))            
+            choices = Choice.objects.filter(question__in=survey.question_set.all()).order_by('question').annotate(num_answers=Count('answer'))
 
         query = {'choices': choices, 'choice_id': int(self.kwargs.get('choice_id', -1))}
         context.update(query)
@@ -222,19 +222,19 @@ class BallotResultsView(SurveyDashboardView):
                 ballot = self.object.ballot_set.all()[0]
             except IndexError:
                 ballot = None
-                #raise Http404
+                # raise Http404
         else:
             ballot = get_object_or_404(Ballot, pk=self.kwargs['ballot_id'], survey=self.object)
 
         try:
-            if ballot == None:
+            if ballot is None:
                 raise IndexError
             else:
                 next_ballot = Ballot.objects.filter(pk__gt=ballot.pk, survey=self.object).order_by('pk')[0]
         except IndexError:
             next_ballot = None
         try:
-            if ballot == None:
+            if ballot is None:
                 raise IndexError
             else:
                 previous_ballot = Ballot.objects.filter(pk__lt=ballot.pk, survey=self.object).order_by('-pk')[0]
@@ -453,11 +453,10 @@ class PresetSearchView(DetailView):
         all_choices = PresetChoice.objects.filter(preset__title__iexact=self.request.GET.get('title', ''))
         return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True))}), mimetype='application/json')
 
+
 class SurveyArchiveView(AccessMixin, SurveyListMixin, ListView):
     model = Survey
     template_name = 'survey/archive.html'
 
     def hasAccess(self):
         return True
-
-
