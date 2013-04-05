@@ -229,11 +229,14 @@ header{
 }
 .question-number{
   float:left;
-  width:52px;
+  width:50px;
   height:50px;
-  background:url('../img/question_number.png') no-repeat;
-  background-size:contain;
+  background:#4d769c url('../img/question_number.png') no-repeat;
+  background-size: contain;
   position:relative;
+  border-radius:50% 0px 50% 50%;
+  margin-right:2px;
+  z-index:5;
 }
 .question-number span{
   color:#FFF;

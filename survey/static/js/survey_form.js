@@ -1,5 +1,12 @@
 function removeQuestion(e){
     $removableDiv = $(e.currentTarget).closest('.question');
+    
+    if ($removableDiv.is('.question-group *') && $removableDiv.siblings('.question').length < 1){
+        if (confirm('Are you sure you want to delete this group of questions?'))
+            $removableDiv.closest('.question-group').remove()
+        return;
+    }
+        
     $removableDiv.remove();
 }
 
@@ -23,17 +30,26 @@ function newChoiceDynamic(parent, value)
     $choice.find('input').val(value).blur();
 }
 
+function addQuestionToElement(element, question){
+    element.append(question);
+    question.find('[placeholder]').blur();
+    initializeSortables();
+}
+
 function newQuestionHandler(questionType){
     return function(){
         var $question = $(QUESTION_SOURCES[questionType]);
-        $('#questions').append($question);
-        $question.find('[placeholder]').blur();
-        initializeSortables();
+        addQuestionToElement($('#questions'), $question);
     };
 }
 
+function addQuestionToGroup(){
+    var $question = $(QUESTION_SOURCES['IG']);
+    addQuestionToElement($(this).closest('.question-options').siblings('.questions'), $question);
+}
+
 function initializeSortables(){
-    $("#questions").sortable({
+    $(".questions").sortable({
         handle: ".question-number",
         distance: 5,
         axis: 'y',
@@ -55,6 +71,7 @@ var newTextBox = newQuestionHandler('TB');
 var newCheckBoxes = newQuestionHandler('CH');
 var newRadioButtons = newQuestionHandler('RA');
 var newDropDownList = newQuestionHandler('DD');
+var newLikertScale = newQuestionHandler('LS');
 
 
 $(document).ready(function(){
@@ -71,11 +88,12 @@ $(document).ready(function(){
         var data = {title: $('#title').val(), slug: $('#slug').val(), description: $('#description').val(), questions: []};
         $('.question').each(function(index, el){
             var $el = $(el);
+
+            if ($el.is('.question-group *'))
+                /* Ignore any questions that are part of a group -- we'll handle them later */
+                return;
+
             var questionData = {};
-            questionData.type = $el.find('input[name="question-type"]').val();
-            questionData.message = $el.find('input[name="question-message"]').val();
-            questionData.required = $el.find('input[name="question-required"]').is(":checked");
-            questionData.order_number = index;
             var choices = [];
             $el.find('input[name="choice-message"]').each(function(choiceIndex, choiceEl){
                 var choiceData = {};
@@ -86,7 +104,22 @@ $(document).ready(function(){
             if (choices.length > 0){
                 questionData.choices = choices;
             }
-            data.questions.push(questionData);
+            questionData.type = $el.find('input[name="question-type"]').val();
+            questionData.required = $el.find('input[name="question-required"]').is(":checked");
+            if ($el.is('.question-group')){
+                questionData.group = index;
+                $el.find('.question').each(function(groupMemberIndex, groupMemberEl){
+                    var groupMemberData = $.extend({}, questionData);
+                    groupMemberData.message = $(groupMemberEl).find('input[name="question-message"]').val();
+                    groupMemberData.order_number = groupMemberIndex + index;
+                    data.questions.push(groupMemberData);
+                });
+            }
+            else {
+                questionData.message = $el.find('input[name="question-message"]').val();
+                questionData.order_number = index;
+                data.questions.push(questionData);
+            }
         });
         $.ajax({
             'url': window.location,
@@ -162,6 +195,8 @@ $(document).ready(function(){
     $('#new-check-boxes').click(newCheckBoxes);
     $('#new-radio-buttons').click(newRadioButtons);
     $('#new-drop-down-list').click(newDropDownList);
+    $('#new-likert-scale').click(newLikertScale);
+    $('.add-question-to-group').live('click', addQuestionToGroup);
     $('.add-choice').live('click', newChoice);
     $('.choice .delete').live('click', removeChoice);
     $('.message .delete').live('click', removeQuestion);

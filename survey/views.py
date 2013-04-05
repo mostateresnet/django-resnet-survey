@@ -15,7 +15,7 @@ from django.db.models import Q, Count
 from django.db import transaction, IntegrityError
 from django.utils.translation import ugettext as _
 
-from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, PresetChoice
+from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, PresetChoice, QuestionGroup
 from survey import settings
 
 
@@ -129,14 +129,18 @@ class SurveyFormMixin(SurveyListMixin):
     def post(self, request, *args, **kwargs):
         warnings = []
         data = json.loads(request.POST.get('r'))
-        slug = slugify(data.get('slug', ''))
+        title = data.get('title', '')
+        slug = slugify(data.get('slug') or title)
+        if not slug:
+            warnings.append(_('Please enter a valid title or slug'))
+            return HttpResponse(json.dumps({'status': 'failure', 'warnings': warnings}), mimetype='application/json')
         try:
             survey = self.get_object()
             if slug != survey.slug:
                 warnings.append(_("This survey's URL has been changed. Be sure to update any QR code images."))
         except AttributeError:
             survey = Survey(creator=request.user)
-        survey.title = data.get('title', '')
+        survey.title = title
         survey.slug = slug
         survey.description = data.get('description', '')
         try:
@@ -146,6 +150,7 @@ class SurveyFormMixin(SurveyListMixin):
             return HttpResponse(json.dumps({'status': 'failure', 'warnings': warnings}), mimetype='application/json')
         # delete existing questions
         # due to cascading deletes, this will also delete choices
+        QuestionGroup.objects.filter(pk__in=survey.question_set.all().values_list('group')).delete()
         survey.question_set.all().delete()
         questions = data.get('questions', [])
         survey.add_questions(questions)

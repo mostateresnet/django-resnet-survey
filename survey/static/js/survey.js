@@ -4,9 +4,8 @@ $(document).ready(function()
     {
       $('.required').each(function(index, el)
       {
-          el = $(el)
-          field_name = el.find("div[role=heading] span").text();
-          if (field_name == "") { field_name = el.find("label span").text();  }
+          el = $(el);
+          field_name = el.find(".question-text").text();
           abort = ((el.is(".question_type_TB") && el.children("input")[0].value == "") ||
           (el.is(".question_type_TA") && el.children("textarea")[0].value == "") ||
           (el.is(".question_type_RA") && !el.find("input[type=radio]").is(":checked")) ||

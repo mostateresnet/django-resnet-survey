@@ -11,28 +11,33 @@
     </div>
     
     {% block question_choices %}
-      {% if question.type != 'TA' and question.type != 'TB' %}
+      {% if not in_group and question.type != 'TA' and question.type != 'TB' %}
         <div class="choices">
-            {% for choice in question.choice_set.all %}
-              {% include 'survey/includes/question_choice.html' %}
-            {% empty %}
-              {% include 'survey/includes/question_choice.html' %}
-              {% include 'survey/includes/question_choice.html' %}
-            {% endfor %}
+          {% for choice in question.choice_set.all %}
+            {% include 'survey/includes/question_choice.html' %}
+          {% empty %}
+            {% include 'survey/includes/question_choice.html' %}
+            {% include 'survey/includes/question_choice.html' %}
+          {% endfor %}
         </div>
       {% endif %}
     {% endblock %}
-    <div class="question-options">
-      {% block question_add_choice %}
-        {% if question.type != 'TA' and question.type != 'TB' %}
-            <a class="add-choice toggle-button">{% trans 'Add another choice' %}</a>
-            <a class="add-preset toggle-button">{% trans 'Use Preset' %}</a>
-        {% endif %}
-      {% endblock %}
-      <label class="question-required">
-        <input type="checkbox" name="question-required" {% if question.required %}checked="checked"{% endif %} />
-        <span class="toggle-button">{% trans 'Required' %}</span>
-      </label>
-    </div>
+    
+    {% block question_options %}
+      {% if not in_group %}
+        <div class="question-options">
+          {% block question_add_choice %}
+            {% if question.type != 'TA' and question.type != 'TB' %}
+              <a class="add-choice toggle-button">{% trans 'Add Choice' %}</a>
+              <a class="add-preset toggle-button">{% trans 'Preset Choices' %}</a>
+            {% endif %}
+          {% endblock %}
+          <label class="question-required">
+            <input type="checkbox" name="question-required" {% if question.required %}checked="checked"{% endif %} />
+            <span class="toggle-button">{% trans 'Required' %}</span>
+          </label>
+        </div>
+      {% endif %}
+    {% endblock %}
   </div>
 {% endblock %}

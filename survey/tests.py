@@ -401,6 +401,28 @@ class SurveyEditViewTest(TestCase):
         response_data = json.JSONDecoder().decode(response.content)
         self.assertIn('That SLUG already exists', response_data['warnings'], 'Integrity error: slug uniqueness is not being inforced')
 
+    def test_survey_slug_or_title_required(self):
+        data = """
+            {
+                "title":"",
+                "slug":"",
+                "description":"",
+                "questions":
+                [
+                    {
+                        "type":"TA",
+                        "message":"Text Area Question",
+                        "required":false,
+                        "order_number":0
+                    }
+                ]
+            }
+        """
+        postdata = {'r': data}
+        response = self.client.post(reverse('surveyedit', args=[self.survey.slug]), postdata)
+        response_data = json.JSONDecoder().decode(response.content)
+        self.assertIn('Please enter a valid title or slug', response_data['warnings'], 'Integrity error: slug must be defined')
+
 
 class SurveyResultsViewTest(TestCase):
     def setUp(self):

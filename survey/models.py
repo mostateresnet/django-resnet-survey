@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.timezone import now, get_current_timezone
 from datetime import datetime
 from django.contrib.auth.models import User
+from collections import defaultdict
 
 
 class Survey(models.Model):
@@ -32,15 +33,18 @@ class Survey(models.Model):
         return False
 
     def clone(self, other):
+        groups = defaultdict(QuestionGroup.objects.create)
+        groups[None] = None
         # copy the questions
         for question in self.question_set.all():
-            question_set = question.choice_set.all()
+            choice_set = question.choice_set.all()
             new_question = question
             new_question.id = None
             new_question.survey = other
+            new_question.group = groups[question.group]
             new_question.save()
             # copy the choices
-            for choice in question_set:
+            for choice in choice_set:
                 new_choice = choice
                 new_choice.id = None
                 new_choice.question = new_question
@@ -108,13 +112,16 @@ class Survey(models.Model):
         """
         Accepts a list of dictionaries containing question data.
         """
+        groups = defaultdict(QuestionGroup.objects.create)
+        groups[None] = None
         for question_data in questions:
             question = Question.objects.create(
                 survey=self,
                 message=question_data.get('message', ''),
                 type=question_data.get('type', ''),
                 required=question_data.get('required'),
-                order_number=question_data.get('order_number', 0)
+                order_number=question_data.get('order_number', 0),
+                group=groups[question_data.get('group')],
             )
             for choice in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice.get('message', ''), order_number=choice.get('order_number', 0))

@@ -1,0 +1,31 @@
+{% extends "survey/includes/question.html" %}
+{% load i18n %}
+
+{% block question %}
+  <div class="question-group question likert">
+    {% block question_choices %}
+      {% with question=question_list|first %}
+        {{ block.super }}
+      {% endwith %}
+    {% endblock %}
+    
+    <div class="questions ui-sortable">
+      {% for question in question_list %}
+        {% include 'survey/includes/question.html' with in_group='True' %}
+      {% empty %}
+        {% include 'survey/includes/question_radio.html' with in_group='True' %}
+      {% endfor %}
+    </div>
+    
+    {% block question_options %}
+      {% with question=question_list|first %}
+        {{ block.super }}
+      {% endwith %}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{% block question_add_choice %}
+  <a class="add-question-to-group toggle-button">{% trans 'Add Question' %}</a>
+  {{ block.super }}
+{% endblock %}

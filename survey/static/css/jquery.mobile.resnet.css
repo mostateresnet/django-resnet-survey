@@ -7,6 +7,16 @@
 * http://jquery.org/license
 *
 */
+
+form {counter-reset:question_count;}
+
+.question .ui-controlgroup-label:before,
+.question label.ui-input-text:before,
+.question label.ui-select:before {
+  counter-increment:question_count;
+  content:counter(question_count) ". ";
+}
+
 /* Swatches */
 
 /* A

@@ -50,17 +50,12 @@ tr.choice td:nth-child(2){ width:8% }
 .result{
   margin-bottom: 20px;
 }
-.question-number {
-  z-index:5;
-}
 
 .drop_down
 {
-   color:#4E769B;
-   background: transparent;
-   min-width: 200px;
-   font-size: 16px;
-   border:2px solid #4E769B;
-
+  color:#4E769B;
+  background: transparent;
+  min-width: 200px;
+  font-size: 16px;
+  border:2px solid #4E769B;
 }
-

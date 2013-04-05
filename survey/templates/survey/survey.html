@@ -29,65 +29,90 @@
 <div data-role="content">
     <form action='{% url survey slug=survey.slug %}' method='POST'>
       {% csrf_token %}
-      {% for question in survey.question_set.all %}  
-      <div class="{{ question.required|yesno:'required,' }} question_type_{{ question.type }}">
-
-        {% if question.type == 'TB' %}
-            <label for="q{{ question.pk }}">{{ forloop.counter }}. 
-              <span class = "ui-header-text">{{ question }}</span>
-              {% if question.required %}*{% endif %}
-            </label>
-            <input type="text" name="q{{ question.pk }}" id="q{{ question.pk }}" value="" />
-        {% endif %}
-        
-        {% if question.type == 'TA' %}
-            <label for="q{{ question.pk }}">{{ forloop.counter }}. 
-              <span class = "ui-header-text">{{ question }}</span>
-              {% if question.required %}*{% endif %}
-            </label>
-            <textarea id="q{{ question.pk }}" name="q{{ question.pk }}" ></textarea>
-        {% endif %}
-        
-        {% if question.type == 'RA' %}
-            <fieldset data-role="controlgroup">
-                <legend>{{ forloop.counter }}. 
-                  <span class = "ui-header-text">{{ question }}</span>
+      {% regroup survey.question_set.all by group as question_group_list %}
+      {% for question_group in question_group_list %}
+        {% if question_group.grouper %}
+          <div class="question-group">
+            {% for question in question_group.list %}
+              <div class="question {{ question.required|yesno:'required,' }} question_type_{{ question.type }}">
+                {% if question.type == 'RA' %}
+                  <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                      <legend>
+                        <span class="question-text">{{ question }}</span>
+                        {% if question.required %}*{% endif %}
+                      </legend>
+                      {% for choice in question.choice_set.all %}
+                        <input type="radio" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" />
+                        <label for="c{{ choice.pk }}">{{ choice }}</label>
+                      {% endfor %}
+                    </fieldset>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          {% for question in question_group.list %}
+            <div class="question {{ question.required|yesno:'required,' }} question_type_{{ question.type }}">
+              {% if question.type == 'TB' %}
+                <label for="q{{ question.pk }}">
+                  <span class="question-text">{{ question }}</span>
                   {% if question.required %}*{% endif %}
-                </legend>
-                {% for choice in question.choice_set.all %}
+                </label>
+                <input type="text" name="q{{ question.pk }}" id="q{{ question.pk }}" value="" />
+              {% endif %}
+              
+              {% if question.type == 'TA' %}
+                <label for="q{{ question.pk }}">
+                  <span class="question-text">{{ question }}</span>
+                  {% if question.required %}*{% endif %}
+                </label>
+                <textarea id="q{{ question.pk }}" name="q{{ question.pk }}" ></textarea>
+              {% endif %}
+              
+              {% if question.type == 'RA' %}
+                <fieldset data-role="controlgroup">
+                  <legend>
+                    <span class="question-text">{{ question }}</span>
+                    {% if question.required %}*{% endif %}
+                  </legend>
+                  {% for choice in question.choice_set.all %}
                     <input type="radio" id="c{{ choice.pk }}" name="q{{ question.pk }}" value="c{{ choice.pk }}" />
                     <label for="c{{ choice.pk }}">{{ choice }}</label>
-                {% endfor %}
-            </fieldset>
-        {% endif %}
-    
-        {% if question.type == 'CH' %}
-            <div data-role="controlgroup">
-                <legend>{{ forloop.counter }}. 
-                  <span class = "ui-header-text">{{ question }}</span>
-                  {% if question.required %}*{% endif %}
-                </legend>
-                {% for choice in question.choice_set.all %}
+                  {% endfor %}
+                </fieldset>
+              {% endif %}
+          
+              {% if question.type == 'CH' %}
+                <div data-role="controlgroup">
+                  <legend>
+                    <span class="question-text">{{ question }}</span>
+                    {% if question.required %}*{% endif %}
+                  </legend>
+                  {% for choice in question.choice_set.all %}
                     <input type="checkbox" name="q{{ question.pk }}" id="c{{ choice.pk }}" value="c{{ choice.pk }}" />
                     <label for="c{{ choice.pk }}">{{ choice }}</label>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        {% if question.type == 'DD' %}
-            <label for="c{{ choice.pk }}">{{ forloop.counter }}. 
-              <span class = "ui-header-text">{{ question }}</span>
-              {% if question.required %}*{% endif %}
-            </label>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              
+              {% if question.type == 'DD' %}
+                <label for="c{{ choice.pk }}">
+                  <span class="question-text">{{ question }}</span>
+                  {% if question.required %}*{% endif %}
+                </label>
 
-            <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
-              <option value="_BAD_">{% trans "Select one" %}</option>
-              {% for choice in question.choice_set.all %}
-                <option value="c{{ choice.pk }}">{{ choice }}</option>
-              {% endfor %}
-            </select>
-        {% endif %}
-      </div>      
+                <select id="c{{ choice.pk }}" name="q{{ question.pk }}">
+                  <option value="_BAD_">{% trans "Select one" %}</option>
+                  {% for choice in question.choice_set.all %}
+                    <option value="c{{ choice.pk }}">{{ choice }}</option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% endif %}    
       {% endfor %}
        
       {% if survey.is_active %}

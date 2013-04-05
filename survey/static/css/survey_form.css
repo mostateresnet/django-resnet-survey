@@ -42,6 +42,7 @@
 #new-check-boxes{background-position:0 -90px;}
 #new-radio-buttons{background-position:0 -30px;}
 #new-drop-down-list{background-position:0 -120px;}
+#new-likert-scale{background-position:0 -180px;}
 #submit{
   background-position:0 -150px;
   margin-bottom:0px;
@@ -54,8 +55,8 @@ form{
   counter-reset:question_count;
 }
 input[type=text]{
-  width:97%;
-  padding:1%;
+  width:87%;
+  padding:4.6px;
 }
 textarea{
   width:96%;
@@ -85,18 +86,14 @@ tr{
 .field{
   width:89%;
 }
-.question:after {
-  content: ".";
-  display: block;
-  height: 20px;
-  clear: both;
-  visibility: hidden;
+.question {
+  margin-bottom: 16px;
 }
 
 .choices{
-    width: 90%;
-    float: right;
-    overflow: auto;
+  width: 90%;
+  float: right;
+  overflow: auto;
 }
 
 .choice{
@@ -106,27 +103,25 @@ tr{
 }
 
 .message{
-  float:right;
-  width:90%;
   position:relative;
 }
 .question-options {
   width:100%;
-  text-align:right;
+  text-align:justify;
+  clear:both;
 }
-.add-choice{
-  width:35%;
-}
-.add-preset{
-  margin-left: 1%;
+.question-options:after {
+  content: '';
+  width: 100%;
+  display: inline-block;
 }
 
-.add-choice:hover, .add-preset:hover{
+.add-question-to-group:hover, .add-choice:hover, .add-preset:hover{
   background-color:#4E769B;
   color:#fff
 }
 .question-number{
-    cursor: move;
+  cursor: move;
 }
 .question .question-number span:before {
   counter-increment:question_count;
@@ -134,8 +129,8 @@ tr{
 }
 .question .choice input[type="text"] {
   position:relative;
-  left:7%;
-  width:90%;
+  left:33px;
+  width:89.6%;
 }
 .question .choice {
   background-repeat:no-repeat;
@@ -144,13 +139,14 @@ tr{
 .question.radio .choice{background-position:0px 0px;}
 .question.checkbox .choice{background-position:0px -33px;}
 .question.dropdown .choice{background-position:0px -66px;}
+.question.likert .choice{background-position:0px 0px;}
 
 #survey-menu {
   border-top:2px solid #C9DA9E;
   padding-top:10px;
 }
-.message:hover input[type=text]{width:92%;}
-.choice:hover input[type=text]{width:85%;}
+.message:hover input[type=text]{width:82.5%;}
+.choice:hover input[type=text]{width:84.6%;}
 .message:hover input[type=text], .choice:hover input[type=text]{
   padding-right:28px;
 }
@@ -164,10 +160,6 @@ tr{
   background-image:url('../img/delete_icon.png');
 }
 
-.question-required {
-  margin-left:1%;
-}
-
 .question-required input {
   display:none;
 }
@@ -179,6 +171,13 @@ tr{
 
 .toggle-button {
   font-size:10pt;
+  padding-left:0px;
+  padding-right:0px;
+  width:32%;
+}
+
+.question-group .toggle-button {
+  width:23%;
 }
 
 .scrolling {
@@ -190,3 +189,19 @@ tr{
 {
     width: 98%;
 }
+
+.question-group .question-number {
+  width: 20px;
+  height: 20px;
+  background-image: none;
+  top: 3px;
+}
+
+.question-group .question-number span {top: 2px;}
+.question-group .questions {width: 50%;}
+.question-group .choices {width: 50%;}
+.question-group .question {margin: 0px;}
+.question-group .message input[type=text] {width: 86%;}
+.question-group .message:hover input[type=text] {width: 77%;}
+.question-group .choice input[type="text"] {width: 81.5%;}
+.question-group .choice:hover input[type="text"] {width: 72.5%;}
