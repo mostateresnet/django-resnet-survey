@@ -132,7 +132,7 @@ class SurveyFormMixin(SurveyListMixin):
         title = data.get('title', '')
         slug = slugify(data.get('slug') or title)
         if not slug:
-            warnings.append(_('Please enter a valid title or slug'))
+            warnings.append(_('Please enter a valid title.'))
             return HttpResponse(json.dumps({'status': 'failure', 'warnings': warnings}), mimetype='application/json')
         try:
             survey = self.get_object()
@@ -146,7 +146,7 @@ class SurveyFormMixin(SurveyListMixin):
         try:
             survey.save()
         except IntegrityError:
-            warnings = [_('That SLUG already exists')]
+            warnings = [_('That title is already taken. Please choose a different one.')]
             return HttpResponse(json.dumps({'status': 'failure', 'warnings': warnings}), mimetype='application/json')
         # delete existing questions
         # due to cascading deletes, this will also delete choices

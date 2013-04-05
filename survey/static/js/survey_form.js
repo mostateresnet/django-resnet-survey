@@ -85,7 +85,7 @@ $(document).ready(function(){
           return false;  
         }
 
-        var data = {title: $('#title').val(), slug: $('#slug').val(), description: $('#description').val(), questions: []};
+        var data = {title: $('#title').val(), description: $('#description').val(), questions: []};
         $('.question').each(function(index, el){
             var $el = $(el);
 
