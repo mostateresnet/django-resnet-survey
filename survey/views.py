@@ -321,6 +321,7 @@ class SurveyDeleteView(View):
 
 class SurveyCloneView(View):
     # Ajax View
+    @transaction.commit_on_success
     def post(self, request, slug):
         survey = Survey.objects.get(slug=slug)
         if request.user.is_staff:
