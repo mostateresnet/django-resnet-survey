@@ -68,10 +68,12 @@ class BallotResultsViewTest(TestCase):
         response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug, }), {'page': 0}, follow=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_no_ballots_404(self):
+    def test_no_ballots_shows_no_ballots(self):
         self.ballot.delete()
         response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug}), follow=True)
-        self.assertEqual(response.status_code, 404)
+        self.assertIsNone(response.context['ballot'])
+        self.assertIsNone(response.context['next_ballot'])
+        self.assertIsNone(response.context['previous_ballot'])
 
     def test_get_ballot_or_404(self):
         response = self.client.get(reverse('ballot', kwargs={'slug': self.survey.slug, 'ballot_id': 123456789}), follow=True)
