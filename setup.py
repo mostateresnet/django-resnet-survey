@@ -29,7 +29,6 @@ setup(
     ],
     zip_safe=False,
     install_requires=[
-        'South',
         'django-autofixture',
         'qrcode',
         'xlwt',
