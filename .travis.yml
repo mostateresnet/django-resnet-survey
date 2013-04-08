@@ -10,5 +10,5 @@ env:
 install: pip install --use-mirrors . -r requirements-test.txt Django$DJANGO_VERSION
 # command to run tests
 script:
-  - coverage run --source=survey -m django.bin.django-admin test --settings=survey.test_settings survey
+  - coverage run --source=survey -m django.bin.django-admin test --settings=survey.test_settings --noinput survey
   - coveralls
