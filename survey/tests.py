@@ -11,9 +11,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
+from django.utils.unittest import SkipTest
 from survey.models import Survey, Question, Choice, Answer, Ballot, Preset, PresetChoice
 import json
-import unittest
 
 
 # pylint: disable=R0902
@@ -584,7 +584,7 @@ class SurveyQRCodeView(TestCase):
             response = self.client.get(reverse('qrcode', args=[self.survey.slug]))
             self.assertEqual(response.status_code, 200, "This request should return a 200")
         except ImportError:
-            return unittest.skip("QRCode testing requires the qrcode library")
+            raise SkipTest("QRCode testing requires the qrcode library")
 
 
 class SurveyExportViewTest(TestCase):
