@@ -2,3 +2,4 @@
 django-discover-runner
 coveralls
 south
+pillow
