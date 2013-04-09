@@ -6,13 +6,12 @@ Replace this with more appropriate tests for your application.
 """
 
 from datetime import datetime, timedelta
-from django.utils.timezone import now
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.utils.timezone import utc
 from django.utils.unittest import SkipTest
 from survey.models import Survey, Question, Choice, Answer, Ballot, Preset, PresetChoice
+from survey.helpers import now, utc
 import json
 
 

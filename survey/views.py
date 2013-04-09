@@ -3,7 +3,6 @@ import json
 import qrcode
 import xlwt
 
-from django.utils.timezone import now
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.views.generic import View, TemplateView, ListView
@@ -16,7 +15,7 @@ from django.db import transaction, IntegrityError
 from django.utils.translation import ugettext as _
 
 from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, PresetChoice, QuestionGroup
-from survey.helpers import total_seconds
+from survey.helpers import total_seconds, now
 from survey import settings
 
 

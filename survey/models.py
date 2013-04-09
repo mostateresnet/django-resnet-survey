@@ -1,8 +1,8 @@
 from django.db import models
-from django.utils.timezone import now, get_current_timezone
 from datetime import datetime
 from django.contrib.auth.models import User
 from collections import defaultdict
+from survey.helpers import now, get_current_timezone
 
 
 class Survey(models.Model):
