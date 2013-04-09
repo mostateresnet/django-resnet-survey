@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mostateresnet/django-resnet-survey.png?branch=master)](https://travis-ci.org/mostateresnet/django-resnet-survey)
+[![Coverage Status](https://coveralls.io/repos/mostateresnet/django-resnet-survey/badge.png?branch=master)](https://coveralls.io/r/mostateresnet/django-resnet-survey)
 django-resnet-survey
 ====================
 
