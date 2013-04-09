@@ -16,6 +16,7 @@ from django.db import transaction, IntegrityError
 from django.utils.translation import ugettext as _
 
 from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, PresetChoice, QuestionGroup
+from survey.helpers import total_seconds
 from survey import settings
 
 
@@ -93,7 +94,7 @@ class SurveyView(View):
             # the cookie doesn't exist yet, it will be added to the response here
             # but only if survey.use_cookies is true
             if (survey.use_cookies):
-                response.set_cookie(survey.cookie, value='True', max_age=datetime.timedelta(weeks=settings.COOKIE_EXPIRATION).total_seconds())
+                response.set_cookie(survey.cookie, value='True', max_age=total_seconds(datetime.timedelta(weeks=settings.COOKIE_EXPIRATION)))
 
             ballot = Ballot.objects.create(ip=request.META['REMOTE_ADDR'], survey=survey)
             for question in survey.question_set.all():
