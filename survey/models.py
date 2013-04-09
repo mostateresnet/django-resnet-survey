@@ -203,7 +203,7 @@ class Ballot(models.Model):
     """
     Holds a set of Answers so they may be grouped.
     """
-    ip = models.GenericIPAddressField(default='127.0.0.1')
+    ip = models.IPAddressField(default='127.0.0.1')
     datetime = models.DateTimeField(default=now)
     survey = models.ForeignKey('Survey', null=True)
 
