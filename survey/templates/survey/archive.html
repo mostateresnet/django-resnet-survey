@@ -1,5 +1,6 @@
 {% extends "survey/base_with_sidebar.html" %}
 {% load static from staticfiles %}
+{% load url from future %}
 {% load i18n %}
 
 {% block css %}
@@ -18,7 +19,7 @@
   </h3>
     <br>
     {% for survey_item in closed_surveys %}
-        <a class = "archive_link" href="{% url surveydashboard survey_item.slug %}">{{ survey_item }}</a>
+        <a class = "archive_link" href="{% url 'surveydashboard' survey_item.slug %}">{{ survey_item }}</a>
     {% endfor %}
 </li>
 

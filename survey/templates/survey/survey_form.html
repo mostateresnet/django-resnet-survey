@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load url from future %}
 {% load i18n %}
 
 {% block css %}
@@ -20,7 +21,7 @@
     QUESTION_SOURCES["LS"] = "{% filter escapejs %}{% include 'survey/includes/question_likert.html' %}{% endfilter %}";
     QUESTION_SOURCES["IG"] = "{% filter escapejs %}{% include 'survey/includes/question_radio.html' with in_group='True' %}{% endfilter %}";
 
-    var SEARCH_PRESET_URL = '{% url preset_search_view %}'; 
+    var SEARCH_PRESET_URL = '{% url "preset_search_view" %}'; 
   </script>
 {% endblock %}
 

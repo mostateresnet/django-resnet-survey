@@ -1,5 +1,6 @@
 {% extends "survey/base_with_sidebar.html" %}
 {% load static from staticfiles %}
+{% load url from future %}
 {% load i18n %}
 
 {% block css %}
@@ -18,25 +19,25 @@
 {% block header %}
   <h2 id='survey-title'>{{ survey.title|upper }}</h2>
   <ul class='tabs'>
-    <li><a href='{% url surveydashboard survey.slug %}' 
+    <li><a href='{% url "surveydashboard" survey.slug %}' 
         {% if current_tab == "survey/survey_dashboard.html" %}
             id="currentTab"
         {% endif %}
     >{% trans "GENERAL" %}</a></li>
     {% if survey.is_unpublished %}
-      <li><a href='{% url surveyedit survey.slug %}'
+      <li><a href='{% url "surveyedit" survey.slug %}'
         {% if current_tab == "survey/survey_form.html" %}
             id="currentTab"
         {% endif %}
       >{% trans "EDIT" %}</a></li> 
     {% else %}
-      <li><a href='{% url surveyresults survey.slug %}'
+      <li><a href='{% url "surveyresults" survey.slug %}'
         {% if current_tab == "survey/results.html" %}
             id="currentTab"
         {% endif %}
       >{% trans "RESULTS" %}</a></li>
     {% endif %}
-    <li><a href='{% url ballot survey.slug %}' 
+    <li><a href='{% url "ballot" survey.slug %}' 
         {% if current_tab == "survey/survey_ballots.html" %}
             id="currentTab"
         {% endif %}
@@ -44,14 +45,14 @@
 
        {% if not survey.is_active %}
         {% if survey.creator == user %}
-          <li><a id="delete_survey" data-href='{% url surveydelete survey.slug %}' data-refresh='{% url index %}'
+          <li><a id="delete_survey" data-href='{% url "surveydelete" survey.slug %}' data-refresh='{% url "index" %}'
           >{% trans "DELETE" %}</a></li>
         {% endif %}
         {% endif %}
 
     {% block extra_tabs %}
       <li>
-        <a href='{% url survey survey.slug %}' target ='_blank'>
+        <a href='{% url "survey" survey.slug %}' target ='_blank'>
           {% if survey.is_unpublished %}{% trans "PREVIEW" %}{% else %}{% trans "VIEW" %}{% endif %}
         </a>
       </li>
@@ -60,7 +61,7 @@
         <div class='hidden' id='clone-form'>
           <table>
             <tr><td></td><td class='error'></td></tr>
-            <tr><td>{% trans "New Title:" %}</td><td><input type='text' name='clone' data-url='{% url surveyclone survey.slug %}' /></td></tr>
+            <tr><td>{% trans "New Title:" %}</td><td><input type='text' name='clone' data-url='{% url "surveyclone" survey.slug %}' /></td></tr>
             <tr><td></td><td><input type='submit' name='submit-clone' value='{% trans "Clone" %}' /></td></tr>
           </table>
         </div>
@@ -82,16 +83,16 @@
     {% trans "End:" %}
     <input type="text" id="end-date" name="end-date" value='{{ survey.end_date|date:"m/d/Y" }}' />
     <input type="text" name="end-time" value='{{ survey.end_date|date:"h:iA" }}' />
-    <input data-url='{% url surveyduration survey.slug %}' class="button" type="submit" name="set-duration" value="{% trans 'Save Duration' %}" />
+    <input data-url='{% url "surveyduration" survey.slug %}' class="button" type="submit" name="set-duration" value="{% trans 'Save Duration' %}" />
   </div>
 
     <table class="dashboard_details">
       <tr>
-          <td class='toggle-label'>{% trans "Allow Survey Station:" %} <a class='toggle-button' id='toggle_track' href='{% url surveytrack survey.slug %}'>{{ survey.use_cookies|yesno:_("No,Yes") }}</a></td>
-          <td rowspan="2"><a href='{% url qrcode survey.slug %}'><img src="{% url qrcode survey.slug %}" width="128" height="128" style="float: right;"></a></td>          
+          <td class='toggle-label'>{% trans "Allow Survey Station:" %} <a class='toggle-button' id='toggle_track' href='{% url "surveytrack" survey.slug %}'>{{ survey.use_cookies|yesno:_("No,Yes") }}</a></td>
+          <td rowspan="2"><a href='{% url "qrcode" survey.slug %}'><img src="{% url 'qrcode' survey.slug %}" width="128" height="128" style="float: right;"></a></td>          
       </tr>
       <tr>
-          <td class='toggle-label' >{% trans "Show Social Media Links:" %} <a class='toggle-button' id='toggle_track' href='{% url surveysocial survey.slug %}'>{{ survey.show_social|yesno:_("Yes,No") }}</a></td>
+          <td class='toggle-label' >{% trans "Show Social Media Links:" %} <a class='toggle-button' id='toggle_track' href='{% url "surveysocial" survey.slug %}'>{{ survey.show_social|yesno:_("Yes,No") }}</a></td>
       </tr>
     </table>
     

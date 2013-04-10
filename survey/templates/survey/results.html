@@ -1,5 +1,6 @@
 {% extends "survey/survey_dashboard.html" %}
 {% load static from staticfiles %}
+{% load url from future %}
 {% load i18n %}
 
 {% block css %}
@@ -27,7 +28,7 @@
       <option value='Summary'>{% trans "Summary" %}</option>
     </select>
 
-    <button id='excel-report-button' type='button' data-export-url='{% url exportresults survey.slug %}'>{% trans "Export" %}</button>
+    <button id='excel-report-button' type='button' data-export-url='{% url "exportresults" survey.slug %}'>{% trans "Export" %}</button>
   </div>
   
   <div class="results">
@@ -43,7 +44,7 @@
             {% for choice in question.list %}
               <tr class="choice">
                 <td {% if choice_id == choice.id %} class="field_sorted_by"{% endif %}>
-                  <a href="{% url surveyresults survey.slug choice.pk %}">{{ choice.message }}</a>
+                  <a href="{% url 'surveyresults' survey.slug choice.pk %}">{{ choice.message }}</a>
                 </td>
                 <td>{% firstof choice.num_answers '0' %}</td>
               </tr>

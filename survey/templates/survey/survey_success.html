@@ -1,5 +1,6 @@
 {% extends 'survey/survey.html' %}
 {% load static from staticfiles %}
+{% load url from future %}
 
 {% block content %}
     <div id="fb-root"></div>
@@ -15,7 +16,7 @@
     </script>    
 
   {% if redirect %}
-    <meta http-equiv="refresh" content="5;url={% url survey survey.slug %}" />
+    <meta http-equiv="refresh" content="5;url={% url 'survey' survey.slug %}" />
   {% endif %}
   <div data-role="content">
     <img src="{% static 'img/thankyou.png' %}" id="thanks" />
@@ -25,9 +26,9 @@
 {% block footer %}
     {% if survey.show_social %}
     <div>
-        <a href="https://twitter.com/share" class="twitter-share-button" data-url="//{{ request.META.HTTP_HOST }}{% url survey survey.slug %}" data-count="none">Tweet</a>
-        <div class="fb-like" data-href="http{% if request.is_secure %}s{% endif %}://{{ request.META.HTTP_HOST }}{% url survey survey.slug %}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-action="recommend"></div>
-        <div class="g-plusone" data-annotation="bubble" data-href="//{% url survey survey.slug %}" data-size="medium"></div>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="//{{ request.META.HTTP_HOST }}{% url 'survey' survey.slug %}" data-count="none">Tweet</a>
+        <div class="fb-like" data-href="http{% if request.is_secure %}s{% endif %}://{{ request.META.HTTP_HOST }}{% url 'survey' survey.slug %}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true" data-action="recommend"></div>
+        <div class="g-plusone" data-annotation="bubble" data-href="//{% url 'survey' survey.slug %}" data-size="medium"></div>
     </div>   
     {% endif %}
     {{ block.super }}

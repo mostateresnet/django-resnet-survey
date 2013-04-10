@@ -1,5 +1,6 @@
 {% extends "survey/base.html" %}
 {% load static from staticfiles %}
+{% load url from future %}
 {% load i18n %}
 
 {% block title %}{{ survey.title }}{% endblock %}
@@ -27,7 +28,7 @@
     <h1>{{ survey.title }}</h1>
 </div>
 <div data-role="content">
-    <form action='{% url survey slug=survey.slug %}' method='POST'>
+    <form action='{% url "survey" slug=survey.slug %}' method='POST'>
       {% csrf_token %}
       {% regroup survey.question_set.all by group as question_group_list %}
       {% for question_group in question_group_list %}

@@ -1,13 +1,14 @@
+{% load url from future %}
 <li class="list_reset">
   <span id="{{ catid }}" class="accordion_sidebar accordion">{{ title }}</span>
   <ul>
     {% for survey_item in surveys %}
       <li>
-        <a {% if survey == survey_item %}class='current-survey'{% endif %} href="{% url surveydashboard survey_item.slug %}">{{ survey_item }}</a>
+        <a {% if survey == survey_item %}class='current-survey'{% endif %} href="{% url 'surveydashboard' survey_item.slug %}">{{ survey_item }}</a>
       </li>
     {% endfor %}
     {% if catid == "sidebar_3" %}
-            <li><a href="{% url surveyarchive %}">View Archive</a></li>
+            <li><a href="{% url 'surveyarchive' %}">View Archive</a></li>
     {% endif %}
   </ul>
 </li>
