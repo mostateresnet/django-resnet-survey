@@ -2,6 +2,7 @@ TEST_RUNNER = 'discover_runner.DiscoverRunner'
 ROOT_URLCONF = 'survey.urls'
 STATIC_URL = '/static/'
 USE_TZ = True
+SECRET_KEY = 'CHANGE_THIS_TO_SOMETHING_UNIQUE_AND_SECURE'
 
 DATABASES = {
     'default': {
