@@ -5,14 +5,18 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
+import json
 from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.unittest import SkipTest
 from survey.models import Survey, Question, Choice, Answer, Ballot, Preset, PresetChoice
-from survey.helpers import now, utc
-import json
+from survey.helpers import now, get_current_timezone
+try:
+    from django.utils.timezone import utc
+except ImportError:
+    utc = None
 
 
 # pylint: disable=R0902
@@ -464,14 +468,24 @@ class SurveyDurationViewTest(TestCase):
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
         self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-        self.arbitrary_start_date_str = 'Mon, 01 Jan 2013 06:00:00 GMT'
+        self.arbitrary_start_date_str = 'Tue, 01 Jan 2013 11:00:00 GMT'
         self.arbitrary_start_date = datetime.strptime(self.arbitrary_start_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
-        self.arbitrary_end_date_str = 'Mon, 01 Jan 2020 06:00:00 GMT'
+        self.arbitrary_end_date_str = 'Wed, 01 Jan 2020 11:00:00 GMT'
         self.arbitrary_end_date = datetime.strptime(self.arbitrary_end_date_str, '%a, %d %b %Y %H:%M:%S %Z').replace(tzinfo=utc)
 
     def test_set_start_and_end_dates(self):
-        self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:00am',
-                         'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
+        if self.arbitrary_start_date.tzinfo:
+            self.arbitrary_start_date = self.arbitrary_start_date.astimezone(get_current_timezone())
+        if self.arbitrary_end_date.tzinfo:
+            self.arbitrary_end_date = self.arbitrary_end_date.astimezone(get_current_timezone())
+        post_data = {
+            'start_date': self.arbitrary_start_date.strftime('%m/%d/%Y'),
+            'start_time': self.arbitrary_start_date.strftime('%I:%M%p'),
+            'end_date': self.arbitrary_end_date.strftime('%m/%d/%Y'),
+            'end_time': self.arbitrary_start_date.strftime('%I:%M%p'),
+            'set_duration': '',
+        }
+        self.client.post(reverse('surveyduration', args=[self.survey.slug]), post_data)
         self.survey = Survey.objects.get(slug="my-new-survey")
         self.assertEqual(self.survey.start_date, self.arbitrary_start_date)
         self.assertEqual(self.survey.end_date, self.arbitrary_end_date)

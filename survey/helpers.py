@@ -13,26 +13,7 @@ else:
 # Timezone related stuff
 # (mostly copied from https://github.com/django/django/blob/master/django/utils/timezone.py)
 try:
-    from django.utils.timezone import now, get_current_timezone, utc
+    from django.utils.timezone import now, get_current_timezone
 except ImportError:
     now = datetime.now
     get_current_timezone = lambda: None
-
-    class UTC(tzinfo):
-        """
-        UTC implementation taken from Python's docs.
-        """
-
-        def __repr__(self):
-            return "<UTC>"
-
-        def utcoffset(self, dt):
-            return timedelta(0)
-
-        def tzname(self, dt):
-            return "UTC"
-
-        def dst(self, dt):
-            return timedelta(0)
-
-    utc = UTC()
