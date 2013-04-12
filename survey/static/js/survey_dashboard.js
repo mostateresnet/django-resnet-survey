@@ -6,11 +6,14 @@ function save_survey_duration(e)
     data.start_time = $('input[name="start-time"]').val();
     data.end_date = $('input[name="end-date"]').val();
     data.end_time = $('input[name="end-time"]').val();
+    data.show_social = $('input[name="toggle-social"]').prop('checked');
+    data.disable_cookies = $('input[name="toggle-track"]').prop('checked');
+        
     data.set_duration = "";
     if(data.end_time === "")
     { delete data.end_time; }
 
-    var old_sd = $('#survey-duration').attr('data-start-date-time');
+    var old_sd = $('#survey-details').attr('data-start-date-time');
 
     if (!old_sd && (data.start_date || data.start_time))
     { 
@@ -56,7 +59,7 @@ $(document).ready(function(){
   });
    
   $('#clone').click(clone_survey_dialog);
-  $('input[name="set-duration"]').click(save_survey_duration);
+  $('input[name="set-details"]').click(save_survey_duration);
   // Datepicker
   $('input[name="start-date"], input[name="end-date"]').not(':disabled').datepicker({
     showOn: "button",

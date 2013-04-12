@@ -245,15 +245,15 @@ class BallotResultsView(SurveyDashboardView):
         return context
 
 
-class SurveyDurationView(SurveyDashboardView):
+class SurveyDetailsView(SurveyDashboardView):
     def get(self, request, slug):
         raise Http404()
 
     def post(self, request, slug):
         errors = []
-        if 'set_duration' in request.POST:
-            survey = Survey.objects.get(slug=slug)
+        survey = Survey.objects.get(slug=slug)
 
+        if 'set_duration' in request.POST:
             try:
                 if 'start_date' in request.POST:
                     survey.set_date('start_date',
@@ -268,6 +268,12 @@ class SurveyDurationView(SurveyDashboardView):
                                 request.POST.get('end_date', ''),
                                 request.POST.get('end_time', '')
                                 )
+        if 'show_social' in request.POST:
+            survey.show_social = request.POST.get('show_social') == "true"
+            survey.save()
+        if 'disable_cookies' in request.POST:
+            survey.use_cookies = request.POST.get('disable_cookies') == "false"
+            survey.save()
 
         if errors:
             return HttpResponse(json.dumps({
@@ -286,22 +292,6 @@ class SurveyPublishView(View):
         if request.user.is_staff:
             survey.publish()
         return HttpResponseRedirect(reverse('index'))
-
-
-class SurveyTrackView(View):
-    def get(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
-        if request.user.is_staff:
-            survey.track(not survey.use_cookies)
-        return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
-
-
-class SurveySocialView(View):
-    def get(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
-        if request.user.is_staff:
-            survey.social(not survey.show_social)
-        return HttpResponseRedirect(reverse('surveydashboard', args=[slug]))
 
 
 class SurveyCloseView(View):

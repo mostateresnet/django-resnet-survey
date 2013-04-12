@@ -463,7 +463,7 @@ class SurveyResultsViewTest(TestCase):
         self.assertEqual(response.status_code, 200, "The page didn't return a 200")
 
 
-class SurveyDurationViewTest(TestCase):
+class SurveyDetailsViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
         self.client.login(username='admin', password='asdf')
@@ -485,61 +485,46 @@ class SurveyDurationViewTest(TestCase):
             'end_time': self.arbitrary_start_date.strftime('%I:%M%p'),
             'set_duration': '',
         }
-        self.client.post(reverse('surveyduration', args=[self.survey.slug]), post_data)
+
+        self.client.post(reverse('surveydetails', args=[self.survey.slug]), post_data)
         self.survey = Survey.objects.get(slug="my-new-survey")
         self.assertEqual(self.survey.start_date, self.arbitrary_start_date)
         self.assertEqual(self.survey.end_date, self.arbitrary_end_date)
 
+    def test_set_social(self):
+        self.client.post(reverse('surveydetails', args=[self.survey.slug]), {'show_social': True})
+        self.survey = Survey.objects.get(slug="my-new-survey")
+        self.assertEqual(self.survey.show_social, False)
+
+    def test_set_track(self):
+        self.client.post(reverse('surveydetails', args=[self.survey.slug]), {'disable_cookies': True})
+        self.survey = Survey.objects.get(slug="my-new-survey")
+        self.assertEqual(self.survey.use_cookies, False)
+
     def test_blank_dates(self):
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '', 'start_time': '',
-                                                                                         'end_date': '', 'end_time': '', 'set_duration': ''})
+        response = self.client.post(reverse('surveydetails', args=[self.survey.slug]), {'start_date': '', 'start_time': '',
+                                                                                        'end_date': '', 'end_time': '', 'set_duration': ''})
         self.assertEqual(response.status_code, 200, "This page should return a 200")
         self.assertEqual(self.survey.start_date, None)
 
     def test_valid_date_values(self):
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2011', 'start_time': '',
-                                                                                         'end_date': '', 'end_time': '', 'set_duration': ''})
+        response = self.client.post(reverse('surveydetails', args=[self.survey.slug]), {'start_date': '01/01/2011', 'start_time': '',
+                                                                                        'end_date': '', 'end_time': '', 'set_duration': ''})
 
     def test_def_get(self):
-        response = self.client.get(reverse('surveyduration', args=[self.survey.slug]))
+        response = self.client.get(reverse('surveydetails', args=[self.survey.slug]))
         self.assertEqual(response.status_code, 404, "The page didn't return a 404")
 
     def test_survey_change_publish_date_after_gone_live(self):
         ballot1 = Ballot.objects.create(survey=self.survey)
         self.survey.start_date = self.arbitrary_start_date
         self.survey.save()
-        response = self.client.post(reverse('surveyduration', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:01am',
-                                                                                         'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
+        response = self.client.post(reverse('surveydetails', args=[self.survey.slug]), {'start_date': '01/01/2013', 'start_time': '12:01am',
+                                                                                        'end_date': '01/01/2020', 'end_time': '12:00am', 'set_duration': ''})
         response_data = json.JSONDecoder().decode(response.content)
         self.assertEqual(response.status_code, 200, "This page should return a 200")
         self.assertEqual(response_data['errors'][0], "A surveys publish date cannot be changed if it has already gone live.",
                          "Error: Survey publish dates are being allowed to change once ballots are present")
-
-
-class SurveyTrackViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
-        self.user.is_staff = True
-        self.user.save()
-        self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-
-    def test_get(self):
-        response = self.client.get(reverse('surveytrack', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 302, "This request should return a 302")
-
-
-class SurveySovialViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user('admin', email="a@a.com", password='asdf')
-        self.user.is_staff = True
-        self.user.save()
-        self.client.login(username='admin', password='asdf')
-        self.survey = Survey.objects.create(title="My new survey", slug="my-new-survey", creator=self.user)
-
-    def test_get(self):
-        response = self.client.get(reverse('surveysocial', args=[self.survey.slug]))
-        self.assertEqual(response.status_code, 302, "This request should return a 302")
 
 
 class SurveyDeleteViewTest(TestCase):

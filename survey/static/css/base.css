@@ -145,9 +145,13 @@ a{
   margin-bottom: 12px;  
 }
 
-table.dashboard_details td
-{
+table.dashboard_details
+{  
   width: 100%;
+}
+
+table.dashboard_details td
+{  
   padding: 5px;
   vertical-align:top;
 }
@@ -224,14 +228,7 @@ header{
   font-weight:bold;
   margin:2px 0px;
 }
-#survey-duration{
-  border-top:2px solid #FFF;
-  border-bottom:2px solid #FFF;
-  padding:5px;
-}
-#survey-duration input{
-  width:15%;
-}
+
 #sortable li{
   cursor:move;
 }
@@ -275,4 +272,17 @@ header{
     vertical-align: baseline !important;
 }
 
+.qrcode
+{
+  width: 96px;
+  height: 96px;
+}
 
+.save_survey
+{ text-align:center; }
+
+.date_input, .date_input input
+{ width: 125px; }
+
+.block
+{ display: inline-block; }
