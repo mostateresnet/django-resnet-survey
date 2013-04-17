@@ -4,16 +4,22 @@ python:
   - "2.7"
   - "3.3"
   - "pypy"
+
 # test against different versions of Django
 env:
   - DJANGO_VERSION=">=1.3,<1.4"
   - DJANGO_VERSION=">=1.4,<1.5"
   - DJANGO_VERSION=">=1.5,<1.6"
+
 # command to install dependencies
-install: pip install --use-mirrors . -r requirements-test.txt Django$DJANGO_VERSION
+install: pip install . -r requirements-test.txt Django$DJANGO_VERSION
+
 # command to run tests
 script:
   - coverage run --source=survey -m django.bin.django-admin test --settings=survey.test_settings --noinput survey
+
+after_success:
+  - pip install -q coveralls
   - coveralls
 
 matrix:
@@ -30,3 +36,6 @@ matrix:
 
 notifications:
   email: false
+
+env:
+  - PIP_USE_MIRRORS=true

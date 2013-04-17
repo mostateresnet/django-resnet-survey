@@ -1,5 +1,5 @@
 -r requirements.txt
 django-discover-runner
-coveralls
+coverage
 south
 pillow
