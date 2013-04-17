@@ -12,7 +12,7 @@ env:
   - DJANGO_VERSION=">=1.5,<1.6"
 
 # command to install dependencies
-install: pip install . -r requirements-test.txt Django$DJANGO_VERSION
+install: pip install -M . -r requirements-test.txt Django$DJANGO_VERSION
 
 # command to run tests
 script:
@@ -36,6 +36,3 @@ matrix:
 
 notifications:
   email: false
-
-env:
-  - PIP_USE_MIRRORS=true
