@@ -287,3 +287,27 @@ header{
 
 .block
 { display: inline-block; }
+
+.dash-table
+{
+  width: 100%;
+}
+
+.dash-table tr td ol
+{  
+ padding-left: 25px;
+}
+
+.dash-table tr td ol li
+{  
+  list-style-type:decimal;
+}
+
+.description
+{
+  font-weight: bold;
+}
+.dash-table tr td ol li a
+{  
+ color:#4E769B; 
+}

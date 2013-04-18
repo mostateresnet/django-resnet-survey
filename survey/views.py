@@ -22,10 +22,12 @@ from survey import settings
 class SurveyListMixin(object):
     def get_context_data(self, *args, **kwargs):
         context = {
-            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()),
-            'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())),
-            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date')  # [:10]
-        }
+            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()).order_by('-start_date'),
+            'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())).order_by('-id'),
+            'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date'),
+            'active_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()).annotate(ballot_count = Count('ballot')).order_by('-ballot_count'), 
+            'total_ballots': Ballot.objects.all().count()
+        }        
         context.update(super(SurveyListMixin, self).get_context_data(*args, **kwargs))
         return context
 
