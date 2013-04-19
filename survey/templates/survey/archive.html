@@ -6,6 +6,7 @@
 {% block css %}
 {{ block.super }}
 <link type='text/css' rel='stylesheet' href='{% static "css/archive.css" %}' />
+<link rel="stylesheet" type="text/css" href="{% static 'css/results.css' %}" />
 {% endblock %}
 
 {% block header %}
@@ -17,10 +18,23 @@
     {% trans "Surveys" %}
     <div class='help-text'>{% trans "A complete archive of every closed survey." %}</div>
   </h3>
+<div id="navbuttons">
+    <a 
+        {% if page_list.has_previous %} href="?page={{ page_list.previous_page_number }}" class="left page_btn" 
+        {% else %} class="left page_btn_disabled" {% endif %}  
+        >{% trans "Previous" %}
+    </a>
+    <a 
+        {% if page_list.has_next %} href="?page={{ page_list.next_page_number }}" class="right page_btn" 
+        {% else %} class="right page_btn_disabled" {% endif %}  
+        >{% trans "Next" %}
+    </a>
+</div>
+<div class = "clear">
     <br>
-    {% for survey_item in closed_surveys %}
-        <a class = "archive_link" href="{% url 'surveydashboard' survey_item.slug %}">{{ survey_item }}</a>
+    {% for closed in page_list %}    
+        <a class = "archive_link" href="{% url 'surveydashboard' closed.slug %}">{{ closed }}</a>        
     {% endfor %}
-</li>
+</div>
 
 {% endblock %}

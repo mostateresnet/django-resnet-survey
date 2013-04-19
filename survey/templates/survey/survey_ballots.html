@@ -19,13 +19,13 @@
 <div id="navbuttons">
     {% if ballot  != None %}
         <a 
-            {% if previous_ballot != None %} href="{% url 'ballot' survey.slug previous_ballot.pk %}" class="left ballot_btn" 
-            {% else %} class="left ballot_btn_disabled" {% endif %}  
+            {% if previous_ballot != None %} href="{% url 'ballot' survey.slug previous_ballot.pk %}" class="left page_btn" 
+            {% else %} class="left page_btn_disabled" {% endif %}  
             data-ajax="false">{% trans "Previous Ballot" %}
         </a>
         <a 
-            {% if next_ballot != None %} href="{% url 'ballot' survey.slug next_ballot.pk %}" class="right ballot_btn" 
-            {% else %} class="right ballot_btn_disabled" {% endif %}  
+            {% if next_ballot != None %} href="{% url 'ballot' survey.slug next_ballot.pk %}" class="right page_btn" 
+            {% else %} class="right page_btn_disabled" {% endif %}  
             data-ajax="false">{% trans "Next Ballot" %}
         </a>
     {% endif %}

@@ -14,6 +14,8 @@ from django.db.models import Q, Count
 from django.db import transaction, IntegrityError
 from django.utils.translation import ugettext as _
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from survey.models import Survey, Question, Ballot, Answer, Choice, Preset, PresetChoice, QuestionGroup
 from survey.helpers import total_seconds, now
 from survey import settings
@@ -22,12 +24,14 @@ from survey import settings
 class SurveyListMixin(object):
     def get_context_data(self, *args, **kwargs):
         context = {
-            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()).order_by('-start_date'),
+            'published_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(
+                end_date__gte=now()), start_date__lte=now()).order_by('-start_date'),
             'unpublished_surveys': Survey.objects.filter(Q(start_date__isnull=True) | Q(start_date__gt=now())).order_by('-id'),
             'closed_surveys': Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date'),
-            'active_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(end_date__gte=now()), start_date__lte=now()).annotate(ballot_count = Count('ballot')).order_by('-ballot_count'), 
+            'active_surveys': Survey.objects.filter(Q(end_date__isnull=True) | Q(
+                end_date__gte=now()), start_date__lte=now()).annotate(ballot_count=Count('ballot')).order_by('-ballot_count'),
             'total_ballots': Ballot.objects.all().count()
-        }        
+        }
         context.update(super(SurveyListMixin, self).get_context_data(*args, **kwargs))
         return context
 
@@ -446,9 +450,22 @@ class PresetSearchView(DetailView):
         return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True))}), mimetype='application/json')
 
 
-class SurveyArchiveView(AccessMixin, SurveyListMixin, ListView):
+class SurveyArchiveView(AccessMixin, ListView):  # SurveyListMixin,
     model = Survey
     template_name = 'survey/archive.html'
+
+    def get(self, request):
+        closed_list = Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date')
+        paginator = Paginator(closed_list, 20)
+        page = request.GET.get('page')
+        try:
+            page_list = paginator.page(page)
+        except PageNotAnInteger:
+            page_list = paginator.page(1)
+        except EmptyPage:
+            page_list = paginator.page(paginator.num_pages)
+
+        return render_to_response('survey/archive.html', {"page_list": page_list})
 
     def hasAccess(self):
         return True

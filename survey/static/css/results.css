@@ -19,7 +19,7 @@ tr.choice:nth-child(odd){ background-color:#BACD84; }
 tr.choice td:nth-child(1){ width:92% }
 tr.choice td:nth-child(2){ width:8% }
 
-.ballot_btn, .ballot_btn_disabled
+.page_btn, .page_btn_disabled
 {
   display:inline-block;
   background:#B0C69D;
@@ -32,7 +32,7 @@ tr.choice td:nth-child(2){ width:8% }
   border:2px solid #4E769B;
 }
 
-.ballot_btn_disabled
+.page_btn_disabled
 {
   background:#AAAAAA;
   color:#EEEEEE;
@@ -40,7 +40,7 @@ tr.choice td:nth-child(2){ width:8% }
   border:2px solid #999999;
 }
 
-.ballot_btn:hover
+.page_btn:hover
 {
   background:#4E769B;
   color: white;
