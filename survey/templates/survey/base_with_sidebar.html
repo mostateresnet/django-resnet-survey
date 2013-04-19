@@ -19,7 +19,8 @@
 {% endblock %}
 
 {% block body %}
-<header><a href="/dashboard/"><img src='{% static "img/logo.png" %}' alt='' /></a></header>
+    
+<header><a href="{% url 'index' %}"><img src='{% static "img/logo.png" %}' alt='' /></a></header>
 <div id='same-height-wrapper' class='group'>
   <div id='sidebar-wrapper'>
     <h3 id='surveys-header'>{% trans "SURVEYS" %}
