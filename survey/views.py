@@ -450,14 +450,14 @@ class PresetSearchView(DetailView):
         return HttpResponse(json.dumps({'status': 'success', 'values': list(all_choices.values_list('option', flat=True))}), mimetype='application/json')
 
 
-class SurveyArchiveView(AccessMixin, ListView):  # SurveyListMixin,
+class SurveyArchiveView(AccessMixin, SurveyListMixin, ListView):
     model = Survey
     template_name = 'survey/archive.html'
 
-    def get(self, request):
+    def get_context_data(self, *args, **kwargs):
         closed_list = Survey.objects.filter(start_date__isnull=False, end_date__lte=now()).order_by('-end_date')
         paginator = Paginator(closed_list, 20)
-        page = request.GET.get('page')
+        page = self.request.GET.get('page')
         try:
             page_list = paginator.page(page)
         except PageNotAnInteger:
@@ -465,7 +465,10 @@ class SurveyArchiveView(AccessMixin, ListView):  # SurveyListMixin,
         except EmptyPage:
             page_list = paginator.page(paginator.num_pages)
 
-        return render_to_response('survey/archive.html', {"page_list": page_list})
+        context = super(SurveyArchiveView, self).get_context_data(*args, **kwargs)
+        context['page_list'] = page_list
+
+        return context
 
     def hasAccess(self):
         return True
