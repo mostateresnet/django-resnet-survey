@@ -237,22 +237,6 @@ class SurveyViewTest(TestCase):
             response_data['warnings'],
             'Integrity error: slug uniqueness is not being inforced')
 
-    def test_survey_publish_publishes_survey(self):
-        self.user.is_staff = True
-        self.user.save()
-        self.client.login(username='admin', password='asdf')
-        self.client.get(reverse('publishsurvey', args=[self.survey.slug]))
-        self.survey = Survey.objects.get(pk=self.survey.pk)
-        self.assertTrue(self.survey.is_active)
-
-    def test_survey_close_closes_survey(self):
-        self.user.is_staff = True
-        self.user.save()
-        self.client.login(username='admin', password='asdf')
-        self.client.get(reverse('closesurvey', args=[self.survey.slug]))
-        self.survey = Survey.objects.get(pk=self.survey.pk)
-        self.assertFalse(self.survey.is_active)
-
 
 class SurveyEditViewTest(TestCase):
     def setUp(self):

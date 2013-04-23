@@ -292,22 +292,6 @@ class SurveyDetailsView(SurveyDashboardView):
         }), mimetype='application/json')
 
 
-class SurveyPublishView(View):
-    def get(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
-        if request.user.is_staff:
-            survey.publish()
-        return HttpResponseRedirect(reverse('index'))
-
-
-class SurveyCloseView(View):
-    def get(self, request, slug):
-        survey = Survey.objects.get(slug=slug)
-        if request.user.is_staff:
-            survey.close()
-        return HttpResponseRedirect(reverse('index'))
-
-
 class SurveyDeleteView(View):
     def post(self, request, slug):
         if request.user.is_staff:
