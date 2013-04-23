@@ -1,9 +1,10 @@
 {% extends "survey/includes/question.html" %}
+{% load i18n %}
 
 {% block question_type_class %}textarea{% endblock %}
 
 {% block question_type %}TA{% endblock %}
 
-{% block question_choices %}{% endblock %}
+{% block question_choices %}<div class='help-text'>{% trans "Multi-line Text Box" %}</div>{% endblock %}
 
 {% block question_add_choice %}{% endblock %}

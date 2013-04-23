@@ -10,6 +10,12 @@
       <span class="delete" title="{% trans 'Delete this question' %}"></span>
     </div>
     
+    {% if question.type == 'TA' %}
+        <div class='help-text'>{% trans "Multi-line Text Box" %}</div>
+    {% elif question.type == 'TB' %}
+        <div class='help-text'>{% trans "Single-line Text Box" %}</div>
+    {% endif %}
+    
     {% block question_choices %}
       {% if not in_group and question.type != 'TA' and question.type != 'TB' %}
         <div class="choices">
@@ -22,21 +28,22 @@
         </div>
       {% endif %}
     {% endblock %}
-    
-    {% block question_options %}
+
+    {% block question_options %}    
       {% if not in_group %}
         <div class="question-options">
-          {% block question_add_choice %}
-            {% if question.type != 'TA' and question.type != 'TB' %}
+          {% block question_add_choice %}            
+            {% if question.type != 'TA' and question.type != 'TB' %}                
               <a class="add-choice toggle-button">{% trans 'Add Choice' %}</a>
               <a class="add-preset toggle-button">{% trans 'Preset Choices' %}</a>
             {% endif %}
           {% endblock %}
           <label class="question-required">
-            <input type="checkbox" name="question-required" {% if question.required %}checked="checked"{% endif %} />
+            <input type="checkbox" name="question-required" {% if question.required %}checked="checked"{% endif %} />            
             <span class="toggle-button">{% trans 'Required' %}</span>
           </label>
-        </div>
+        </div>        
+
       {% endif %}
     {% endblock %}
   </div>

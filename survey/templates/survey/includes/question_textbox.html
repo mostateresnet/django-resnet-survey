@@ -1,9 +1,10 @@
 {% extends "survey/includes/question.html" %}
+{% load i18n %}
 
 {% block question_type_class %}textbox{% endblock %}
 
 {% block question_type %}TB{% endblock %}
 
-{% block question_choices %}{% endblock %}
+{% block question_choices %}<div class='help-text'>{% trans "Single-line Text Box" %}</div>{% endblock %}
 
 {% block question_add_choice %}{% endblock %}
