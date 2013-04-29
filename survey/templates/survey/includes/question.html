@@ -12,7 +12,9 @@
     
     {% if question.type == 'TA' %}
         <div class='help-text'>{% trans "Multi-line Text Box" %}</div>
-    {% elif question.type == 'TB' %}
+    {% endif %}
+
+    {% if question.type == 'TB' %}
         <div class='help-text'>{% trans "Single-line Text Box" %}</div>
     {% endif %}
     
