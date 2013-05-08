@@ -304,10 +304,20 @@ header{
 }
 
 .description
-{
-  font-weight: bold;
-}
+{ font-weight: bold; }
+.stat_detail
+{ margin-bottom: 6px; }
+.stat_detail a
+{ color: #4E769B; }
+
 .dash-table tr td ol li a
 {  
  color:#4E769B; 
+}
+
+hr
+{
+    border: 0;
+    height: 2px;
+    background: white;
 }

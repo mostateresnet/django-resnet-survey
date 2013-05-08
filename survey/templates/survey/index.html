@@ -3,11 +3,12 @@
 {% load i18n %}
 {% load url from future %}
 
-
+{% block header %}
+      <h2>{% trans "HOME" %}</h2>
+{% endblock %}
 {% block content %}
-      <h2>{% trans "HOME" %}</h2>      
           <table class = "dash-table" >
-            <tr align="center">
+            <tr>
                 <td><h3>{% trans "Newest" %}</h3></td>
                 <td><h3>{% trans "Most Active" %}</h3></td>
                 <td><h3>{% trans "Recently Concluded" %}</h3></td>
@@ -39,9 +40,10 @@
           </table>
       <br>
 
-    {% if active_surveys.0 %}    
-      <p><label class ="description">Most Popular Survey:</label>
-      <a href="{% url 'surveydashboard' active_surveys.0.slug %}">{{ active_surveys.0 }}</a></p>      
-      <p><label class ="description">Total Ballots cast through the Survey Builder:</label> {{ total_ballots }}</p>
+    {% if active_surveys.0 %}
+      <hr>
+      <p class="stat_detail"><label class ="description">Most Popular Survey:</label>
+      <a href="{% url 'surveydashboard' active_surveys.0.slug %}">{{ active_surveys.0 }}</a></p>
+      <p class="stat_detail"><label class ="description">Total Ballots cast through the Survey Builder:</label> {{ total_ballots }}</p>
     {% endif %}
 {% endblock %}
