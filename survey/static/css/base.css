@@ -94,6 +94,8 @@ a{
   float:right;
 }
 .logo{
+  clear: both;
+  padding-top: 10px;
   margin-left:auto;
   margin-right:auto;
 }
@@ -102,7 +104,6 @@ a{
 }
 .button-header ul{
   display:inline-block;
-
 }
 .hidden{
   display:none;
@@ -179,26 +180,26 @@ header{
   padding-top:15px;
   text-align:center;
 }
-#same-height-wrapper{
-}
-#sidebar-wrapper{
-  float:left;
-  width:30%;
-  color:#FFF;
-}
-#sidebar-wrapper a{
-  color:#FFF;
-}
+
 .new-button{
   float: right;
   font-size: 14pt;
 }
-#sidebar{
-  padding:5% 2%;
-  background-color:#839FB9;
+
+#sidebar {
+    float:left;
+    width:30%;
+    position:relative;
+    left:70%;
+    background-color:#839FB9;
+    color: #FFF;
 }
+
+#surveys-header
+{ margin-bottom: 8px;}
 #sidebar ul{
   list-style-type:none;
+  padding: 0px 6px;
 }
 #sidebar li{
   margin-bottom:5px;
@@ -212,11 +213,29 @@ header{
 #sidebar a.current-survey{
   color:#13377B;
 }
+
+#content-container {
+    float:left;
+    width:100%;
+    background:#C9DA9E;
+    overflow:hidden;
+    position:relative;
+}
+#sidebar-container {
+    float:left;
+    width:100%;
+    background:#839FB9;
+    position:relative;
+    right:70%;
+}
+
 #content{
-  float:left;
-  width:70%;
   background:#C9DA9E;
   color:#4E769B;
+  float:left;
+  width:70%; /*70%*/
+  position:relative;
+  left:70%;
 }
 #main-content{
   padding:5px;

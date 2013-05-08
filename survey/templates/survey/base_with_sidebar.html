@@ -19,31 +19,36 @@
 {% endblock %}
 
 {% block body %}
-    
+
+   
 <header><a href="{% url 'index' %}"><img src='{% static "img/logo.png" %}' alt='' /></a></header>
-<div id='same-height-wrapper' class='group'>
-  <div id='sidebar-wrapper'>
-    <h3 id='surveys-header'>{% trans "SURVEYS" %}
-    <a class='new-button' href='{% url "newsurvey" %}'><img src='{% static "img/newbutton.png" %}' alt='' /></a>
-    </h3>
-    <div id='sidebar'>
-    {% block sidebar %}
-        <ul>
-            {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title=_('Unpublished Surveys') catid="sidebar_1" %}
-            {% include 'survey/includes/survey_list.html' with surveys=published_surveys title=_('Published Surveys') catid="sidebar_2" %}
-            {% include 'survey/includes/survey_list.html' with surveys=closed_surveys|slice:":10" title=_('Closed Surveys') catid="sidebar_3" %}
-        </ul>
-    {% endblock %}
-    </div>
-  </div>
 
-  <div id='content'>
-    {% block header %}{% endblock %}
-    <div id='main-content'>
-      {% block content %}{% endblock %}
-    </div>
-  </div>
 
-</div>
+    <div id="content-container">
+        <div id="sidebar-container">
+            <div id="sidebar">
+                <h3 id='surveys-header'>{% trans "SURVEYS" %}
+                <a class='new-button' href='{% url "newsurvey" %}'><img src='{% static "img/newbutton.png" %}' alt='' /></a>
+                </h3>
+                {% block sidebar %}
+                    <ul>
+                        {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title=_('Unpublished Surveys') catid="sidebar_1" %}
+                        {% include 'survey/includes/survey_list.html' with surveys=published_surveys title=_('Published Surveys') catid="sidebar_2" %}
+                        {% include 'survey/includes/survey_list.html' with surveys=closed_surveys|slice:":10" title=_('Closed Surveys') catid="sidebar_3" %}
+                    </ul>
+                {% endblock %}
+            </div>
+            
+        <div id='content'>
+          {% block header %}{% endblock %}
+          <div id='main-content'>
+            {% block content %}{% endblock %}
+          </div>
+        </div> 
+        </div>
+    </div>
+
+    
+
 
 {% endblock %}
