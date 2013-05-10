@@ -198,10 +198,14 @@ tr{
 }
 
 .question-group .question-number span {top: 2px;}
-.question-group .questions {width: 50%;}
-.question-group .choices {width: 50%;}
+.question-group .questions {width: 45%;}
+.question-group .choices {width: 49%;}
 .question-group .question {margin: 0px;}
-.question-group .message input[type=text] {width: 86%;}
-.question-group .message:hover input[type=text] {width: 77%;}
-.question-group .choice input[type="text"] {width: 81.5%;}
-.question-group .choice:hover input[type="text"] {width: 72.5%;}
+
+.question-group .message input[type=text] {width: 84%;}
+.question-group .message:hover input[type=text] {width: 73.5%;}
+.question-group .choice input[type="text"] {width: 80.0%;}
+.question-group .choice:hover input[type="text"] {width: 71.0%;}
+
+.likert-message { height: 50px; }
+.likert-questions { padding-left: 29px; }

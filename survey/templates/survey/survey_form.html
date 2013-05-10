@@ -71,7 +71,7 @@
       {% regroup survey.question_set.all by group as question_group_list %}
       {% for question_group in question_group_list %}
         {% if question_group.grouper %}
-          {% include 'survey/includes/question_likert.html' with question_list=question_group.list %}
+          {% include 'survey/includes/question_likert.html' with question_list=question_group.list qgroup=question_group.grouper %}
         {% else %}
           {% for question in question_group.list %}
             {% include 'survey/includes/question.html' %}

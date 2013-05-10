@@ -159,7 +159,8 @@ class SurveyFormMixin(SurveyListMixin):
         QuestionGroup.objects.filter(pk__in=survey.question_set.all().values_list('group')).delete()
         survey.question_set.all().delete()
         questions = data.get('questions', [])
-        survey.add_questions(questions)
+        groups = data.get('groups', [])
+        survey.add_questions(questions, groups)
         return HttpResponse(json.dumps({'status': 'success', 'warnings': warnings, 'url': reverse('surveydashboard', args=[survey.slug])}), mimetype='application/json')
 
     def get_context_data(self, *args, **kwargs):

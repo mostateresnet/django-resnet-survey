@@ -108,12 +108,13 @@ class Survey(models.Model):
         """
         return str(self.slug.replace('-', '') + 'ballotcookie')
 
-    def add_questions(self, questions):
+    def add_questions(self, questions, groups):
         """
         Accepts a list of dictionaries containing question data.
         """
-        groups = defaultdict(QuestionGroup.objects.create)
-        groups[None] = None
+        group_dict = defaultdict(QuestionGroup.objects.create)
+        group_dict[None] = None
+        
         for question_data in questions:
             question = Question.objects.create(
                 survey=self,
@@ -121,11 +122,18 @@ class Survey(models.Model):
                 type=question_data.get('type', ''),
                 required=question_data.get('required'),
                 order_number=question_data.get('order_number', 0),
-                group=groups[question_data.get('group')],
+                group=group_dict[question_data.get('group')],
             )
             for choice in question_data.get('choices', []):
                 Choice.objects.create(question=question, message=choice.get('message', ''), order_number=choice.get('order_number', 0))
 
+        for group_data in groups:
+            group = group_dict[group_data['index']]
+            group.message = group_data['message']
+            group.save()
+            
+            
+        
 
 class QuestionGroup(models.Model):
     """

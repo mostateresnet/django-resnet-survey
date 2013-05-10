@@ -2,14 +2,21 @@
 {% load i18n %}
 
 {% block question %}
-  <div class="question-group question likert">
+    <div>
+        <div class="message likert-message">
+        <div class="question-number question-likert"></div>
+        <input type="hidden" name="question-type" value='{% block question_type %}{{ question.type }}{% endblock %}' />
+        <input type="text" name="likert-message" placeholder="{% trans 'Title (optional)' %}" value='{{ qgroup.message }}' />
+        <span class="delete" title="{% trans 'Delete this question' %}"></span>
+        </div>
+           
+    <div class="question question-group likert">
     {% block question_choices %}
       {% with question=question_list|first %}
         {{ block.super }}
       {% endwith %}
     {% endblock %}
-    
-    <div class="questions ui-sortable">
+    <div class="questions ui-sortable likert-questions">
       {% for question in question_list %}
         {% include 'survey/includes/question.html' with in_group='True' %}
       {% empty %}
@@ -23,6 +30,7 @@
       {% endwith %}
     {% endblock %}
   </div>
+    </div>
 {% endblock %}
 
 {% block question_add_choice %}

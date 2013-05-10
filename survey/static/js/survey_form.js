@@ -85,7 +85,7 @@ $(document).ready(function(){
           return false;  
         }
 
-        var data = {title: $('#title').val(), description: $('#description').val(), questions: []};
+        var data = {title: $('#title').val(), description: $('#description').val(), questions: [], groups: []};
         $('.question').each(function(index, el){
             var $el = $(el);
 
@@ -106,8 +106,11 @@ $(document).ready(function(){
             }
             questionData.type = $el.find('input[name="question-type"]').val();
             questionData.required = $el.find('input[name="question-required"]').is(":checked");
-            if ($el.is('.question-group')){
+            if ($el.is('.question-group')){                
                 questionData.group = index;
+                
+                data.groups.push( { index: index, message: $el.parent().find('input[name="likert-message"]').val() } );
+                
                 $el.find('.question').each(function(groupMemberIndex, groupMemberEl){
                     var groupMemberData = $.extend({}, questionData);
                     groupMemberData.message = $(groupMemberEl).find('input[name="question-message"]').val();

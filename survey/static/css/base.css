@@ -271,6 +271,13 @@ header{
   text-align:center;
   font-weight:bold;
 }
+
+.question-likert{
+  background:#4d769c url('../img/question_likert.png') no-repeat;
+  background-size: contain;
+}
+
+
 .ui-datepicker-trigger{
   background-image:url('../img/calendar_icon.png');
   background-position: 0px -2px;
