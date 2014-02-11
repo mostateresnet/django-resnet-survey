@@ -361,21 +361,21 @@ class SurveyExportView(SurveyDashboardView):
         counter = 2
         counter_text = 0
         for question in survey.question_set.all():
-            ws.write(counter, 0, str(question), question_style)
+            ws.write(counter, 0, question.message, question_style)
             if question.type == 'TB' or question.type == 'TA':
                 counter_text += 2
-                ws_text.write(counter_text, 0, str(question), question_style)
+                ws_text.write(counter_text, 0, question.message, question_style)
                 counter += 1
                 ws.write(counter, 0, xlwt.Formula("HYPERLINK(\"#TextResults!A" + str(counter_text + 1) + "\", \"Click to see text results\")"))
                 for choice in question.choice_set.all():
                     for answer in choice.answer_set.all():
                         counter_text += 1
                         ws_text.row(counter_text).height = 256 * 3
-                        ws_text.write(counter_text, 0, str(answer), text_question_style)
+                        ws_text.write(counter_text, 0, answer.choice.message, text_question_style)
             elif question.type == 'RA' or question.type == 'CH' or question.type == 'DD':
                 for choice in question.choice_set.all():
                     counter += 1
-                    ws.write(counter, 0, str(choice))
+                    ws.write(counter, 0, choice.message)
                     ws.write(counter, 1, choice.answer_set.count())
             counter += 2
         return wb
@@ -392,13 +392,13 @@ class SurveyExportView(SurveyDashboardView):
         col_counter = 1
         for question in survey.question_set.all():
             ws.col(col_counter).width = 256 * 30
-            ws.write(0, col_counter, str(question), question_style)
+            ws.write(0, col_counter, question.message, question_style)
             col_counter = col_counter + 1
 
         row_counter = 1
         for ballot in survey.ballot_set.all():
             col_counter = 1
-            ws.write(row_counter, 0, str(ballot.pk))
+            ws.write(row_counter, 0, ballot.pk)
             for answer in ballot.answer_list():
 
                 ws.write(row_counter, col_counter, ','.join(answer))
