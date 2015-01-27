@@ -35,6 +35,7 @@
                         {% include 'survey/includes/survey_list.html' with surveys=unpublished_surveys title=_('Unpublished Surveys') catid="sidebar_1" %}
                         {% include 'survey/includes/survey_list.html' with surveys=published_surveys title=_('Published Surveys') catid="sidebar_2" %}
                         {% include 'survey/includes/survey_list.html' with surveys=closed_surveys|slice:":10" title=_('Closed Surveys') catid="sidebar_3" %}
+                        {% include 'survey/includes/survey_list.html' with surveys=null title=_('Help') catid="sidebar_4" %}
                     </ul>
                 {% endblock %}
             </div>

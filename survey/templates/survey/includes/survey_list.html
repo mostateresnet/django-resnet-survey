@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load staticfiles %}
 <li class="list_reset">
   <span id="{{ catid }}" class="accordion_sidebar accordion">{{ title }}</span>
   <ul>
@@ -9,6 +10,10 @@
     {% endfor %}
     {% if catid == "sidebar_3" %}
             <li><a href="{% url 'surveyarchive' %}">View Archive</a></li>
+    {% endif %}
+    {% if catid == "sidebar_4" %}
+	<li><a href="{% static "docs/Tutorial.pdf"%}" target="_blank">Tutorial</a></li>
+	<li><a href="https://www.youtube.com/playlist?list=PLrGKDnHbZP_CzWqamHZLRdpTtxFqfdQ7K" target="_blank">Video Tutorials</a></li>
     {% endif %}
   </ul>
 </li>
