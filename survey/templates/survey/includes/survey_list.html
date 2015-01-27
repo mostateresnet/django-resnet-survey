@@ -10,5 +10,9 @@
     {% if catid == "sidebar_3" %}
             <li><a href="{% url 'surveyarchive' %}">View Archive</a></li>
     {% endif %}
+    {% if catid == "sidebar_4" %}
+    <li><a href="{{ STATIC_URL }}docs/Tutorial.pdf" target="_blank">Tutorial</a></li>
+    <li><a href="https://www.youtube.com/playlist?list=PLrGKDnHbZP_CzWqamHZLRdpTtxFqfdQ7K" target="_blank">Video Tutorials</a></li>
+    {% endif %}
   </ul>
 </li>
